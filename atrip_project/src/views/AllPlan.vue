@@ -137,7 +137,7 @@ export default {
 
 <style scoped>
   .choose-btn{
-    margin-top: 10px;
+    margin-top: 73px;
   }
 
   .img_content{
