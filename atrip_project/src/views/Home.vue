@@ -25,6 +25,11 @@ export default {
 </script>
 
 <style scoped>
+  .Home{
+    position: absolute;
+    top: 63px;
+  }
+
   .rec1{
     position: absolute;
     width: 800px;

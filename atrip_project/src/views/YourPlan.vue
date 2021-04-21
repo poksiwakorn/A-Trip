@@ -18,7 +18,7 @@
               <v-text-field solo placeholder="Where you want to go ?" class="des-field"></v-text-field>
             </v-col>
           </v-row>
-          <v-btn class="plan-btn">PLAN TRIP</v-btn>
+          <v-btn class="plan-btn" link to="/ListTrip">PLAN TRIP</v-btn>
         </v-form>
       </v-col>
     </div>
