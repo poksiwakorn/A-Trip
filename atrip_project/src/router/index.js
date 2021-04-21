@@ -8,6 +8,9 @@ import YourPlan from '../views/YourPlan.vue'
 import Account from '../views/Account.vue'
 import Landing from '../views/Landing.vue'
 import About from '../views/About.vue'
+import PlaceInfo from '../views/PlaceInfo.vue'
+import ListTrip from '../views/ListTrip.vue'
+
 
 Vue.use(VueRouter)
 
@@ -51,6 +54,17 @@ const routes = [
     path: '/',
     name: 'Landing',
     component: Landing
+  },
+  {
+    path: '/PlaceInfo',
+    name: 'PlaceInfo',
+    component: PlaceInfo
+  }
+  ,
+  {
+    path: '/ListTrip',
+    name: 'ListTrip',
+    component: ListTrip
   }
 ]
 
