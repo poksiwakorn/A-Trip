@@ -11,13 +11,15 @@
         </v-chip-group>
       </div>
       <v-row>
-        <v-col cols="4">
-          <div class="map"></div>
+        <v-col cols="4" class="mapCard">
+          <v-card>
+            <v-img src = "..assets/map1.jpg" height="200px"></v-img>
+          </v-card>
         </v-col>
-        <v-col cols="3" class="listPlace">
+        <v-col cols="3" class="listCard">
           <v-row v-for="(item, i) in items" :key="i">
             <v-card class="ma-3">
-              <v-img src="../assets/sea1.jpg" height="200px"></v-img>
+              <v-img :src = "item.src[0]" height="200px"></v-img>
               <v-card-title>
                 {{ item.title }}
                 <v-spacer></v-spacer>
@@ -36,7 +38,7 @@
             </v-card>
           </v-row>
         </v-col>
-        <v-col cols="5" class="yourTrip">
+        <v-col cols="5" class="tripCard">
           <v-card class="ma-3">
             <v-card-title class="yourTripTitle white--text">Your Trip</v-card-title>
             <v-divider></v-divider>
@@ -50,11 +52,6 @@
                 </v-col>
               </v-row>
               <v-card-subtitle>Please choose at least 2 places</v-card-subtitle>
-              <!-- <v-row v-for="(place, i) in placeInTrip" :key="i">
-                <v-col>
-                  {{place}}
-                </v-col>
-              </v-row> -->
               <v-card class="scrollCard">
                 <v-virtual-scroll
                   page-mode
@@ -71,7 +68,7 @@
                       </v-col>
                       <v-col cols = "4">
                         <v-card class="mb-5">
-                          <v-img src = "../assets/sea1.jpg" class="placeImage"></v-img>
+                          <v-img :src = "getItem(items,item.item).src[0]" class="placeImage"></v-img>
                         </v-card>
                       </v-col>
                       <v-col cols = "5">
@@ -89,7 +86,7 @@
                 </v-virtual-scroll>
               </v-card>
               <v-row>
-                <v-btn text class="makeTripButton">Make A Trip</v-btn>
+                <v-btn text class="makeTripButton" link to="/account">Make A Trip</v-btn>
                 <v-spacer></v-spacer>
                 <v-btn text class="updateButton">Update Route</v-btn>
               </v-row>
@@ -116,37 +113,37 @@ export default {
     placeInTrip: [],
     items: [
       {
-        src: "../assets/aquarium1.jpg",
+        src: [require("../assets/aquarium1.jpg")],
         title: "AQUARIUM",
         info: "This is Aquarium",
       },
       {
-        src: "../assets/island1.jpg",
+        src: [require("../assets/island1.jpg")],
         title: "ISLAND",
         info: "This is Island",
       },
       {
-        src: "../assets/market1.jpg",
+        src: [require("../assets/market1.jpg")],
         title: "MARKET",
         info: "This is Market",
       },
       {
-        src: "../assets/passage1.jpg",
+        src: [require("../assets/passage1.jpg")],
         title: "PASSAGE",
         info: "This is Passage",
       },
       {
-        src: "../assets/road1.jpg",
+        src: [require("../assets/road1.jpg")],
         title: "ROAD",
         info: "This is Road",
       },
       {
-        src: "../assets/sea1.jpg",
+        src: [require("../assets/sea1.jpg")],
         title: "SEA",
         info: "This is Sea",
       },
       {
-        src: "../assets/temple1.jpg",
+        src: [require("../assets/temple1.jpg")],
         title: "TEMPLE",
         info: "This is Temple",
       },
@@ -157,9 +154,14 @@ export default {
       this.placeInTrip.push(item.title);
     },
     canclePlace: function(index){
-      console.log(index);
-      console.log(this.placeInTrip[index]);
-      console.log(this.placeInTrip.splice(index,1));
+      this.placeInTrip.splice(index,1);
+    },
+    getItem: function(items,item){
+      for(var i=0;i<items.length;i++){
+        if(items[i].title == item){
+          return items[i];
+        }
+      }
     }
   }
 };
@@ -176,22 +178,29 @@ export default {
       background-color: #ff9100;
     }
 
-    .map {
+    .mapCard {
       position: fixed;
-      width: 500px;
+      width: 100%;
       height: 630px;
       margin-top: 123px;
+      margin-left: 10px;
+    }
+
+    .mapPic {
       background-image: url(../assets/map1.png);
     }
 
-    .listPlace {
+    .listCard {
       margin-top: 123px;
+      margin-left: 33%;
     }
 
-    .yourTrip {
+    .tripCard {
       position: fixed;
-      margin-top: 70px;
-      margin-left: 905px;
+      /* margin-top: 70px;
+      margin-left: 905px; */
+      top: 7%;
+      left: 59%;
     }
 
     .yourTripTitle{
@@ -214,7 +223,7 @@ export default {
       padding-left: 15px;
       padding-top: 15px;
       padding-bottom: 15px;
-      width: 550px;
+      width: 95%;
       height: 400px;
     }
 
