@@ -94,7 +94,6 @@ export default {
         firstname : "",
         lastname : "",
         email : ""
-
      },
     valid: false,
     showPassword: false,
