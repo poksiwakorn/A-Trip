@@ -4,7 +4,7 @@
     <v-form class="register-form" v-model="valid">
       <span class="text1">Register</span>
       <v-text-field
-        v-model = "username"
+        v-model = "form.username"
         label="Username"
         placeholder="Username"
         :rules = "usernameRule"
@@ -13,6 +13,7 @@
         required
       ></v-text-field>
       <v-text-field
+        v-model = "form.password"
         label="Password"
         placeholder="Password1234"
         :rules = "passwordRule"
@@ -25,6 +26,7 @@
       <v-row>
         <v-col cols="6">
           <v-text-field
+            v-model = "form.firstname"
             label="Firstname"
             placeholder="Firstname"
             :rules = "firstnameRule"
@@ -34,6 +36,7 @@
         </v-col>
         <v-col cols="6">
           <v-text-field
+            v-model = "form.lastname"
             label="Lastname"
             placeholder="Lastname"
             :rules = "lastnameRule"
@@ -58,12 +61,13 @@
         <v-date-picker></v-date-picker>
       </v-menu>
       <v-text-field
+        v-model = "form.email"
         label="Email"
         placeholder="myEmail@hotmail.com"
         regular
         class="mt-7 mb-3"
       ></v-text-field>
-      <v-btn text color = "#F57F17" class="btn1" link to="/Home">Submit</v-btn>
+      <v-btn @click = "register" text color = "#F57F17" class="btn1">Submit</v-btn>
     </v-form>
   </div>
 </template>
@@ -71,7 +75,26 @@
 <script>
 export default {
   name: "Register",
+  methods: {
+    async register(){
+      try {
+        await this.$store.dispatch("Register",this.form);
+        if (this.$store.getters.StateMsg == "You have successfully registered!")
+          this.$router.push("/SignIn");
+        this.showMsg = true
+      } catch (error) {
+        this.showMsg = true
+      }
+    }
+  },
   data: () => ({
+    form: {
+        username: "",
+        password : "",
+        firstname : "",
+        lastname : "",
+        email : ""
+     },
     valid: false,
     showPassword: false,
     usernameRule: [
@@ -90,7 +113,8 @@ export default {
         v => !!v || 'Lastname is required',
         v => v.length <= 10 || 'Lastname must be less than 10 characters',
     ]
-  }),
+  }
+  ),
 };
 </script>
 

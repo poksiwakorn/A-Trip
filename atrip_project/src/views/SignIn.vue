@@ -16,15 +16,14 @@
           </v-col>
 
           <v-col cols="12">
-            <v-text-field
+            <v-text-field v-model = "form.username"
               label="Username"
               placeholder="Username"
               regular
             ></v-text-field>
           </v-col>
-
           <v-col cols="12">
-            <v-text-field
+            <v-text-field v-model = "form.password"
               label="Password"
               placeholder="Password1234"
               regular
@@ -32,7 +31,7 @@
           </v-col>
 
           <v-col cols="12">
-            <v-btn align-center color="info" link to="/Home">Sign in</v-btn>
+            <v-btn @click = "Login" align-center color="info">Sign in</v-btn>
           </v-col>
 
           <v-col cols="12">
@@ -42,6 +41,7 @@
           <v-col cols="12">
             <router-link to="/Register">Create your own account</router-link>
           </v-col>
+          
         </v-row>
       </v-form>
   </div>
@@ -53,6 +53,28 @@
 export default {
   name: "SignIn",
   components: {},
+  data() {
+    return {
+      form:{
+        username: "",
+        password : ""
+      }  
+    }
+  },
+  methods:{
+    async Login(){
+      try {
+        await this.$store.dispatch("LogIn",this.form);
+        if (this.$store.getters.StateIsLogIn == true){
+          this.$router.push("/Home")
+        }
+        alert(this.$store.getters.StateMsg)
+      }
+      catch(error){
+        console.log(error)
+      }
+    },
+  },
 };
 </script>
 
