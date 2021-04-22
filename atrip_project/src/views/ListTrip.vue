@@ -13,7 +13,7 @@
       <v-row>
         <v-col cols="4" class="mapCard">
           <v-card>
-            <v-img src = "..assets/map1.jpg" height="200px"></v-img>
+            <!-- <v-img src = "..assets/map1.png" height="200px"></v-img> -->
           </v-card>
         </v-col>
         <v-col cols="3" class="listCard">
