@@ -1,6 +1,6 @@
 <template>
   <div class="TripBar">
-    <v-toolbar >
+    <v-toolbar>
       <v-toolbar-title class="headline text-uppercase mx-5">
         <v-btn link to="/Home" class="mr-5" icon><v-icon>mdi-home</v-icon></v-btn>
         <span>A Trip</span>
@@ -14,3 +14,10 @@
   </div>
 </template>
 
+<style scoped>
+  .TripBar{
+    position: fixed;
+    width: 100%;
+    z-index: 99;
+  }
+</style>

@@ -28,7 +28,7 @@
               <v-divider></v-divider>
               <v-virtual-scroll
                 :items = "items"
-                :item-height = "1000"
+                :item-height = "500"
                 height = "480"
                 class="my-5"
               >
@@ -137,7 +137,7 @@ export default {
 
 <style scoped>
   .choose-btn{
-    margin-top: 10px;
+    margin-top: 73px;
   }
 
   .img_content{
