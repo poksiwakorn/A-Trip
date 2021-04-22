@@ -7,10 +7,27 @@
     <span class="text1 ml-16">START YOUR PLAN</span>
     <span class="text2 ml-16">START YOUR JOURNEY</span>
     <v-btn plain class="btn_register" link to="/Register">register</v-btn>
-    <v-btn plain class="btn_signin" link to="/SignIn">sign in</v-btn>
+    <v-btn plain class="btn_signin" @click = "Login">sign in</v-btn>
   </div>
 </template>
 
+<script>
+  export default {
+    data: () => ({
+       
+    }),
+    methods: {
+      Login(){
+        if (this.$store.getters.StateIsLogIn == true){
+          this.$router.push("/Home")
+        }
+        else{
+          this.$router.push("/SignIn")
+        }
+      }
+    },
+  }
+</script>
 <style scoped>
   .rec {
     position: absolute;
