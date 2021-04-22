@@ -4,10 +4,10 @@
     <div class="ListTrip">
       <div class="chipBar">
         <v-chip-group
-            mandatory
             active-class="chipActive white--text"
+            v-model = "typeGroup"
         >
-        <v-chip v-for="tag in tags" :key="tag">{{ tag }}</v-chip>
+        <v-chip v-for="type in types" :key="type">{{ type }}</v-chip>
         </v-chip-group>
       </div>
       <v-row>
@@ -18,14 +18,14 @@
         </v-col>
         <v-col cols="3" class="listCard">
           <v-row v-for="(item, i) in items" :key="i">
-            <v-card class="ma-3">
+            <v-card v-if="item.info.includes(types[typeGroup]) || types[typeGroup] == 'All'" class="ma-3">
               <v-img :src = "item.src[0]" height="200px"></v-img>
               <v-card-title>
                 {{ item.title }}
                 <v-spacer></v-spacer>
-                <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
+                <v-chip class="ma-2" color="#FF9100" outlined>{{item.province}}</v-chip>
               </v-card-title>
-              <v-card-subtitle>CrazyboyOO1</v-card-subtitle>
+              <v-card-subtitle>{{item.info}}</v-card-subtitle>
               <v-btn color="#FF9100" outlined class="ma-2" link to = "/PlaceInfo"
                 >view info
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
@@ -78,7 +78,7 @@
                             <v-spacer></v-spacer>
                             <v-btn icon class="mt-3 mr-4" @click="canclePlace(item.index)"><v-icon color = "error">mdi-close</v-icon></v-btn>
                           </v-row>
-                          <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
+                          <v-chip class="ma-2" color="#FF9100" outlined>{{getItem(items,item.item).province}}</v-chip>
                         </v-card>
                       </v-col>
                     </v-row>
@@ -109,43 +109,51 @@ export default {
   },
 
   data: () => ({
-    tags: ["All", "Restaurant", "Photograph", "Residence"],
+    types: ["All","Photograph", "Restaurant", "Residence"],
+    typeGroup: 0,
     placeInTrip: [],
     items: [
       {
         src: [require("../assets/aquarium1.jpg")],
         title: "AQUARIUM",
-        info: "This is Aquarium",
+        info: "Photograph",
+        province: "Bangkok"
       },
       {
         src: [require("../assets/island1.jpg")],
         title: "ISLAND",
-        info: "This is Island",
+        info: "Photograph,Residence,Restaurant",
+        province: "Phuket"
       },
       {
         src: [require("../assets/market1.jpg")],
         title: "MARKET",
-        info: "This is Market",
+        info: "Photograph,Restaurant",
+        province: "China"
       },
       {
         src: [require("../assets/passage1.jpg")],
         title: "PASSAGE",
-        info: "This is Passage",
+        info: "Photograph,Residence",
+        province: "Newzeland"
       },
       {
         src: [require("../assets/road1.jpg")],
         title: "ROAD",
-        info: "This is Road",
+        info: "Photograph",
+        province: "Bangkok"
       },
       {
         src: [require("../assets/sea1.jpg")],
         title: "SEA",
-        info: "This is Sea",
+        info: "Photograph,Residence,Restaurant",
+        province: "Suratthani"
       },
       {
         src: [require("../assets/temple1.jpg")],
         title: "TEMPLE",
-        info: "This is Temple",
+        info: "Photograph",
+        province: "Nakornsitammarat"
       },
     ],
   }),
