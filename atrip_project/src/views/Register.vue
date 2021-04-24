@@ -132,14 +132,14 @@ export default {
 
   .img1 {
     position: absolute;
-    width: 700px;
-    height: 754px;
+    width: 45vw;
+    height: 100vh;
     left: -1px;
-    top: 0px;
-
+    top: 1px;
     background: url(../assets/temple1.jpg);
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: cover;
+    background-position: center;
   }
 
   .btn1{
@@ -149,9 +149,9 @@ export default {
   }
 
   .register-form {
-    width: 400px;
     position: absolute;
-    left: 920px;
-    top: 30px;
+    width: 400px;
+    right: 17vw;
+    top: 10vh;
   }
 </style>
