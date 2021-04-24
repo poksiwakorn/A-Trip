@@ -38,10 +38,14 @@ export default {
 </script>
 
 <style scoped>
+  .YourPlan{
+    position: relative;
+  }
+
   .bg-img{
     position: absolute;
-    width: 1600px;
-    height: 753px;
+    width: 100vw;
+    height: calc(100vh - 64px);
     left: -1px;
     top: 64px;
     
@@ -53,21 +57,19 @@ export default {
 
   .rec{
     position: absolute;
-    width: 1600px;
-    height: 753px;
-    left: -1px;
+    width: 100vw;
+    height: calc(100vh - 64px);
     top: 64px;
-
     background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%);
     overflow: hidden;
   }
 
   .form{
-    position: relative;
+    position: absolute;
     width: 1100px;
     height: 300px;
-    margin-left: 200px;
-    margin-top: 350px;
+    left: calc(50% - 550px);
+    top: 600px;
     background-color: rgba(255, 255, 255,0.3);
     border-radius: 31px;
   }

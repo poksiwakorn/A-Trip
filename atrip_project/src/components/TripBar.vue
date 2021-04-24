@@ -9,10 +9,26 @@
       <v-btn plain link to="/YourPlan" class="mx-5">Start your plan</v-btn>
       <v-spacer></v-spacer>
       <v-btn plain link to="/Account" class="mx-5">account</v-btn>
-      <v-btn plain link to="/" class="mx-5" color="error">log out</v-btn>
+      <v-btn plain @click = "logout" class="mx-5" color="error">log out</v-btn>
     </v-toolbar>
   </div>
 </template>
+<script>
+export default {
+  data() {
+    return {
+      
+    }
+  },
+  methods: {
+    logout(){
+      this.$store.dispatch("LogOut")
+      this.$router.push("/");
+    }
+  },
+};
+</script>
+
 
 <style scoped>
   .TripBar{
@@ -21,3 +37,4 @@
     z-index: 99;
   }
 </style>
+
