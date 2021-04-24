@@ -19,7 +19,7 @@
         <v-col cols="3" class="listCard">
           <v-row v-for="(item, i) in items" :key="i">
             <v-card class="ma-3">
-              <v-img :src = "item.src[0]" height="200px"></v-img>
+              <v-img :src = "item.src" height="200px"></v-img>
               <v-card-title>
                 {{ item.title }}
                 <v-spacer></v-spacer>
@@ -68,7 +68,7 @@
                       </v-col>
                       <v-col cols = "4">
                         <v-card class="mb-5">
-                          <v-img :src = "getItem(items,item.item).src[0]" class="placeImage"></v-img>
+                          <v-img :src = "getItem(items,item.item).src" class="placeImage"></v-img>
                         </v-card>
                       </v-col>
                       <v-col cols = "5">
@@ -143,7 +143,7 @@ export default {
         info: "This is Sea",
       },
       {
-        src: [require("../assets/temple1.jpg")],
+        src: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Opensource.svg/1200px-Opensource.svg.png",
         title: "TEMPLE",
         info: "This is Temple",
       },

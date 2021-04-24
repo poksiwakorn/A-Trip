@@ -7,6 +7,7 @@
 </template>
 
 <script>
+
 import Home from "./views/Home";
 import SignIn from "./views/SignIn";
 import Register from "./views/Register";
@@ -29,3 +30,5 @@ export default {
   }),
 };
 </script>
+
+
