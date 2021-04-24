@@ -150,7 +150,7 @@ export default {
         province: "Suratthani"
       },
       {
-        src: [require("../assets/temple1.jpg")],
+        src: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Opensource.svg/1200px-Opensource.svg.png",
         title: "TEMPLE",
         info: "Photograph",
         province: "Nakornsitammarat"

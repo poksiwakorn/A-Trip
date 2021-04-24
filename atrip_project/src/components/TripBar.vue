@@ -29,12 +29,6 @@ export default {
 };
 </script>
 
-export default {
-  name: "About",
-  components: {
-    TripBar
-  },
-};
 
 <style scoped>
   .TripBar{
