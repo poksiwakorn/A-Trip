@@ -156,6 +156,8 @@ export default {
     },
     async getInfo(){
       await axios.get("tripInfo/" + this.keyID).then((res)=>this.trip = res.data[0]);
+      await axios.post("getPlace",{place : this.trip.placeList}).then((res) =>
+      console.log(res.data))
     }
   },
   created: function(){
