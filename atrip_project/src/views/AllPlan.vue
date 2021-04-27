@@ -20,9 +20,9 @@
                   color = "orange"
                   class = "search-field"
                 ></v-text-field>
-                <!-- <v-btn icon color="white">
-                  <v-icon>mdi-magnify</v-icon>
-                </v-btn> -->
+                <v-btn icon color="white" tile height="50px" class="ml-3">
+                  <v-icon size="30" >mdi-magnify</v-icon>
+                </v-btn>
               </v-card-title>
               
               <v-divider></v-divider>
@@ -44,7 +44,7 @@
                       <v-card-subtitle>{{trip.item.owner}}</v-card-subtitle>
                       <v-divider class="mx-5"></v-divider>
                       <v-card-title class="black--text">Places In Trip <v-card-subtitle class="mt-1">{{count(trip.item.places)}} places</v-card-subtitle></v-card-title>
-                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2">
+                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" link to = "/TripInfo">
                         view info 
                         <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
                       </v-btn>

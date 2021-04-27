@@ -16,13 +16,15 @@ import YourPlan from "./views/YourPlan";
 import Account from "./views/Account";
 import Landing from "./views/Landing";
 import PlaceInfo from "./views/PlaceInfo";
+import TripInfo from "./views/TripInfo";
 import ListTrip from "./views/ListTrip";
+import AddPlace from "./views/AddPlace";
 
 export default {
   name: "App",
 
   components: {
-    Home,Register,SignIn,AllPlan,YourPlan,Account,Landing,PlaceInfo,ListTrip
+    Home,Register,SignIn,AllPlan,YourPlan,Account,Landing,PlaceInfo,TripInfo,ListTrip,AddPlace
   },
 
   data: () => ({
