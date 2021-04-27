@@ -4,7 +4,7 @@
     <v-form class="register-form" v-model="valid">
       <span class="text1">Register</span>
       <v-text-field
-        v-model = "username"
+        v-model = "form.username"
         label="Username"
         placeholder="Username"
         :rules = "usernameRule"
@@ -13,6 +13,7 @@
         required
       ></v-text-field>
       <v-text-field
+        v-model = "form.password"
         label="Password"
         placeholder="Password1234"
         :rules = "passwordRule"
@@ -25,6 +26,7 @@
       <v-row>
         <v-col cols="6">
           <v-text-field
+            v-model = "form.firstname"
             label="Firstname"
             placeholder="Firstname"
             :rules = "firstnameRule"
@@ -34,6 +36,7 @@
         </v-col>
         <v-col cols="6">
           <v-text-field
+            v-model = "form.lastname"
             label="Lastname"
             placeholder="Lastname"
             :rules = "lastnameRule"
@@ -45,8 +48,9 @@
       <v-menu v-model="dateMenu" absolute>
         <template v-slot:activator = "{on,attrs}">
           <v-text-field
+            v-model="birthdayText"
             label="Birthday"
-            placeholder="dd/mm/yy"
+            placeholder="yy/mm/dd"
             regular
             class="mt-7 mb-3"
             prepend-icon="mdi-calendar-range"
@@ -55,15 +59,16 @@
             v-on="on"
           ></v-text-field>
         </template>
-        <v-date-picker></v-date-picker>
+        <v-date-picker v-model="form.birthday"></v-date-picker>
       </v-menu>
       <v-text-field
+        v-model = "form.email"
         label="Email"
         placeholder="myEmail@hotmail.com"
         regular
         class="mt-7 mb-3"
       ></v-text-field>
-      <v-btn text color = "#F57F17" class="btn1" link to="/Home">Submit</v-btn>
+      <v-btn @click = "register" text color = "#F57F17" class="btn1">Submit</v-btn>
     </v-form>
   </div>
 </template>
@@ -71,7 +76,27 @@
 <script>
 export default {
   name: "Register",
+  methods: {
+    async register(){
+      try {
+        await this.$store.dispatch("Register",this.form);
+        if (this.$store.getters.StateMsg == "You have successfully registered!")
+          this.$router.push("/SignIn");
+        this.showMsg = true
+      } catch (error) {
+        this.showMsg = true
+      }
+    }
+  },
   data: () => ({
+    form: {
+        username: "",
+        password : "",
+        firstname : "",
+        lastname : "",
+        birthday : "",
+        email : ""
+     },
     valid: false,
     showPassword: false,
     usernameRule: [
@@ -91,6 +116,11 @@ export default {
         v => v.length <= 10 || 'Lastname must be less than 10 characters',
     ]
   }),
+  computed: {
+    birthdayText(){
+      return this.form.birthday;
+    }
+  }
 };
 </script>
 
@@ -108,14 +138,14 @@ export default {
 
   .img1 {
     position: absolute;
-    width: 700px;
-    height: 754px;
+    width: 45vw;
+    height: 100vh;
     left: -1px;
-    top: 0px;
-
+    top: 1px;
     background: url(../assets/temple1.jpg);
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: cover;
+    background-position: center;
   }
 
   .btn1{
@@ -125,9 +155,9 @@ export default {
   }
 
   .register-form {
-    width: 400px;
     position: absolute;
-    left: 920px;
-    top: 30px;
+    width: 400px;
+    right: 17vw;
+    top: 10vh;
   }
 </style>
