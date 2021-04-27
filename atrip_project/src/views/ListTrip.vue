@@ -214,7 +214,7 @@ export default {
 
     .listCard {
       position: absolute;
-      margin-top: 93px;
+      margin-top: 7vh;
       left: 33vw;
     }
 

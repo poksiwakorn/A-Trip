@@ -34,7 +34,7 @@
             <v-img src = "../assets/passage1.jpg" class="imagePic"></v-img>
             <v-divider></v-divider>
             <v-card-title class="imageTitle">
-              <v-text-field placeholder="Place's Name" ></v-text-field>
+              <v-text-field placeholder="Place's Name" :rules="placeNameRule"></v-text-field>
               <v-spacer></v-spacer>
               <v-text-field placeholder="Place's province" ></v-text-field>
             </v-card-title>
@@ -62,6 +62,13 @@ export default {
   components: {
     TripBar
   },
+
+  data: () => ({
+    placeNameRule: [
+        v => !!v || 'place\'s name is required',
+        v => v.length <= 10 || 'place\'s name must be less than 10 characters',
+    ]
+  })
 };
 </script>
 

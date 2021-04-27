@@ -145,14 +145,12 @@ export default {
 <style scoped>
   .Account{
     position: relative;
-    /* background-image: linear-gradient(to top, #77cee3, #6bc4dd, #60bad7, #55afd1, #4ba5cb, #439ec7, #3b96c3, #338fbf, #2c88bc, #2681ba, #227ab6, #2073b3); */
+    background-image: linear-gradient(to top, #77cee3, #6bc4dd, #60bad7, #55afd1, #4ba5cb, #439ec7, #3b96c3, #338fbf, #2c88bc, #2681ba, #227ab6, #2073b3);
   }
 
   .profileZone{
     width: 100%;
     height: calc(100vh + 12px);
-    background-image: linear-gradient(to bottom, #77cee3, #6bc4dd, #60bad7, #55afd1, #4ba5cb, #439ec7, #3b96c3, #338fbf, #2c88bc, #2681ba, #227ab6, #2073b3);
-    /* background-image: linear-gradient(to top, #77cee3, #6bc4dd, #60bad7, #55afd1, #4ba5cb, #439ec7, #3b96c3, #338fbf, #2c88bc, #2681ba, #227ab6, #2073b3); */
   }
 
   .profileCard{
@@ -165,7 +163,6 @@ export default {
   }
 
   .profileAvatar{
-    /* margin-left: calc(50% - 175px); */
     margin-top: 50px;
   }
 
@@ -183,7 +180,6 @@ export default {
   .tripZone{
     width: 100%;
     height: calc(100vh + 12px);
-    background-image: linear-gradient(to bottom, #77cee3, #6bc4dd, #60bad7, #55afd1, #4ba5cb, #439ec7, #3b96c3, #338fbf, #2c88bc, #2681ba, #227ab6, #2073b3);
   }
 
   .savedTripCard{

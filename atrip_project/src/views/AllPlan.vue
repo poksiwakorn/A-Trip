@@ -3,13 +3,13 @@
     <TripBar/>
     <div class="AllPlan">
         <v-row class="ml-5 mt-1">
-          <v-col cols = "12">
+          <!-- <v-col cols = "12">
             <v-btn color = "primary" class="choose-btn">
               Choose district you want
             </v-btn>
-          </v-col>
+          </v-col> -->
           <v-col cols="7">
-            <v-card >
+            <v-card class="allTripCard">
               <v-card-title class="white--text orange darken-4 text-h4">
                 Interesting Trips
                 <v-spacer></v-spacer>
@@ -55,7 +55,7 @@
           </v-col>
           <!-- RIGHT -->
           <v-col cols="4" class="ml-13">
-            <v-card>
+            <v-card class="adsCard">
               <v-img src = "../assets/gallery1.jpg" height="200px"></v-img>
               <v-card-title>
                 Musuem Of Contemporary Art (MOCA)
@@ -138,7 +138,8 @@ export default {
 
 <style scoped>
   .AllPlan{
-    /* background-image: linear-gradient(to bottom, #77cee3, #6bc4dd, #60bad7, #55afd1, #4ba5cb, #439ec7, #3b96c3, #338fbf, #2c88bc, #2681ba, #227ab6, #2073b3); */
+    margin-top: 30px;
+    background-image: linear-gradient(to top, #77cee3, #6bc4dd, #60bad7, #55afd1, #4ba5cb, #439ec7, #3b96c3, #338fbf, #2c88bc, #2681ba, #227ab6, #2073b3);
   }
 
   .choose-btn{
@@ -173,5 +174,13 @@ export default {
   .viewInfo-btn{
     position: absolute;
     bottom: 0px;
+  }
+
+  .allTripCard{
+    margin-top: 100px;
+  }
+
+  .adsCard{
+    margin-top: 100px;
   }
 </style>

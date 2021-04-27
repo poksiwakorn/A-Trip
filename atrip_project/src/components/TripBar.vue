@@ -6,7 +6,7 @@
         <span >A Trip</span>
       </v-toolbar-title>
       <v-btn plain link to="/AllPlan" class="mx-5">View All Plan</v-btn>
-      <v-btn plain link to="/YourPlan" class="mx-5">Start your plan</v-btn>
+      <v-btn plain link to="/ListTrip" class="mx-5">Start your plan</v-btn>
       <v-btn plain link to="/AddPlace" class="mx-5">Recommend Place</v-btn>
       <v-spacer></v-spacer>
       <v-btn plain link to="/Account" class="mx-5">account</v-btn>
