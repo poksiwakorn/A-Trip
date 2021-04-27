@@ -1,0 +1,275 @@
+<template>
+  <v-content>
+    <TripBar />
+    <div class="TripInfo">
+      <v-row>
+        <v-col cols="5" class="tripZone">
+          <v-card class="tripCard">
+            <v-img src="../assets/passage1.jpg" class="tripPic"></v-img>
+            <v-divider></v-divider>
+            <v-card-title class="tripTitle">
+              {{ trip.title }}
+              <v-row>
+                <v-spacer></v-spacer>
+                <v-chip-group class="ma-2">
+                  <v-chip
+                    v-for="province in trip.provinces"
+                    :key="province"
+                    color="#FF9100"
+                    outlined
+                    >{{ province }}</v-chip
+                  >
+                </v-chip-group>
+              </v-row>
+            </v-card-title>
+            <v-card-subtitle class="tripSubTitle mt-1 ml-1">
+              {{ trip.owner }}
+            </v-card-subtitle>
+            <v-divider class="mx-2"></v-divider>
+            <v-col class="pb-15">
+                <v-card-text class="tripText">
+                    {{ trip.describe }}
+                </v-card-text>
+                <v-btn color="#FF9100" outlined class="saveTrip-btn ma-2" link to = "/Account">
+                    save trip
+                    <v-icon class="ml-2">mdi-content-save</v-icon>
+                </v-btn>
+            </v-col>
+          </v-card>
+        </v-col>
+        <v-col cols="7" class="placeZone">
+          <v-card class="placeCard mr-10">Place List</v-card>
+          <v-card class="scrollCard">
+            <v-virtual-scroll :items="places" :item-height="250" height="690">
+              <template v-slot="place">
+                <v-row>
+                  <v-col cols="2" class="ml-2">
+                    <v-card class="numberCard mb-5">
+                      {{ place.index + 1 }}
+                    </v-card>
+                  </v-col>
+                  <v-col cols="4">
+                    <v-card class="mb-5">
+                      <v-img
+                        :src="place.item.src[0]"
+                        class="placeImage"
+                      ></v-img>
+                    </v-card>
+                  </v-col>
+                  <v-col cols="5">
+                    <v-card class="placeInfoCard">
+                      <v-card-title class="ml-2" style="font-weight: 400"
+                        >{{ place.item.title }}
+                        <v-spacer></v-spacer>
+                        <v-chip class="mx-2" color="#FF9100" outlined>{{
+                          place.item.province
+                        }}</v-chip>
+                      </v-card-title>
+                      <v-card-subtitle class="ml-2">{{place.item.owner}}</v-card-subtitle>
+                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" link to = "/PlaceInfo">
+                        view info 
+                        <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
+                      </v-btn>
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </template>
+            </v-virtual-scroll>
+          </v-card>
+        </v-col>
+      </v-row>
+    </div>
+  </v-content>
+</template>
+
+<script>
+// @ is an alias to /src
+import TripBar from "../components/TripBar";
+
+export default {
+  name: "TripInfo",
+  components: {
+    TripBar,
+  },
+
+  data: () => ({
+    trip: {
+      src: [require("../assets/aquarium1.jpg")],
+      title: "MY TRIP",
+      owner: "CrazyBoyOO1",
+      places: ["A", "B", "C", "D"],
+      provinces: ["Suratthani", "Bangkok"],
+      describe:
+        "This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.",
+    },
+    places: [
+      {
+        src: [require("../assets/aquarium1.jpg")],
+        title: "AQUARIUM",
+        owner: "CrazyBoyOO1",
+        info: "Photograph",
+        province: "Bangkok",
+      },
+      {
+        src: [require("../assets/island1.jpg")],
+        title: "ISLAND",
+        owner: "CrazyBoyOO1",
+        info: "Photograph,Residence,Restaurant",
+        province: "Phuket",
+      },
+      {
+        src: [require("../assets/market1.jpg")],
+        title: "MARKET",
+        owner: "CrazyBoyOO1",
+        info: "Photograph,Restaurant",
+        province: "China",
+      },
+      {
+        src: [require("../assets/passage1.jpg")],
+        title: "PASSAGE",
+        owner: "CrazyBoyOO1",
+        info: "Photograph,Residence",
+        province: "Newzeland",
+      },
+      {
+        src: [require("../assets/road1.jpg")],
+        title: "ROAD",
+        owner: "CrazyBoyOO1",
+        info: "Photograph",
+        province: "Bangkok",
+      },
+      {
+        src: [require("../assets/sea1.jpg")],
+        title: "SEA",
+        owner: "CrazyBoyOO1",
+        info: "Photograph,Residence,Restaurant",
+        province: "Suratthani",
+      },
+      {
+        src: [require("../assets/temple1.jpg")],
+        title: "TEMPLE",
+        owner: "CrazyBoyOO1",
+        info: "Photograph",
+        province: "Nakornsitammarat",
+      },
+    ],
+  }),
+
+  methods: {
+    count: function (item) {
+      return item.length;
+    },
+  },
+};
+</script>
+
+<style scoped>
+.TripInfo {
+    position: relative;
+  background-image: linear-gradient(
+    to top,
+    #77cee3,
+    #6bc4dd,
+    #60bad7,
+    #55afd1,
+    #4ba5cb,
+    #439ec7,
+    #3b96c3,
+    #338fbf,
+    #2c88bc,
+    #2681ba,
+    #227ab6,
+    #2073b3
+  );
+}
+
+.tripZone {
+  width: 100%;
+  height: calc(100vh + 12px);
+}
+
+.tripCard {
+  margin-left: 50px;
+  margin-top: 100px;
+  min-height: 825px;
+}
+
+.tripPic {
+  width: 100%;
+  height: 400px;
+}
+
+.tripTitle {
+  font-size: 45px;
+  font-weight: 300;
+}
+
+.tripSubTitle {
+  font-size: 20px;
+  font-weight: 450;
+}
+
+.tripText {
+  margin-left: 5px;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 30px;
+}
+
+.saveTrip-btn {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+}
+
+.placeZone {
+  width: 100%;
+  height: calc(100vh + 12px);
+}
+
+.placeCard {
+  margin-top: 100px;
+  margin-bottom: 20px;
+  margin-left: 10%;
+  width: 80%;
+  height: 100px;
+  font-size: 45px;
+  font-weight: 300;
+  text-align: center;
+  padding-top: 15px;
+}
+
+.numberCard {
+  background-color: #faae4b;
+  color: black;
+  font-size: 60px;
+  font-weight: 80;
+  text-align: center;
+  padding-top: 40%;
+  height: 90%;
+}
+
+.scrollCard {
+  margin-left: 20px;
+  padding-left: 15px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  width: 95%;
+  height: 73vh;
+}
+
+.placeImage {
+  width: 100%;
+  height: 200px;
+}
+
+.placeInfoCard {
+  height: 90%;
+}
+
+.viewInfo-btn {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+}
+</style>

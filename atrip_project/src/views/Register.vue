@@ -48,8 +48,9 @@
       <v-menu v-model="dateMenu" absolute>
         <template v-slot:activator = "{on,attrs}">
           <v-text-field
+            v-model="birthdayText"
             label="Birthday"
-            placeholder="dd/mm/yy"
+            placeholder="yy/mm/dd"
             regular
             class="mt-7 mb-3"
             prepend-icon="mdi-calendar-range"
@@ -58,7 +59,7 @@
             v-on="on"
           ></v-text-field>
         </template>
-        <v-date-picker></v-date-picker>
+        <v-date-picker v-model="form.birthday"></v-date-picker>
       </v-menu>
       <v-text-field
         v-model = "form.email"
@@ -93,6 +94,7 @@ export default {
         password : "",
         firstname : "",
         lastname : "",
+        birthday : "",
         email : ""
      },
     valid: false,
@@ -113,8 +115,12 @@ export default {
         v => !!v || 'Lastname is required',
         v => v.length <= 10 || 'Lastname must be less than 10 characters',
     ]
+  }),
+  computed: {
+    birthdayText(){
+      return this.form.birthday;
+    }
   }
-  ),
 };
 </script>
 
