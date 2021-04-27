@@ -6,7 +6,15 @@
       :center="center"
       :zoom="16"
       style=" width: 32vw; height:800px;"
-    
+      :options="{
+            zoomControl: false,
+            mapTypeControl: false,
+            scaleControl: false,
+           streetViewControl: true,
+           rotateControl: false,
+           fullscreenControl: false,
+           disableDefaultUi: false
+      }"
     ><GmapMarker
     :key="index"
     v-for="(m, index) in markers"

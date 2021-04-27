@@ -121,9 +121,24 @@ def location():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM location ORDER BY title')
-            account = cursor.fetchone()
+            cursor.execute('SELECT * FROM Atrip_Place ORDER BY keyID')
+            account = cursor.fetchall()
             print(account)
+    return jsonify(account)
+
+@app.route("/trip", methods = ['GET', 'POST'])
+@cross_origin()
+def trip():
+    form = {'title' : "", 'Info' : "", 'Latitude' : "" , 'Longitude' : "" , "review" : "" , "rating" : "" ,"NumberRating" : "","src" : "","lPicture2" : "","lPicture3" : "","lPicture4" : ""}
+    back = []
+    if request.method == 'POST':
+        content = request.get_json()
+        if content["query"] == "":
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT * FROM Atrip_Trip ORDER BY keyID')
+            account = cursor.fetchall()
+            print(account)
+    return jsonify(account)
             
         
 

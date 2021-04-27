@@ -75,7 +75,7 @@
 <script>
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
-
+import axios from "axios";
 export default {
   name: "AllPlan",
   components: {
@@ -83,55 +83,19 @@ export default {
   },
 
   data: () => ({
-    trips: [
-      {
-        src: [require("../assets/aquarium1.jpg")],
-        title: "TRIP 1",
-        owner: "CrazyBoyOO1",
-        places: ["A","B","C","D"]
-      },
-      {
-        src: [require("../assets/island1.jpg")],
-        title: "TRIP 2",
-        owner: "CrazyBoyOO2",
-        places: ["E","F","G"]
-      },
-      {
-        src: [require("../assets/market1.jpg")],
-        title: "TRIP 3",
-        owner: "CrazyBoyOO3",
-        places: ["H","I"]
-      },
-      {
-        src: [require("../assets/passage1.jpg")],
-        title: "TRIP 4",
-        owner: "CrazyBoyOO4",
-        places: ["J","K","L","M"]
-      },
-      {
-        src: [require("../assets/road1.jpg")],
-        title: "TRIP 5",
-        owner: "CrazyBoyOO5",
-        places: ["N","O","P","Q","R","S"]
-      },
-      {
-        src: [require("../assets/sea1.jpg")],
-        title: "TRIP 6",
-        owner: "CrazyBoyOO6",
-        places: ["T","U","V","W"]
-      },
-      {
-        src: [require("../assets/temple1.jpg")],
-        title: "TRIP 7",
-        owner: "CrazyBoyOO7",
-        places: ["X","Y","Z"]
-      }
-    ]
+    trips: []
   }),
   methods: {
     count: function(item){
       return item.length;
+    },
+    async callTrips(){
+      await axios.post("trip",{query:""}).then((res)=>this.trips = res.data);
+      console.log(this.trips)
     }
+  },
+  created: function(){
+    this.callTrips()
   }
 };
 </script>
