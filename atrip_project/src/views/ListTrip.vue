@@ -1,6 +1,7 @@
 <template>
   <v-content>
     <TripBar />
+    
     <div class="ListTrip">
         <v-row class="chipBar">
           <v-chip-group
@@ -18,10 +19,8 @@
             class = "search-field ml-2"
             height="30"
           ></v-text-field>
-          
           <v-btn icon tile color="orange" height="40px" width="40px" class="mt-3 ml-2"><v-icon size="35">mdi-magnify</v-icon></v-btn>
-        </v-row>
-        
+        </v-row>   
       <v-row>
         <v-col cols="4" class="mapCard">
           <v-card>
@@ -38,7 +37,7 @@
                 <v-spacer></v-spacer>
                 <v-chip class="ma-2" color="#FF9100" outlined>{{place.provinceTH}}</v-chip>
               </v-card-title>
-              <v-card-subtitle>{{place.coordinate}}</v-card-subtitle>
+              <v-card-subtitle>{{place.latitude}}, {{place.longitude}}</v-card-subtitle>
               <v-btn color="#FF9100" outlined class="ma-2" link to = "/PlaceInfo"
                 >view info
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
@@ -87,7 +86,7 @@
                       <v-col cols = "5">
                         <v-card class="mt-3">
                           <v-row>
-                            <v-card-title class="ml-2" style="font-weight: 400">{{place.item.nameTH}}</v-card-title>
+                            <v-card-title class="ml-2" style="font-weight: 200; font-size: 14px">{{place.item.nameTH}}</v-card-title>
                             <v-spacer></v-spacer>
                             <v-btn icon class="mt-3 mr-4" @click="canclePlace(place.index)"><v-icon color = "error">mdi-close</v-icon></v-btn>
                           </v-row>
@@ -109,7 +108,9 @@
       </v-row>
     </div>
      <div class="mapCard">
-       <Map/>
+       <Map 
+       v-bind:loca = "coordinates" 
+       v-bind:onana = "lastLoca" />
      </div>
   </v-content>
  
@@ -118,8 +119,8 @@
 <script>
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
-import Map from "../components/Map";
 import axios from "axios";
+import Map from "../components/Map";
 export default {
   name: "ListTrip",
   components: {
@@ -128,7 +129,14 @@ export default {
   },
 
   data: () => ({
-    types: ["All","Photograph", "Restaurant", "Residence"],
+    types: ["ทั้งหมด","วัด", "สวนสาธารณะ", "สวนสัตว์"],
+    lastLoca: [],
+    coordinates: [
+      {
+        lat: 13.730102546677843, 
+        lng: 100.77821083963215,
+      }
+    ],
     typeGroup: 0,
     placesInTrip: [],
     places: [
@@ -137,9 +145,12 @@ export default {
   methods: {
     addPlace: function(item){
       this.placesInTrip.push(item);
+      this.coordinates.push({lat: item.latitude, lng: item.longitude});
+      this.lastLoca = this.coordinates[this.coordinates.length-1];
     },
     canclePlace: function(index){
       this.placesInTrip.splice(index,1);
+      this.coordinates.splice(index+1,1);
     },
     getItem: function(items,item){
       for(var i=0;i<items.length;i++){
@@ -151,13 +162,8 @@ export default {
     async callPlaces(){
       await axios.post("location",{query:""}).then((res)=>this.places = res.data);
     },
-    async callTrips(){
-      await axios.post("trip",{query:""}).then((res)=>this.trips = res.data);
-    }
   },
-
   created: function(){
-    this.callTrips()
     this.callPlaces()
   }
 };

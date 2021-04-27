@@ -34,17 +34,17 @@
               >
                 <template v-slot = "trip">  
                   <v-card class="tripCard">
-                    <v-img :src = "trip.item.src[0]" height="200px"></v-img>
+                    <v-img src = "../assets/temple1.jpg" height="200px"></v-img>
                       <v-card-title>
-                        {{trip.item.title}}
+                        {{trip.item.nameTH}}
                         <v-spacer></v-spacer>
                         <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
                         <v-chip class="ma-2" color="#FF9100" outlined>Bankok</v-chip>
                       </v-card-title>                    
                       <v-card-subtitle>{{trip.item.owner}}</v-card-subtitle>
                       <v-divider class="mx-5"></v-divider>
-                      <v-card-title class="black--text">Places In Trip <v-card-subtitle class="mt-1">{{count(trip.item.places)}} places</v-card-subtitle></v-card-title>
-                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" link to = "/TripInfo">
+                      <v-card-title class="black--text">Places In Trip <v-card-subtitle class="mt-1">{{trip.item.numPlace}} places</v-card-subtitle></v-card-title>
+                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" @click="goTripInfo(trip.item.keyID)">
                         view info 
                         <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
                       </v-btn>
@@ -89,10 +89,12 @@ export default {
     count: function(item){
       return item.length;
     },
+    goTripInfo(keyID){
+      this.$router.push("/TripInfo/" + keyID);
+    },
     async callTrips(){
       await axios.post("trip",{query:""}).then((res)=>this.trips = res.data);
-      console.log(this.trips)
-    }
+    },
   },
   created: function(){
     this.callTrips()
