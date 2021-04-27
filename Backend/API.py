@@ -1,3 +1,4 @@
+# coding=utf8
 from flask import Flask, render_template, jsonify, request ,session, app
 from flask_cors import CORS, cross_origin
 from flask_mysqldb import MySQL
@@ -7,7 +8,6 @@ import re
 
 app = Flask(__name__)
 app.secret_key = 'SoftDev'
-app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(minutes=5)
 app.config['MYSQL_HOST'] = 'computerengineering.3bbddns.com'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'root'
@@ -15,6 +15,8 @@ app.config['MYSQL_DB'] = 'SD'
 app.config['MYSQL_PORT'] = 34674
 mysql = MySQL(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "localhost:8080/*"}})
+
+
 # form = [
 #     {'name': 'BURGER', 'ingredients': ['this', 'that', 'blah']},
 #     {'name': 'HOTDOG', 'ingredients': ['Chicken', 'Bread']}
@@ -119,6 +121,7 @@ def location():
     back = []
     if request.method == 'POST':
         content = request.get_json()
+        print(content)
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('SELECT * FROM Atrip_Place ORDER BY keyID')

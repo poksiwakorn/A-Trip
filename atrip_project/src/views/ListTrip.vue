@@ -1,3 +1,4 @@
+
 <template>
   <v-content>
     <TripBar />
@@ -99,7 +100,7 @@
               <v-row>
                 <v-btn text class="makeTripButton" link to="/account">Make A Trip</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn text class="updateButton">Update Route</v-btn>
+                <v-btn @click = "getPlace" text class="updateButton">Update Route</v-btn>
               </v-row>
             </v-form>
           </v-card>
@@ -116,7 +117,6 @@
 <script>
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
-import Map from "../components/Map";
 import axios from "axios";
 export default {
   name: "ListTrip",
