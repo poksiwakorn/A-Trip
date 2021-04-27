@@ -18,17 +18,21 @@
             class = "search-field ml-2"
             height="30"
           ></v-text-field>
+          
           <v-btn icon tile color="orange" height="40px" width="40px" class="mt-3 ml-2"><v-icon size="35">mdi-magnify</v-icon></v-btn>
         </v-row>
+        
       <v-row>
         <v-col cols="4" class="mapCard">
           <v-card>
             <!-- <v-img src = "..assets/map1.png" height="200px"></v-img> -->
           </v-card>
         </v-col>
+        
         <v-col cols="3" class="listCard">
           <v-row v-for="(place, i) in places" :key="i">
             <v-card v-if="place.info.includes(types[typeGroup]) || types[typeGroup] == 'All'" class="ma-3">
+              
               <v-img :src = "place.src[0]" class="placePic"></v-img>
               <v-card-title>
                 {{ place.title }}
@@ -48,6 +52,7 @@
             </v-card>
           </v-row>
         </v-col>
+        
         <v-col cols="5" class="tripCard">
           <v-card class="ma-3">
             <v-card-title class="yourTripTitle white--text">Your Trip</v-card-title>
@@ -105,17 +110,22 @@
         </v-col>
       </v-row>
     </div>
+     <div class="mapCard">
+       <Map/>
+     </div>
   </v-content>
+ 
 </template>
 
 <script>
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
-
+import Map from "../components/Map";
 export default {
   name: "ListTrip",
   components: {
     TripBar,
+    Map,
   },
 
   data: () => ({
@@ -202,10 +212,8 @@ export default {
 
     .mapCard {
       position: fixed;
-      width: 100%;
-      height: 630px;
-      margin-top: 123px;
-      margin-left: 10px;
+      margin-top: 150px;
+      margin-left: 15px;
     }
 
     .mapPic {
