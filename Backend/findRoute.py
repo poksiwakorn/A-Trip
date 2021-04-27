@@ -85,4 +85,4 @@ print("")
 d = makeList_Of_ListOf_AllListOfRoute_ListofDistance_And_SumOfDistance(4,c,list() ,list(), list())
 for i in d:
     print(i)
-print(d)
+#print(d)
