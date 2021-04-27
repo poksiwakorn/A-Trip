@@ -1,6 +1,7 @@
 <template>
   <v-content>
     <TripBar />
+    
     <div class="ListTrip">
         <v-row class="chipBar">
           <v-chip-group
@@ -107,7 +108,7 @@
       </v-row>
     </div>
      <div class="mapCard">
-       <Map />
+       <Map v-bind:loca="coordinates"/>
      </div>
   </v-content>
  
@@ -127,6 +128,10 @@ export default {
 
   data: () => ({
     types: ["ทั้งหมด","วัด", "สวนสาธารณะ", "สวนสัตว์"],
+    coordinates: {
+        lat: 13.730102546677843, 
+        lng: 100.77821083963215,
+      },
     typeGroup: 0,
     placesInTrip: [],
     places: [
