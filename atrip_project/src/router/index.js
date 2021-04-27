@@ -63,9 +63,10 @@ const routes = [
     component: PlaceInfo
   },
   {
-    path: '/TripInfo',
+    path: '/TripInfo/:keyID',
     name: 'TripInfo',
-    component: TripInfo
+    component: TripInfo,
+    props: true
   },
   {
     path: '/ListTrip',

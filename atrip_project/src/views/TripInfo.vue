@@ -8,16 +8,16 @@
             <v-img src="../assets/passage1.jpg" class="tripPic"></v-img>
             <v-divider></v-divider>
             <v-card-title class="tripTitle">
-              {{ trip.title }}
+              {{ trip.nameTH }}
               <v-row>
                 <v-spacer></v-spacer>
                 <v-chip-group class="ma-2">
                   <v-chip
-                    v-for="province in trip.provinces"
+                    v-for="province in trip.provinceTH"
                     :key="province"
                     color="#FF9100"
                     outlined
-                    >{{ province }}</v-chip
+                    >{{ province}}</v-chip
                   >
                 </v-chip-group>
               </v-row>
@@ -28,7 +28,7 @@
             <v-divider class="mx-2"></v-divider>
             <v-col class="pb-15">
                 <v-card-text class="tripText">
-                    {{ trip.describe }}
+                    {{ trip }}
                 </v-card-text>
                 <v-btn color="#FF9100" outlined class="saveTrip-btn ma-2" link to = "/Account">
                     save trip
@@ -85,23 +85,18 @@
 <script>
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
+import axios from "axios";
 
 export default {
+  props: ["keyID"],
   name: "TripInfo",
   components: {
     TripBar,
   },
 
   data: () => ({
-    trip: {
-      src: [require("../assets/aquarium1.jpg")],
-      title: "MY TRIP",
-      owner: "CrazyBoyOO1",
-      places: ["A", "B", "C", "D"],
-      provinces: ["Suratthani", "Bangkok"],
-      describe:
-        "This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.",
-    },
+    trip: [],
+    describe: "This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.",
     places: [
       {
         src: [require("../assets/aquarium1.jpg")],
@@ -159,7 +154,13 @@ export default {
     count: function (item) {
       return item.length;
     },
+    async getInfo(){
+      await axios.get("tripInfo/" + this.keyID).then((res)=>this.trip = res.data[0]);
+    }
   },
+  created: function(){
+    this.getInfo();
+  }
 };
 </script>
 

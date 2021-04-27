@@ -19,10 +19,8 @@
             class = "search-field ml-2"
             height="30"
           ></v-text-field>
-          
           <v-btn icon tile color="orange" height="40px" width="40px" class="mt-3 ml-2"><v-icon size="35">mdi-magnify</v-icon></v-btn>
-        </v-row>
-        
+        </v-row>   
       <v-row>
         <v-col cols="4" class="mapCard">
           <v-card>
@@ -128,7 +126,7 @@ export default {
   },
 
   data: () => ({
-    types: ["All","Photograph", "Restaurant", "Residence"],
+    types: ["ทั้งหมด","วัด", "สวนสาธารณะ", "สวนสัตว์"],
     typeGroup: 0,
     placesInTrip: [],
     places: [
@@ -151,13 +149,9 @@ export default {
     async callPlaces(){
       await axios.post("location",{query:""}).then((res)=>this.places = res.data);
     },
-    async callTrips(){
-      await axios.post("trip",{query:""}).then((res)=>this.trips = res.data);
-    }
   },
 
   created: function(){
-    this.callTrips()
     this.callPlaces()
   }
 };
