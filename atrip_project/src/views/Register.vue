@@ -48,8 +48,9 @@
       <v-menu v-model="dateMenu" absolute>
         <template v-slot:activator = "{on,attrs}">
           <v-text-field
+            v-model="birthdayText"
             label="Birthday"
-            placeholder="dd/mm/yy"
+            placeholder="yy/mm/dd"
             regular
             class="mt-7 mb-3"
             prepend-icon="mdi-calendar-range"
@@ -58,7 +59,7 @@
             v-on="on"
           ></v-text-field>
         </template>
-        <v-date-picker></v-date-picker>
+        <v-date-picker v-model="form.birthday"></v-date-picker>
       </v-menu>
       <v-text-field
         v-model = "form.email"
@@ -93,6 +94,7 @@ export default {
         password : "",
         firstname : "",
         lastname : "",
+        birthday : "",
         email : ""
      },
     valid: false,
@@ -113,8 +115,12 @@ export default {
         v => !!v || 'Lastname is required',
         v => v.length <= 10 || 'Lastname must be less than 10 characters',
     ]
+  }),
+  computed: {
+    birthdayText(){
+      return this.form.birthday;
+    }
   }
-  ),
 };
 </script>
 
@@ -132,14 +138,14 @@ export default {
 
   .img1 {
     position: absolute;
-    width: 700px;
-    height: 754px;
+    width: 45vw;
+    height: 100vh;
     left: -1px;
-    top: 0px;
-
+    top: 1px;
     background: url(../assets/temple1.jpg);
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: cover;
+    background-position: center;
   }
 
   .btn1{
@@ -149,9 +155,9 @@ export default {
   }
 
   .register-form {
-    width: 400px;
     position: absolute;
-    left: 920px;
-    top: 30px;
+    width: 400px;
+    right: 17vw;
+    top: 10vh;
   }
 </style>

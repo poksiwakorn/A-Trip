@@ -9,7 +9,9 @@ import Account from '../views/Account.vue'
 import Landing from '../views/Landing.vue'
 import About from '../views/About.vue'
 import PlaceInfo from '../views/PlaceInfo.vue'
+import TripInfo from '../views/TripInfo.vue'
 import ListTrip from '../views/ListTrip.vue'
+import AddPlace from '../views/AddPlace.vue'
 
 
 Vue.use(VueRouter)
@@ -59,12 +61,21 @@ const routes = [
     path: '/PlaceInfo',
     name: 'PlaceInfo',
     component: PlaceInfo
-  }
-  ,
+  },
+  {
+    path: '/TripInfo',
+    name: 'TripInfo',
+    component: TripInfo
+  },
   {
     path: '/ListTrip',
     name: 'ListTrip',
     component: ListTrip
+  },
+  {
+    path: '/AddPlace',
+    name: 'AddPlace',
+    component: AddPlace
   }
 ]
 
