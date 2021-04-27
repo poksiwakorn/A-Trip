@@ -1,9 +1,9 @@
 <template>
   <v-content>
     <TripBar/>
-    <div class="AddPlace">
+    <div class="ApproveInfo">
       <v-row>
-        <v-col cols = "6" class="mapZone">
+        <v-col cols = "4" class="mapZone">
           <v-card class="mapCard pb-7">
             <v-card-title class="mx-4">Map</v-card-title>
             <v-card class="mx-10 mb-7">
@@ -11,10 +11,10 @@
             </v-card>
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">Website</v-card-title>
-            <v-text-field class="mx-9" placeholder="www.example.com" ></v-text-field>
+            <v-card-subtitle class="mx-7 subtitle">www.A-Trip.co.th</v-card-subtitle>
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">Phone Number</v-card-title>
-            <v-text-field class="mx-9" placeholder="xxxxxxxxxx"></v-text-field>
+            <v-card-subtitle class="mx-7 subtitle">0914259634</v-card-subtitle>
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">Business Hours</v-card-title>
             <v-row>
@@ -29,24 +29,26 @@
             </v-row>
           </v-card>
         </v-col>
-        <v-col cols = "6" class="imageZone">
+        <v-col cols = "4" class="imageZone">
           <v-card class="imageCard">
             <v-img src = "../assets/passage1.jpg" class="imagePic"></v-img>
             <v-divider></v-divider>
             <v-card-title class="imageTitle">
-              <v-text-field placeholder="Place's Name" :rules="placeNameRule"></v-text-field>
+              Passage
               <v-spacer></v-spacer>
-              <v-text-field placeholder="Place's province" ></v-text-field>
+              <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
             </v-card-title>
+            <v-card-subtitle class="imageSubTitle mt-1 ml-1">Photograph,Residence,Restaurant</v-card-subtitle>
             <v-divider class="mx-2"></v-divider>
             <v-card-text class="imageText">
-                <v-textarea filled label="Place's description" height="250px" class="mr-2"></v-textarea>
-                </v-card-text>
-                <v-btn color="primary" class="recommend-btn mx-5 my-5" height="50px" >
-                    Recommend place
-                <v-icon class="ml-2" size="30" >mdi-bookmark-plus</v-icon>
-            </v-btn>
+              This is the text that should describe the hide-detail
+              of this place but I don't know how to do it so I finally text this.
+            </v-card-text>
           </v-card>
+        </v-col>
+        <v-col cols = "4" class="buttonZone">
+            <v-btn color="green" class="approve-btn white--text" height="100px" link to="ApprovePlace" >Approve</v-btn>
+            <v-btn color="error" class="decline-btn" height="100px" link to="ApprovePlace">Decline</v-btn>
         </v-col>
       </v-row>
     </div>
@@ -58,22 +60,17 @@
 import TripBar from "../components/TripBar";
 
 export default {
-  name: "AddPlace",
+  name: "ApproveInfo",
   components: {
     TripBar
   },
-
-  data: () => ({
-    placeNameRule: [
-        v => !!v || 'place\'s name is required',
-        v => v.length <= 10 || 'place\'s name must be less than 10 characters'
-    ]
-  })
 };
 </script>
 
 <style scoped>
-  .AddPlace{
+    .ApproveInfo{
+    /* background-image: linear-gradient(to right bottom, #f4e3a6, #f5e194, #f7df81, #f7dd6e, #f8db59, #f9d84c, #f9d43e, #fad12d, #fbcc25, #fdc71b, #fec110, #ffbc00); */
+    /* background-image: linear-gradient(to bottom, #f4e3a6, #f7e39b, #f9e490, #fbe484, #fde578, #fee26c, #fede60, #ffdb54, #ffd246, #ffc937, #ffc026, #ffb611); */
     background-image: linear-gradient(to top, #77cee3, #6bc4dd, #60bad7, #55afd1, #4ba5cb, #439ec7, #3b96c3, #338fbf, #2c88bc, #2681ba, #227ab6, #2073b3);
   }
 
@@ -83,10 +80,9 @@ export default {
   }
 
   .mapCard{
-    margin-top: 100px;
-    margin-left: 100px;
-    margin-right: 50px;
-    min-height: 800px;
+    margin-top: 83px;
+    margin-left: 25px;
+    margin-right: 5px;
   }
 
   .mapPic{
@@ -100,15 +96,14 @@ export default {
   }
 
   .imageCard{
-    margin-top: 100px;
-    margin-left: 50px;
-    margin-right: 100px;
-    height: 850px;
+    margin-left: 20px;
+    margin-top: 83px;
+    height: 800px;
   }
 
   .imagePic{
     width: 100%;
-    height: 380px;
+    height: 400px;
   }
 
   .imageTitle{
@@ -126,11 +121,26 @@ export default {
     font-size: 20px;
     font-weight: 400;
     line-height: 30px;
-    height: 275px;
   }
 
-  .recommend-btn{
-      width: calc(100% - 40px);
-      font-size: 23px;
+  .buttonZone{
+    width: 100%;
+    height: calc(100vh + 12px);
+  }
+
+  .approve-btn{
+    margin-top: 50%;
+    margin-bottom: 20px;
+    margin-left: 35px;
+    width: 84%;
+    font-size: 30px;
+  }
+
+  .decline-btn{
+    margin-top: 83px;
+    margin-bottom: 20px;
+    margin-left: 35px;
+    width: 84%;
+    font-size: 30px;
   }
 </style>

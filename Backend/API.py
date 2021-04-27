@@ -1,3 +1,4 @@
+# coding=utf8
 from flask import Flask, render_template, jsonify, request ,session, app
 from flask_cors import CORS, cross_origin
 from flask_mysqldb import MySQL
@@ -7,7 +8,6 @@ import re
 
 app = Flask(__name__)
 app.secret_key = 'SoftDev'
-app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(minutes=5)
 app.config['MYSQL_HOST'] = 'computerengineering.3bbddns.com'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'root'
@@ -15,10 +15,12 @@ app.config['MYSQL_DB'] = 'SD'
 app.config['MYSQL_PORT'] = 34674
 mysql = MySQL(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "localhost:8080/*"}})
-# form = [
-#     {'name': 'BURGER', 'ingredients': ['this', 'that', 'blah']},
-#     {'name': 'HOTDOG', 'ingredients': ['Chicken', 'Bread']}
-# ]
+
+
+Testform = [
+     {'name': 'BURGER', 'ingredients': ['this', 'that', 'blah']},
+     {'name': 'HOTDOG', 'ingredients': ['Chicken', 'Bread']}
+ ]
 
 
 @app.route("/register", methods = ['GET', 'POST'])
@@ -119,15 +121,60 @@ def location():
     back = []
     if request.method == 'POST':
         content = request.get_json()
+        print(content)
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM location ORDER BY title')
-            account = cursor.fetchone()
+            cursor.execute('SELECT * FROM Atrip_Place ORDER BY keyID')
+            account = cursor.fetchall()
             print(account)
-            
-        
+    return jsonify(account)
+
+@app.route("/trip", methods = ['GET', 'POST'])
+@cross_origin()
+def trip():
+    form = {'title' : "", 'Info' : "", 'Latitude' : "" , 'Longitude' : "" , "review" : "" , "rating" : "" ,"NumberRating" : "","src" : "","lPicture2" : "","lPicture3" : "","lPicture4" : ""}
+    back = []
+    if request.method == 'POST':
+        content = request.get_json()
+        if content["query"] == "":
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT * FROM Atrip_Trip ORDER BY keyID')
+            account = cursor.fetchall()
+            print(account)
+    return jsonify(account)
+
+@app.route("/tripInfo/<keyID>", methods = ['GET'])
+@cross_origin()
+def tripInfo(keyID):
+    if request.method == 'GET':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM Atrip_Trip WHERE keyID = %s',(keyID))
+        account = cursor.fetchall()
+        print(account)
+    return jsonify(account)
 
 
+@app.route("/getPlace", methods = ['GET', 'POST'])
+@cross_origin()
+def getPlace():
+    if request.method == 'POST':
+        content = request.get_json()
+        print(content)
+        print(len(content["place"]))
+        if content["place"]:
+            contentinput = content["place"].split(",")
+            form = "SELECT * FROM Atrip_Place WHERE keyID = " + " or keyID = ".join(contentinput)
+            print(form)
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute(form)
+            account = cursor.fetchall()
+            return jsonify(account)
+        else:
+            return jsonify(Testform)
+            # cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            # cursor.execute('SELECT * FROM Atrip_Place Where %s',)
+            # account = cursor.fetchall()
+            # return jsonify("account")
 
 
 

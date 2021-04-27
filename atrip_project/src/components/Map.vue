@@ -1,12 +1,12 @@
 <template>
   <div>
-    <h1>{{loca}}</h1>
-    <h2>FUCK</h2>
-    <h1>{{markers}}</h1>
+    <h3>{{onana}}</h3>
+    <!-- <h2>FUCK</h2> -->
+    <!-- <h1>{{markers}}</h1> -->
   
     <!-- <p>{{ coordinates.lat }} Latitude , {{ coordinates.lng }} Longitude</p> -->
     <GmapMap
-      :center="loca"
+      :center="centerPosition"
       :zoom="16"
       style=" width: 32vw; height:800px;"
       :options="{
@@ -17,17 +17,16 @@
            rotateControl: false,
            fullscreenControl: false,
            disableDefaultUi: false
- }"
-    
+      }"
     >
     <GmapMarker
-    v-for="(m, index) in markers"
-    :key="index"
-    :position="m.position"
-    :clickable="true"
-    :draggable="false"
-    @click="center=m.position"
-  />
+      v-for="(m, index) in loca"
+      :key="index"
+      :position="m"
+      :clickable="true"
+      :draggable="false"
+      @click="centerPosition=m"
+    />
   </GmapMap>
   </div>
 </template>
@@ -41,10 +40,11 @@ export default {
     //     lat: 0,
     //     lng: 0,
     //   },
+    centerPosition: this.loca[0],
       markers :[
-          {
-              position : { lat: loca.lat, lng: loca.lng }
-          }
+          { position : this.loca },
+          { position : { lat: 13.404735200000003, lng: 101.0049182 } },
+          { position : { lat: 13.504735200000003, lng: 101.0049182 } }
         ],
     };
   },
@@ -55,16 +55,17 @@ export default {
           ]
       },
   },
-//   created() {
-//     this.$getLocation({})
-//       .then((coordinates) => {
-//         this.coordinates = coordinates;
-//       })
-//       .catch((error) => alert(error));
-//   },
+  
+  // created: function(){
+  //   this.$getLocation({})
+  //     .then((coordinates) => {
+  //       this.coordinates = coordinates;
+  //     })
+  //     .catch((error) => alert(error));
+  // },
 
   props:[
-      "loca"     
+      "loca"  , "onana"   
   ]
 };
 </script>

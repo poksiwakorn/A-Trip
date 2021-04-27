@@ -3,13 +3,13 @@
     <TripBar/>
     <div class="AllPlan">
         <v-row class="ml-5 mt-1">
-          <v-col cols = "12">
+          <!-- <v-col cols = "12">
             <v-btn color = "primary" class="choose-btn">
               Choose district you want
             </v-btn>
-          </v-col>
+          </v-col> -->
           <v-col cols="7">
-            <v-card >
+            <v-card class="allTripCard">
               <v-card-title class="white--text orange darken-4 text-h4">
                 Interesting Trips
                 <v-spacer></v-spacer>
@@ -34,17 +34,17 @@
               >
                 <template v-slot = "trip">  
                   <v-card class="tripCard">
-                    <v-img :src = "trip.item.src[0]" height="200px"></v-img>
+                    <v-img src = "../assets/temple1.jpg" height="200px"></v-img>
                       <v-card-title>
-                        {{trip.item.title}}
+                        {{trip.item.nameTH}}
                         <v-spacer></v-spacer>
                         <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
                         <v-chip class="ma-2" color="#FF9100" outlined>Bankok</v-chip>
                       </v-card-title>                    
                       <v-card-subtitle>{{trip.item.owner}}</v-card-subtitle>
                       <v-divider class="mx-5"></v-divider>
-                      <v-card-title class="black--text">Places In Trip <v-card-subtitle class="mt-1">{{count(trip.item.places)}} places</v-card-subtitle></v-card-title>
-                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" link to = "/TripInfo">
+                      <v-card-title class="black--text">Places In Trip <v-card-subtitle class="mt-1">{{trip.item.numPlace}} places</v-card-subtitle></v-card-title>
+                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" @click="goTripInfo(trip.item.keyID)">
                         view info 
                         <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
                       </v-btn>
@@ -55,7 +55,7 @@
           </v-col>
           <!-- RIGHT -->
           <v-col cols="4" class="ml-13">
-            <v-card>
+            <v-card class="adsCard">
               <v-img src = "../assets/gallery1.jpg" height="200px"></v-img>
               <v-card-title>
                 Musuem Of Contemporary Art (MOCA)
@@ -75,7 +75,7 @@
 <script>
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
-
+import axios from "axios";
 export default {
   name: "AllPlan",
   components: {
@@ -83,62 +83,29 @@ export default {
   },
 
   data: () => ({
-    trips: [
-      {
-        src: [require("../assets/aquarium1.jpg")],
-        title: "TRIP 1",
-        owner: "CrazyBoyOO1",
-        places: ["A","B","C","D"]
-      },
-      {
-        src: [require("../assets/island1.jpg")],
-        title: "TRIP 2",
-        owner: "CrazyBoyOO2",
-        places: ["E","F","G"]
-      },
-      {
-        src: [require("../assets/market1.jpg")],
-        title: "TRIP 3",
-        owner: "CrazyBoyOO3",
-        places: ["H","I"]
-      },
-      {
-        src: [require("../assets/passage1.jpg")],
-        title: "TRIP 4",
-        owner: "CrazyBoyOO4",
-        places: ["J","K","L","M"]
-      },
-      {
-        src: [require("../assets/road1.jpg")],
-        title: "TRIP 5",
-        owner: "CrazyBoyOO5",
-        places: ["N","O","P","Q","R","S"]
-      },
-      {
-        src: [require("../assets/sea1.jpg")],
-        title: "TRIP 6",
-        owner: "CrazyBoyOO6",
-        places: ["T","U","V","W"]
-      },
-      {
-        src: [require("../assets/temple1.jpg")],
-        title: "TRIP 7",
-        owner: "CrazyBoyOO7",
-        places: ["X","Y","Z"]
-      }
-    ]
+    trips: []
   }),
   methods: {
     count: function(item){
       return item.length;
-    }
+    },
+    goTripInfo(keyID){
+      this.$router.push("/TripInfo/" + keyID);
+    },
+    async callTrips(){
+      await axios.post("trip",{query:""}).then((res)=>this.trips = res.data);
+    },
+  },
+  created: function(){
+    this.callTrips()
   }
 };
 </script>
 
 <style scoped>
   .AllPlan{
-    /* background-image: linear-gradient(to bottom, #77cee3, #6bc4dd, #60bad7, #55afd1, #4ba5cb, #439ec7, #3b96c3, #338fbf, #2c88bc, #2681ba, #227ab6, #2073b3); */
+    margin-top: 30px;
+    background-image: linear-gradient(to top, #77cee3, #6bc4dd, #60bad7, #55afd1, #4ba5cb, #439ec7, #3b96c3, #338fbf, #2c88bc, #2681ba, #227ab6, #2073b3);
   }
 
   .choose-btn{
@@ -173,5 +140,13 @@ export default {
   .viewInfo-btn{
     position: absolute;
     bottom: 0px;
+  }
+
+  .allTripCard{
+    margin-top: 100px;
+  }
+
+  .adsCard{
+    margin-top: 100px;
   }
 </style>
