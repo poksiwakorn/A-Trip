@@ -17,10 +17,10 @@ mysql = MySQL(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "localhost:8080/*"}})
 
 
-# form = [
-#     {'name': 'BURGER', 'ingredients': ['this', 'that', 'blah']},
-#     {'name': 'HOTDOG', 'ingredients': ['Chicken', 'Bread']}
-# ]
+Testform = [
+     {'name': 'BURGER', 'ingredients': ['this', 'that', 'blah']},
+     {'name': 'HOTDOG', 'ingredients': ['Chicken', 'Bread']}
+ ]
 
 
 @app.route("/register", methods = ['GET', 'POST'])
@@ -153,7 +153,30 @@ def tripInfo(keyID):
         print(account)
     return jsonify(account)
 
-            
+
+@app.route("/getPlace", methods = ['GET', 'POST'])
+@cross_origin()
+def getPlace():
+    if request.method == 'POST':
+        content = request.get_json()
+        print(content)
+        print(len(content["place"]))
+        if content["place"]:
+            contentinput = content["place"].split(",")
+            form = "SELECT * FROM Atrip_Trip WHERE keyID = " + " or keyID = ".join(contentinput)
+            print(form)
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute(form)
+            account = cursor.fetchall()
+            return jsonify(account)
+        else:
+            return jsonify(Testform)
+            # cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            # cursor.execute('SELECT * FROM Atrip_Place Where %s',)
+            # account = cursor.fetchall()
+            # return jsonify("account")
+
+
 
 
 
