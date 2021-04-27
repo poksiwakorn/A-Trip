@@ -163,7 +163,7 @@ def getPlace():
         print(len(content["place"]))
         if content["place"]:
             contentinput = content["place"].split(",")
-            form = "SELECT * FROM Atrip_Trip WHERE keyID = " + " or keyID = ".join(contentinput)
+            form = "SELECT * FROM Atrip_Place WHERE keyID = " + " or keyID = ".join(contentinput)
             print(form)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(form)
