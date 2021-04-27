@@ -18,24 +18,27 @@
             class = "search-field ml-2"
             height="30"
           ></v-text-field>
+          
           <v-btn icon tile color="orange" height="40px" width="40px" class="mt-3 ml-2"><v-icon size="35">mdi-magnify</v-icon></v-btn>
         </v-row>
+        
       <v-row>
         <v-col cols="4" class="mapCard">
           <v-card>
             <!-- <v-img src = "..assets/map1.png" height="200px"></v-img> -->
           </v-card>
         </v-col>
+        
         <v-col cols="3" class="listCard">
           <v-row v-for="(place, i) in places" :key="i">
-            <v-card v-if="place.info.includes(types[typeGroup]) || types[typeGroup] == 'All'" class="ma-3">
-              <v-img :src = "place.src[0]" class="placePic"></v-img>
+            <v-card v-if="place.isVerify == '1'" class="ma-3">
+              <v-img src = "../assets/temple1.jpg" class="placePic"></v-img>
               <v-card-title>
-                {{ place.title }}
+                {{ place.nameTH }}
                 <v-spacer></v-spacer>
-                <v-chip class="ma-2" color="#FF9100" outlined>{{place.province}}</v-chip>
+                <v-chip class="ma-2" color="#FF9100" outlined>{{place.provinceTH}}</v-chip>
               </v-card-title>
-              <v-card-subtitle>{{place.info}}</v-card-subtitle>
+              <v-card-subtitle>{{place.coordinate}}</v-card-subtitle>
               <v-btn color="#FF9100" outlined class="ma-2" link to = "/PlaceInfo"
                 >view info
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
@@ -43,11 +46,11 @@
               <v-btn color="#FF9100" outlined class="ma-2" @click="addPlace(place)"
                 >ADD TO TRIP
                 <v-icon class="ml-2">mdi-plus-outline</v-icon>
-              </v-btn>
-              <!-- <v-btn icon color="#FF9100"><v-icon>mdi-thumb-up</v-icon></v-btn> -->
-            </v-card>
-          </v-row>
+              </v-btn> 
+            </v-card> 
+          </v-row> 
         </v-col>
+        
         <v-col cols="5" class="tripCard">
           <v-card class="ma-3">
             <v-card-title class="yourTripTitle white--text">Your Trip</v-card-title>
@@ -78,17 +81,17 @@
                       </v-col>
                       <v-col cols = "4">
                         <v-card class="mb-5">
-                          <v-img :src = "getItem(places,place.item).src[0]" class="placeImage"></v-img>
+                          <v-img src = "../assets/temple1.jpg" class="placeImage"></v-img>
                         </v-card>
                       </v-col>
                       <v-col cols = "5">
                         <v-card class="mt-3">
                           <v-row>
-                            <v-card-title class="ml-2" style="font-weight: 400">{{place.item}}</v-card-title>
+                            <v-card-title class="ml-2" style="font-weight: 400">{{place.item.nameTH}}</v-card-title>
                             <v-spacer></v-spacer>
                             <v-btn icon class="mt-3 mr-4" @click="canclePlace(place.index)"><v-icon color = "error">mdi-close</v-icon></v-btn>
                           </v-row>
-                          <v-chip class="ma-2" color="#FF9100" outlined>{{getItem(places,place.item).province}}</v-chip>
+                          <v-chip class="ma-2" color="#FF9100" outlined>{{place.item.provinceTH}}</v-chip>
                         </v-card>
                       </v-col>
                     </v-row>
@@ -105,17 +108,23 @@
         </v-col>
       </v-row>
     </div>
+     <div class="mapCard">
+       <Map/>
+     </div>
   </v-content>
+ 
 </template>
 
 <script>
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
-
+import Map from "../components/Map";
+import axios from "axios";
 export default {
   name: "ListTrip",
   components: {
     TripBar,
+    Map,
   },
 
   data: () => ({
@@ -123,53 +132,11 @@ export default {
     typeGroup: 0,
     placesInTrip: [],
     places: [
-      {
-        src: [require("../assets/aquarium1.jpg")],
-        title: "AQUARIUM",
-        info: "Photograph",
-        province: "Bangkok"
-      },
-      {
-        src: [require("../assets/island1.jpg")],
-        title: "ISLAND",
-        info: "Photograph,Residence,Restaurant",
-        province: "Phuket"
-      },
-      {
-        src: [require("../assets/market1.jpg")],
-        title: "MARKET",
-        info: "Photograph,Restaurant",
-        province: "China"
-      },
-      {
-        src: [require("../assets/passage1.jpg")],
-        title: "PASSAGE",
-        info: "Photograph,Residence",
-        province: "Newzeland"
-      },
-      {
-        src: [require("../assets/road1.jpg")],
-        title: "ROAD",
-        info: "Photograph",
-        province: "Bangkok"
-      },
-      {
-        src: [require("../assets/sea1.jpg")],
-        title: "SEA",
-        info: "Photograph,Residence,Restaurant",
-        province: "Suratthani"
-      },
-      {
-        src: [require("../assets/temple1.jpg")],
-        title: "TEMPLE",
-        info: "Photograph",
-        province: "Nakornsitammarat"
-      },
     ],
   }),
   methods: {
     addPlace: function(item){
-      this.placesInTrip.push(item.title);
+      this.placesInTrip.push(item);
     },
     canclePlace: function(index){
       this.placesInTrip.splice(index,1);
@@ -180,7 +147,18 @@ export default {
           return items[i];
         }
       }
+    },
+    async callPlaces(){
+      await axios.post("location",{query:""}).then((res)=>this.places = res.data);
+    },
+    async callTrips(){
+      await axios.post("trip",{query:""}).then((res)=>this.trips = res.data);
     }
+  },
+
+  created: function(){
+    this.callTrips()
+    this.callPlaces()
   }
 };
 </script>
@@ -202,10 +180,8 @@ export default {
 
     .mapCard {
       position: fixed;
-      width: 100%;
-      height: 630px;
-      margin-top: 123px;
-      margin-left: 10px;
+      margin-top: 150px;
+      margin-left: 15px;
     }
 
     .mapPic {
@@ -214,7 +190,7 @@ export default {
 
     .listCard {
       position: absolute;
-      margin-top: 93px;
+      margin-top: 7vh;
       left: 33vw;
     }
 
