@@ -17,7 +17,7 @@
                     :key="province"
                     color="#FF9100"
                     outlined
-                    >{{ province}}</v-chip
+                    >{{province}}</v-chip
                   >
                 </v-chip-group>
               </v-row>
@@ -28,7 +28,7 @@
             <v-divider class="mx-2"></v-divider>
             <v-col class="pb-15">
                 <v-card-text class="tripText">
-                    {{ trip }}
+                    {{ describe }}
                 </v-card-text>
                 <v-btn color="#FF9100" outlined class="saveTrip-btn ma-2" link to = "/Account">
                     save trip

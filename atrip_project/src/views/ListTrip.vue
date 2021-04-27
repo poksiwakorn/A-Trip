@@ -1,4 +1,3 @@
-
 <template>
   <v-content>
     <TripBar />
@@ -86,7 +85,7 @@
                       <v-col cols = "5">
                         <v-card class="mt-3">
                           <v-row>
-                            <v-card-title class="ml-2" style="font-weight: 400">{{place.item.nameTH}}</v-card-title>
+                            <v-card-title class="ml-2" style="font-weight: 200; font-size: 14px">{{place.item.nameTH}}</v-card-title>
                             <v-spacer></v-spacer>
                             <v-btn icon class="mt-3 mr-4" @click="canclePlace(place.index)"><v-icon color = "error">mdi-close</v-icon></v-btn>
                           </v-row>
@@ -100,7 +99,7 @@
               <v-row>
                 <v-btn text class="makeTripButton" link to="/account">Make A Trip</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn @click = "getPlace" text class="updateButton">Update Route</v-btn>
+                <v-btn text class="updateButton">Update Route</v-btn>
               </v-row>
             </v-form>
           </v-card>
@@ -108,7 +107,7 @@
       </v-row>
     </div>
      <div class="mapCard">
-       <Map/>
+       <Map />
      </div>
   </v-content>
  
@@ -118,6 +117,7 @@
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
 import axios from "axios";
+import Map from "../components/Map";
 export default {
   name: "ListTrip",
   components: {
