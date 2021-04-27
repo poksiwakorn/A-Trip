@@ -106,6 +106,8 @@ export default {
 
 <style scoped>
   .PlaceInfo{
+    /* background-image: linear-gradient(to right bottom, #f4e3a6, #f5e194, #f7df81, #f7dd6e, #f8db59, #f9d84c, #f9d43e, #fad12d, #fbcc25, #fdc71b, #fec110, #ffbc00); */
+    /* background-image: linear-gradient(to bottom, #f4e3a6, #f7e39b, #f9e490, #fbe484, #fde578, #fee26c, #fede60, #ffdb54, #ffd246, #ffc937, #ffc026, #ffb611); */
     background-image: linear-gradient(to top, #77cee3, #6bc4dd, #60bad7, #55afd1, #4ba5cb, #439ec7, #3b96c3, #338fbf, #2c88bc, #2681ba, #227ab6, #2073b3);
   }
 

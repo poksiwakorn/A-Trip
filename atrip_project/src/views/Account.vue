@@ -58,7 +58,7 @@
                     </v-row>
                     <v-row class="oneTripAction">
                       <v-scale-transition>
-                        <v-btn color="#FF9100" outlined class="ma-2">
+                        <v-btn color="#FF9100" outlined class="ma-2" link to = "/TripInfo">
                           view info 
                           <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
                         </v-btn>

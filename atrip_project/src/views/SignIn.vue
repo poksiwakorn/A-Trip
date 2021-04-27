@@ -5,19 +5,29 @@
         <v-row>
           <v-col cols="12">
             <h1>Sign In</h1>
-          </v-col>
+          </v-col>     
           <v-col cols="12">
-            <v-text-field v-model = "form.username"
+            <v-text-field
+              v-model = "form.username"
               label="Username"
               placeholder="Username"
+              :rules = "usernameRule"
               regular
+              class = "mb-3"
+              required
             ></v-text-field>
           </v-col>
           <v-col cols="12">
-            <v-text-field v-model = "form.password"
+            <v-text-field
+              v-model = "form.password"
               label="Password"
               placeholder="Password1234"
+              :rules = "passwordRule"
+              :append-icon = "showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              :type = "showPassword ? 'text' : 'password'"
               regular
+              class="mt-7 mb-3"
+              @click:append = "showPassword = !showPassword"
             ></v-text-field>
           </v-col>
           <v-col cols="12">
@@ -45,7 +55,16 @@ export default {
       form:{
         username: "",
         password : ""
-      }  
+      },
+      showPassword: false,
+      usernameRule: [
+          v => !!v || 'Username is required',
+          v => v.length <= 10 || 'Username must be less than 10 characters',
+      ],
+      passwordRule: [
+          v => !!v || 'Password is required',
+          v => v.length <= 10 || 'Password must be less than 10 characters',
+      ]
     }
   },
   methods:{

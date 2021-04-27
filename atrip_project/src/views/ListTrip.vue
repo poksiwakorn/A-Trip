@@ -2,14 +2,24 @@
   <v-content>
     <TripBar />
     <div class="ListTrip">
-      <div class="chipBar">
-        <v-chip-group
+        <v-row class="chipBar">
+          <v-chip-group
             active-class="chipActive white--text"
             v-model = "typeGroup"
-        >
-        <v-chip v-for="type in types" :key="type">{{ type }}</v-chip>
-        </v-chip-group>
-      </div>
+            class="mt-2"
+          >
+          <v-chip v-for="type in types" :key="type">{{ type }}</v-chip>
+          </v-chip-group>
+          <v-text-field
+            placeholder="Search..."
+            regular
+            clearable
+            color = "orange"
+            class = "search-field ml-2"
+            height="30"
+          ></v-text-field>
+          <v-btn icon tile color="orange" height="40px" width="40px" class="mt-3 ml-2"><v-icon size="35">mdi-magnify</v-icon></v-btn>
+        </v-row>
       <v-row>
         <v-col cols="4" class="mapCard">
           <v-card>
@@ -150,7 +160,7 @@ export default {
         province: "Suratthani"
       },
       {
-        src: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Opensource.svg/1200px-Opensource.svg.png",
+        src: [require("../assets/temple1.jpg")],
         title: "TEMPLE",
         info: "Photograph",
         province: "Nakornsitammarat"
@@ -179,11 +189,15 @@ export default {
     .chipBar {
       margin: 10px;
       position: fixed;
-      margin-top: 83px;
+      margin-top: 60px;
     }
 
     .chipActive {
       background-color: #ff9100;
+    }
+
+    .search-field{
+      width: 200px;
     }
 
     .mapCard {
@@ -200,7 +214,7 @@ export default {
 
     .listCard {
       position: absolute;
-      margin-top: 123px;
+      margin-top: 93px;
       left: 33vw;
     }
 
@@ -256,7 +270,7 @@ export default {
     }
 
     .placeImage{
-      width: 100%px;
+      width: 100%;
       height: 100px;
     }
 </style>
