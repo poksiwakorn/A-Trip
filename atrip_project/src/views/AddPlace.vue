@@ -86,7 +86,7 @@ export default {
     margin-top: 100px;
     margin-left: 100px;
     margin-right: 50px;
-    min-height: 800px;
+    min-height: 850px;
   }
 
   .mapPic{

@@ -1,7 +1,6 @@
 <template>
   <div>
-    <h3>{{onana}}</h3>
-    <!-- <h2>FUCK</h2> -->
+    <!-- <h3>{{onana}}</h3> -->
     <!-- <h1>{{markers}}</h1> -->
   
     <!-- <p>{{ coordinates.lat }} Latitude , {{ coordinates.lng }} Longitude</p> -->
@@ -10,13 +9,13 @@
       :zoom="16"
       style=" width: 32vw; height:800px;"
       :options="{
-            zoomControl: false,
-            mapTypeControl: false,
-            scaleControl: false,
-           streetViewControl: true,
-           rotateControl: false,
-           fullscreenControl: false,
-           disableDefaultUi: false
+          zoomControl: false,
+          mapTypeControl: false,
+          scaleControl: false,
+          streetViewControl: true,
+          rotateControl: false,
+          fullscreenControl: false,
+          disableDefaultUi: false
       }"
     >
     <GmapMarker

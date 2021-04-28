@@ -1,7 +1,6 @@
 <template>
   <v-content>
     <TripBar />
-    
     <div class="ListTrip">
         <v-row class="chipBar">
           <v-chip-group
@@ -98,7 +97,7 @@
                 </v-virtual-scroll>
               </v-card>
               <v-row>
-                <v-btn text class="makeTripButton" link to="/account">Make A Trip</v-btn>
+                <v-btn text class="makeTripButton" @click="placesInTrip.length >= 2 ? makeTrip() : makeFail()">Make A Trip</v-btn>
                 <v-spacer></v-spacer>
                 <v-btn text class="updateButton">Update Route</v-btn>
               </v-row>
@@ -158,6 +157,12 @@ export default {
           return items[i];
         }
       }
+    },
+    makeTrip: function(){
+      this.$router.push("/Account");
+    },
+    makeFail: function(){
+      alert("Add Fail");
     },
     async callPlaces(){
       await axios.post("location",{query:""}).then((res)=>this.places = res.data);
