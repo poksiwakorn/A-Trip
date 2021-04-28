@@ -33,7 +33,7 @@
                 class="savedTripSlide"
               >
                 <v-card class="oneTripCard mx-3" @click="toggle">
-                  <v-img :src = "trip.src[0]" height="200px">
+                  <v-img src = "../assets/temple1.jpg" height="200px">
                     <v-scale-transition>
                       <v-btn v-if="active" text fab size="35px" class="deleteTrip-btn ma-2" @click="deleteTrip(i)">
                         <v-icon color = "error" size="45">mdi-close-circle-outline</v-icon>
@@ -41,16 +41,16 @@
                     </v-scale-transition>
                   </v-img>
                     <v-card-title>
-                      {{trip.title}}
-                      <v-spacer></v-spacer>
-                      <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
-                      <v-chip class="ma-2" color="#FF9100" outlined>Bankok</v-chip>
+                      {{trip.nameTH}}
+                      <!-- <v-spacer></v-spacer> -->
+                      <!-- <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
+                      <v-chip class="ma-2" color="#FF9100" outlined>Bankok</v-chip> -->
                     </v-card-title>                    
-                    <v-card-subtitle>{{trip.owner}}</v-card-subtitle>
+                    <v-card-subtitle>{{trip.ownerUserID}}</v-card-subtitle>
                     <v-divider class="mx-5"></v-divider>
-                    <v-card-title class="black--text">Places In Trip <v-card-subtitle class="mt-1">{{count(trip.places)}} places</v-card-subtitle></v-card-title>
+                    <v-card-title class="black--text">Places In Trip <v-card-subtitle class="mt-1">{{trip.numPlace}} places</v-card-subtitle></v-card-title>
                     <v-row
-                      v-for="(place, j) in trip.places"
+                      v-for="(place, j) in trip.placeList_List.split(',')"
                       :key="j"
                       class="mx-10"
                     >
@@ -77,6 +77,7 @@
 <script>
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
+import axios from "axios";
 
 export default {
   name: "Account",
@@ -85,59 +86,20 @@ export default {
   },
 
   data: () => ({
-    savedTrips: [
-      {
-        src: [require("../assets/aquarium1.jpg")],
-        title: "TRIP 1",
-        owner: "CrazyBoyOO1",
-        places: ["A","B","C","D"]
-      },
-      {
-        src: [require("../assets/island1.jpg")],
-        title: "TRIP 2",
-        owner: "CrazyBoyOO2",
-        places: ["E","F","G"]
-      },
-      {
-        src: [require("../assets/market1.jpg")],
-        title: "TRIP 3",
-        owner: "CrazyBoyOO3",
-        places: ["H","I"]
-      },
-      {
-        src: [require("../assets/passage1.jpg")],
-        title: "TRIP 4",
-        owner: "CrazyBoyOO4",
-        places: ["J","K","L","M"]
-      },
-      {
-        src: [require("../assets/road1.jpg")],
-        title: "TRIP 5",
-        owner: "CrazyBoyOO5",
-        places: ["N","O","P","Q","R","S"]
-      },
-      {
-        src: [require("../assets/sea1.jpg")],
-        title: "TRIP 6",
-        owner: "CrazyBoyOO6",
-        places: ["T","U","V","W"]
-      },
-      {
-        src: [require("../assets/temple1.jpg")],
-        title: "TRIP 7",
-        owner: "CrazyBoyOO7",
-        places: ["X","Y","Z"]
-      }
-    ]
+    savedTrips: [],
+    tripName: ""
   }),
 
   methods: {
-    count: function(item){
-      return item.length;
-    },
     deleteTrip: function(index){
       this.savedTrips.splice(index,1);
-    }
+    },
+    async callTrips(){
+      await axios.post("trip",{query:""}).then((res)=>this.savedTrips = res.data);
+    },
+  },
+  created: function(){
+    this.callTrips()
   }
 };
 </script>

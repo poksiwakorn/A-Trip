@@ -117,8 +117,6 @@ def login():
 @app.route("/location", methods = ['GET', 'POST'])
 @cross_origin()
 def location():
-    form = {'title' : "", 'Info' : "", 'Latitude' : "" , 'Longitude' : "" , "review" : "" , "rating" : "" ,"NumberRating" : "","src" : "","lPicture2" : "","lPicture3" : "","lPicture4" : ""}
-    back = []
     if request.method == 'POST':
         content = request.get_json()
         print(content)
@@ -132,8 +130,6 @@ def location():
 @app.route("/trip", methods = ['GET', 'POST'])
 @cross_origin()
 def trip():
-    form = {'title' : "", 'Info' : "", 'Latitude' : "" , 'Longitude' : "" , "review" : "" , "rating" : "" ,"NumberRating" : "","src" : "","lPicture2" : "","lPicture3" : "","lPicture4" : ""}
-    back = []
     if request.method == 'POST':
         content = request.get_json()
         if content["query"] == "":
@@ -143,12 +139,22 @@ def trip():
             print(account)
     return jsonify(account)
 
+@app.route("/province", methods = ['GET'])
+@cross_origin()
+def province():
+    if request.method == 'GET':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM Atrip_Province ORDER BY keyID')
+        account = cursor.fetchall()
+        print(account)
+    return jsonify(account)
+
 @app.route("/tripInfo/<keyID>", methods = ['GET'])
 @cross_origin()
 def tripInfo(keyID):
     if request.method == 'GET':
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM Atrip_Trip WHERE keyID = %s',(keyID))
+        cursor.execute('SELECT * FROM Atrip_Trip WHERE keyID = %s',[keyID])
         account = cursor.fetchall()
         print(account)
     return jsonify(account)
@@ -162,7 +168,8 @@ def getPlace():
         print(content)
         print(len(content["place"]))
         if content["place"]:
-            contentinput = content["place"].split(",")
+            contentinput = content["place"][1:len(content["place"])-1].split(",")
+            print(contentinput)
             form = "SELECT * FROM Atrip_Place WHERE keyID = " + " or keyID = ".join(contentinput)
             print(form)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -171,12 +178,32 @@ def getPlace():
             return jsonify(account)
         else:
             return jsonify(Testform)
-            # cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            # cursor.execute('SELECT * FROM Atrip_Place Where %s',)
-            # account = cursor.fetchall()
-            # return jsonify("account")
 
+@app.route("/addLocation", methods = ['GET', 'POST'])
+@cross_origin()
+def addLocation():
+    form = {"isSuccess" : False , "msg" : ""}
+    if request.method == 'POST':
+        content = request.get_json()
+        print(content)
+        if content["placeName"]:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT * FROM Atrip_Place WHERE nameTH = %s',[content["placeName"]])
+            account = cursor.fetchall()
+            if account:
+                print("enter")
+                form["isSuccess"] = False
+                form["msg"] = "Already have data"
+            else:
+                form["isSuccess"] = True
+                form["msg"] = "Successfully add to database"
+                cursor.execute('INSERT INTO Atrip_Place (website,phoneNumber,nameTH,provinceTH,descriptionTH) VALUES (%s, %s, %s, %s, %s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"]))
+                mysql.connection.commit()
+            return jsonify(form)
 
+        else:
+            form["msg"] = "Error no PlaceName :d"
+            return jsonify(form)
 
 
 

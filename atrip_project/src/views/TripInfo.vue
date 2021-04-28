@@ -13,7 +13,7 @@
                 <v-spacer></v-spacer>
                 <v-chip-group class="ma-2">
                   <v-chip
-                    v-for="province in trip.provinceTH"
+                    v-for="province in trip.provinceTH_List.split(',')"
                     :key="province"
                     color="#FF9100"
                     outlined
@@ -23,7 +23,7 @@
               </v-row>
             </v-card-title>
             <v-card-subtitle class="tripSubTitle mt-1 ml-1">
-              {{ trip.owner }}
+              {{ trip.ownerID }}
             </v-card-subtitle>
             <v-divider class="mx-2"></v-divider>
             <v-col class="pb-15">
@@ -51,18 +51,18 @@
                   <v-col cols="4">
                     <v-card class="mb-5">
                       <v-img
-                        :src="place.item.src[0]"
+                        src="../assets/temple1.jpg"
                         class="placeImage"
                       ></v-img>
                     </v-card>
                   </v-col>
-                  <v-col cols="5">
+                  <v-col>
                     <v-card class="placeInfoCard">
-                      <v-card-title class="ml-2" style="font-weight: 400"
-                        >{{ place.item.title }}
+                      <v-card-title class="ml-2" style="font-weight: 400; font-size: 20px;"
+                        >{{ place.item.nameTH }}
                         <v-spacer></v-spacer>
                         <v-chip class="mx-2" color="#FF9100" outlined>{{
-                          place.item.province
+                          place.item.provinceTH
                         }}</v-chip>
                       </v-card-title>
                       <v-card-subtitle class="ml-2">{{place.item.owner}}</v-card-subtitle>
@@ -97,57 +97,7 @@ export default {
   data: () => ({
     trip: [],
     describe: "This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.",
-    places: [
-      {
-        src: [require("../assets/aquarium1.jpg")],
-        title: "AQUARIUM",
-        owner: "CrazyBoyOO1",
-        info: "Photograph",
-        province: "Bangkok",
-      },
-      {
-        src: [require("../assets/island1.jpg")],
-        title: "ISLAND",
-        owner: "CrazyBoyOO1",
-        info: "Photograph,Residence,Restaurant",
-        province: "Phuket",
-      },
-      {
-        src: [require("../assets/market1.jpg")],
-        title: "MARKET",
-        owner: "CrazyBoyOO1",
-        info: "Photograph,Restaurant",
-        province: "China",
-      },
-      {
-        src: [require("../assets/passage1.jpg")],
-        title: "PASSAGE",
-        owner: "CrazyBoyOO1",
-        info: "Photograph,Residence",
-        province: "Newzeland",
-      },
-      {
-        src: [require("../assets/road1.jpg")],
-        title: "ROAD",
-        owner: "CrazyBoyOO1",
-        info: "Photograph",
-        province: "Bangkok",
-      },
-      {
-        src: [require("../assets/sea1.jpg")],
-        title: "SEA",
-        owner: "CrazyBoyOO1",
-        info: "Photograph,Residence,Restaurant",
-        province: "Suratthani",
-      },
-      {
-        src: [require("../assets/temple1.jpg")],
-        title: "TEMPLE",
-        owner: "CrazyBoyOO1",
-        info: "Photograph",
-        province: "Nakornsitammarat",
-      },
-    ],
+    places: [],
   }),
 
   methods: {
@@ -156,8 +106,7 @@ export default {
     },
     async getInfo(){
       await axios.get("tripInfo/" + this.keyID).then((res)=>this.trip = res.data[0]);
-      await axios.post("getPlace",{place : this.trip.placeList}).then((res) =>
-      console.log(res.data))
+      await axios.post("getPlace",{place : this.trip.placeList_List}).then((res) => this.places = res.data);
     }
   },
   created: function(){
@@ -267,6 +216,7 @@ export default {
 }
 
 .placeInfoCard {
+  width: 470px;
   height: 90%;
 }
 

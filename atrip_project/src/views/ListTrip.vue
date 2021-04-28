@@ -1,45 +1,39 @@
 <template>
   <v-content>
     <TripBar />
-
     <div class="ListTrip">
-      <v-row class="chipBar">
-        <v-chip-group
-          active-class="chipActive white--text"
-          v-model="typeGroup"
-          class="mt-2"
-        >
+        <v-row class="chipBar">
+          <!-- <v-chip-group
+            active-class="chipActive white--text"
+            v-model = "typeGroup"
+            class="mt-2"
+          >
           <v-chip v-for="type in types" :key="type">{{ type }}</v-chip>
-        </v-chip-group>
-        <v-text-field
-          placeholder="Search..."
-          regular
-          clearable
-          color="orange"
-          class="search-field ml-2"
-          height="30"
-        ></v-text-field>
-        <v-btn
-          icon
-          tile
-          color="orange"
-          height="40px"
-          width="40px"
-          class="mt-3 ml-2"
-          ><v-icon size="35">mdi-magnify</v-icon></v-btn
-        >
-      </v-row>
+          </v-chip-group> -->
+          <v-autocomplete
+            v-model="typeValue"
+            :items="types"
+            filled
+            rounded
+          ></v-autocomplete>
+          <v-text-field
+            placeholder="Search..."
+            regular
+            clearable
+            color = "orange"
+            class = "search-field ml-2"
+            height="30"
+          ></v-text-field>
+          <v-btn icon tile color="orange" height="40px" width="40px" class="mt-3 ml-2"><v-icon size="35">mdi-magnify</v-icon></v-btn>
+        </v-row>   
       <v-row>
-        <v-col cols="4" class="mapCard">
-          <v-card>
-            <!-- <v-img src = "..assets/map1.png" height="200px"></v-img> -->
-          </v-card>
-        </v-col>
-
+        <div class="mapCard">
+          <Map v-bind:loca="coordinates" v-bind:Mark="totalMark" />
+        </div>
         <v-col cols="3" class="listCard">
           <v-row v-for="(place, i) in places" :key="i">
-            <v-card v-if="place.isVerify == '1'" class="ma-3">
-              <v-img src="../assets/temple1.jpg" class="placePic"></v-img>
+            <v-card v-if="place.isVerify == '1'  && keyNotUsed(place.keyID) && (place.typeTH.includes(typeValue) || typeValue == 'ทั้งหมด')" class="ma-3">
+              <v-img src = "../assets/temple1.jpg" class="placePic"></v-img>
               <v-card-title>
                 {{ place.nameTH }}
                 <v-spacer></v-spacer>
@@ -47,10 +41,8 @@
                   place.provinceTH
                 }}</v-chip>
               </v-card-title>
-              <v-card-subtitle
-                >{{ place.latitude }}, {{ place.longitude }}</v-card-subtitle
-              >
-              <v-btn color="#FF9100" outlined class="ma-2" link to="/PlaceInfo"
+              <v-card-subtitle>{{place.typeTH}}</v-card-subtitle>
+              <v-btn color="#FF9100" outlined class="ma-2" link to = "/PlaceInfo"
                 >view info
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
               </v-btn>
@@ -136,9 +128,7 @@
                 </v-virtual-scroll>
               </v-card>
               <v-row>
-                <v-btn text class="makeTripButton" link to="/account"
-                  >Make A Trip</v-btn
-                >
+                <v-btn text class="makeTripButton" @click="placesInTrip.length >= 2 ? makeTrip() : makeFail()">Make A Trip</v-btn>
                 <v-spacer></v-spacer>
                 <v-btn text class="updateButton">Update Route</v-btn>
               </v-row>
@@ -146,9 +136,6 @@
           </v-card>
         </v-col>
       </v-row>
-    </div>
-    <div class="mapCard">
-      <Map v-bind:loca="coordinates" v-bind:Mark="totalMark" />
     </div>
   </v-content>
 </template>
@@ -166,8 +153,10 @@ export default {
   },
 
   data: () => ({
-    types: ["ทั้งหมด", "วัด", "สวนสาธารณะ", "สวนสัตว์"],
+    types: ["ทั้งหมด","วัด", "สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ","ดอย","น้ำตก","ศาลเจ้า","จุดชมวิว"],
+    typeValue: "ทั้งหมด",
     totalMark: 0,
+    lastLoca: [],
     coordinates: [
       
     ],
@@ -193,10 +182,24 @@ export default {
         }
       }
     },
-    async callPlaces() {
-      await axios
-        .post("location", { query: "" })
-        .then((res) => (this.places = res.data));
+    makeTrip: function(){
+      this.$router.push("/Account");
+    },
+    makeFail: function(){
+      alert("Add Fail");
+    },
+    keyNotUsed: function(keyID){
+      var i;
+      for(i=0;i < this.placesInTrip.length;i++){
+        // console.log(this.placesInTrip[i].keyID);
+        if(keyID == this.placesInTrip[i].keyID){
+          return false;
+        }
+      }
+      return true;
+    },
+    async callPlaces(){
+      await axios.post("location",{query:""}).then((res)=>this.places = res.data);
     },
   },
   created: function() {
