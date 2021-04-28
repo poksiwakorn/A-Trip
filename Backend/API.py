@@ -176,7 +176,31 @@ def getPlace():
             # account = cursor.fetchall()
             # return jsonify("account")
 
+@app.route("/addLocation", methods = ['GET', 'POST'])
+@cross_origin()
+def addLocation():
+    form = {"isSuccess" : False , "msg" : ""}
+    if request.method == 'POST':
+        content = request.get_json()
+        print(content)
+        if content["placeName"]:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT * FROM Atrip_Place1 WHERE nameTH = %s',[content["placeName"]])
+            account = cursor.fetchall()
+            if account:
+                print("enter")
+                form["isSuccess"] = False
+                form["msg"] = "Already have data"
+            else:
+                form["isSuccess"] = True
+                form["msg"] = "Successfully add to database"
+                cursor.execute('INSERT INTO Atrip_Place1 (website,phoneNumber,nameTH,provinceTH,descriptionTH) VALUES (%s, %s, %s, %s, %s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"]))
+                mysql.connection.commit()
+            return jsonify(form)
 
+        else:
+            form["msg"] = "Error no PlaceName"
+            return jsonify(form)
 
 
 
