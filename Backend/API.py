@@ -148,7 +148,7 @@ def trip():
 def tripInfo(keyID):
     if request.method == 'GET':
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM Atrip_Trip WHERE keyID = %s',(keyID))
+        cursor.execute('SELECT * FROM Atrip_Trip WHERE keyID = %s',[keyID])
         account = cursor.fetchall()
         print(account)
     return jsonify(account)
