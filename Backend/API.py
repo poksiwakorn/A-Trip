@@ -41,7 +41,7 @@ def register():
         lastname = content['lastname']
         print("username =",username,"password",password,"email",email)
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM Users WHERE Username = %s or email = %s', (username,email))
+        cursor.execute('SELECT * FROM Users WHERE BINARY Username = %s or BINARY email = %s', (username,email))
         account = cursor.fetchone()
         # If account exists show error and validation checks
         if account:
@@ -85,7 +85,7 @@ def login():
         # Check if account exists using MySQL
         if username and password:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Users WHERE username = %s AND password = %s', (username, password))
+            cursor.execute('SELECT * FROM Users WHERE BINARY username = %s AND  BINARY password = %s', (username, password))
             # Fetch one record and return result
             account = cursor.fetchone()
             # If account exists in accounts table in out database
