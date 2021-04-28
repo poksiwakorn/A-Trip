@@ -19,6 +19,7 @@ const state = {
 
 const getters = {
   isAuthenticated: (state) => !!state.Username,
+  StateID: (state) => state.ID,
   StateUsername: (state) => state.Username,
   StateFirstName: (state) => state.FirstName,
   StateLastName: (state) => state.LastName,

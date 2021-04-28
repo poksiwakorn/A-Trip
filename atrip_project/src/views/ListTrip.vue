@@ -71,6 +71,7 @@
                 </v-col>
                 <v-col cols="6">
                   <v-text-field
+                    v-model="tripName"
                     regular
                     placeholder="myTrip"
                     color="orange"
@@ -161,6 +162,7 @@ export default {
       
     ],
     typeGroup: 0,
+    tripName: "",
     placesInTrip: [],
     places: [],
   }),
@@ -182,8 +184,8 @@ export default {
         }
       }
     },
-    makeTrip: function(){
-      this.$router.push("/Account");
+    async makeTrip (){
+      await axios.post("makeTrip",{userID: this.$store.getters.StateID, tripName: this.tripName, placesInTrip: this.placesInTrip}).then((res)=>this.$router.push("/Account")).catch(this.$router.push("/Account"));
     },
     makeFail: function(){
       alert("Add Fail");
