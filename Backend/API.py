@@ -162,8 +162,7 @@ def getPlace():
         print(content)
         print(len(content["place"]))
         if content["place"]:
-            contentinput = content["place"][1:len(content["place"])-1]
-            contentinput = contentinput.split(",")
+            contentinput = content["place"][1:len(content["place"])-1].split(",")
             print(contentinput)
             form = "SELECT * FROM Atrip_Place1 WHERE keyID = " + " or keyID = ".join(contentinput)
             print(form)
