@@ -3,13 +3,19 @@
     <TripBar />
     <div class="ListTrip">
         <v-row class="chipBar">
-          <v-chip-group
+          <!-- <v-chip-group
             active-class="chipActive white--text"
             v-model = "typeGroup"
             class="mt-2"
           >
           <v-chip v-for="type in types" :key="type">{{ type }}</v-chip>
-          </v-chip-group>
+          </v-chip-group> -->
+          <v-autocomplete
+            v-model="typeValue"
+            :items="types"
+            filled
+            rounded
+          ></v-autocomplete>
           <v-text-field
             placeholder="Search..."
             regular
@@ -21,16 +27,14 @@
           <v-btn icon tile color="orange" height="40px" width="40px" class="mt-3 ml-2"><v-icon size="35">mdi-magnify</v-icon></v-btn>
         </v-row>   
       <v-row>
-        <v-col cols="4" class="mapCard">
-          <v-card>
-            <!-- <v-img src = "..assets/map1.png" height="200px"></v-img> -->
-          </v-card>
-        </v-col>
-        
+        <div class="mapCard">
+          <Map 
+          v-bind:loca = "coordinates" 
+          v-bind:onana = "lastLoca" />
+        </div>
         <v-col cols="3" class="listCard">
-          {{places[0]}}
           <v-row v-for="(place, i) in places" :key="i">
-            <v-card v-if="place.isVerify == '1'  && keyNotUsed(place.keyID)" class="ma-3">
+            <v-card v-if="place.isVerify == '1'  && keyNotUsed(place.keyID) && (place.typeTH.includes(typeValue) || typeValue == 'ทั้งหมด')" class="ma-3">
               <v-img src = "../assets/temple1.jpg" class="placePic"></v-img>
               <v-card-title>
                 {{ place.nameTH }}
@@ -107,11 +111,6 @@
         </v-col>
       </v-row>
     </div>
-     <div class="mapCard">
-       <Map 
-       v-bind:loca = "coordinates" 
-       v-bind:onana = "lastLoca" />
-     </div>
   </v-content>
  
 </template>
@@ -129,7 +128,8 @@ export default {
   },
 
   data: () => ({
-    types: ["ทั้งหมด","วัด", "สวนสาธารณะ", "สวนสัตว์"],
+    types: ["ทั้งหมด","วัด", "สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ","ดอย","น้ำตก","ศาลเจ้า","จุดชมวิว"],
+    typeValue: "ทั้งหมด",
     lastLoca: [],
     coordinates: [
       {
