@@ -33,6 +33,7 @@ def register():
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
     if request.method == 'POST' and content['username'] and content['password'] and content['email'] and content['firstname'] and content['lastname']:
         # Create variables for easy access
+        
         print("get in stage 2")
         username = content['username']
         password = content['password']
