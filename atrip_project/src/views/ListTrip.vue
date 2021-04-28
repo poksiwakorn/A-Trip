@@ -1,4 +1,3 @@
-
 <template>
   <v-content>
     <TripBar />
@@ -37,7 +36,7 @@
                 <v-spacer></v-spacer>
                 <v-chip class="ma-2" color="#FF9100" outlined>{{place.provinceTH}}</v-chip>
               </v-card-title>
-              <v-card-subtitle>{{place.coordinate}}</v-card-subtitle>
+              <v-card-subtitle>{{place.latitude}}, {{place.longitude}}</v-card-subtitle>
               <v-btn color="#FF9100" outlined class="ma-2" link to = "/PlaceInfo"
                 >view info
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
@@ -86,7 +85,7 @@
                       <v-col cols = "5">
                         <v-card class="mt-3">
                           <v-row>
-                            <v-card-title class="ml-2" style="font-weight: 400">{{place.item.nameTH}}</v-card-title>
+                            <v-card-title class="ml-2" style="font-weight: 200; font-size: 14px">{{place.item.nameTH}}</v-card-title>
                             <v-spacer></v-spacer>
                             <v-btn icon class="mt-3 mr-4" @click="canclePlace(place.index)"><v-icon color = "error">mdi-close</v-icon></v-btn>
                           </v-row>
@@ -98,9 +97,9 @@
                 </v-virtual-scroll>
               </v-card>
               <v-row>
-                <v-btn text class="makeTripButton" link to="/account">Make A Trip</v-btn>
+                <v-btn text class="makeTripButton" @click="placesInTrip.length >= 2 ? makeTrip() : makeFail()">Make A Trip</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn @click = "getPlace" text class="updateButton">Update Route</v-btn>
+                <v-btn text class="updateButton">Update Route</v-btn>
               </v-row>
             </v-form>
           </v-card>
@@ -108,7 +107,9 @@
       </v-row>
     </div>
      <div class="mapCard">
-       <Map/>
+       <Map 
+       v-bind:loca = "coordinates" 
+       v-bind:onana = "lastLoca" />
      </div>
   </v-content>
  
@@ -118,6 +119,7 @@
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
 import axios from "axios";
+import Map from "../components/Map";
 export default {
   name: "ListTrip",
   components: {
@@ -127,6 +129,13 @@ export default {
 
   data: () => ({
     types: ["ทั้งหมด","วัด", "สวนสาธารณะ", "สวนสัตว์"],
+    lastLoca: [],
+    coordinates: [
+      {
+        lat: 13.730102546677843, 
+        lng: 100.77821083963215,
+      }
+    ],
     typeGroup: 0,
     placesInTrip: [],
     places: [
@@ -135,9 +144,12 @@ export default {
   methods: {
     addPlace: function(item){
       this.placesInTrip.push(item);
+      this.coordinates.push({lat: item.latitude, lng: item.longitude});
+      this.lastLoca = this.coordinates[this.coordinates.length-1];
     },
     canclePlace: function(index){
       this.placesInTrip.splice(index,1);
+      this.coordinates.splice(index+1,1);
     },
     getItem: function(items,item){
       for(var i=0;i<items.length;i++){
@@ -146,11 +158,16 @@ export default {
         }
       }
     },
+    makeTrip: function(){
+      this.$router.push("/Account");
+    },
+    makeFail: function(){
+      alert("Add Fail");
+    },
     async callPlaces(){
       await axios.post("location",{query:""}).then((res)=>this.places = res.data);
     },
   },
-
   created: function(){
     this.callPlaces()
   }
