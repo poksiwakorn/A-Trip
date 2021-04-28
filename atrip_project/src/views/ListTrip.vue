@@ -28,15 +28,16 @@
         </v-col>
         
         <v-col cols="3" class="listCard">
+          {{places[0]}}
           <v-row v-for="(place, i) in places" :key="i">
-            <v-card v-if="place.isVerify == '1'" class="ma-3">
+            <v-card v-if="place.isVerify == '1'  && keyNotUsed(place.keyID)" class="ma-3">
               <v-img src = "../assets/temple1.jpg" class="placePic"></v-img>
               <v-card-title>
                 {{ place.nameTH }}
                 <v-spacer></v-spacer>
                 <v-chip class="ma-2" color="#FF9100" outlined>{{place.provinceTH}}</v-chip>
               </v-card-title>
-              <v-card-subtitle>{{place.latitude}}, {{place.longitude}}</v-card-subtitle>
+              <v-card-subtitle>{{place.typeTH}}</v-card-subtitle>
               <v-btn color="#FF9100" outlined class="ma-2" link to = "/PlaceInfo"
                 >view info
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
@@ -163,6 +164,16 @@ export default {
     },
     makeFail: function(){
       alert("Add Fail");
+    },
+    keyNotUsed: function(keyID){
+      var i;
+      for(i=0;i < this.placesInTrip.length;i++){
+        // console.log(this.placesInTrip[i].keyID);
+        if(keyID == this.placesInTrip[i].keyID){
+          return false;
+        }
+      }
+      return true;
     },
     async callPlaces(){
       await axios.post("location",{query:""}).then((res)=>this.places = res.data);

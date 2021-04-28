@@ -42,15 +42,15 @@
                   </v-img>
                     <v-card-title>
                       {{trip.nameTH}}
-                      <v-spacer></v-spacer>
-                      <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
-                      <v-chip class="ma-2" color="#FF9100" outlined>Bankok</v-chip>
+                      <!-- <v-spacer></v-spacer> -->
+                      <!-- <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
+                      <v-chip class="ma-2" color="#FF9100" outlined>Bankok</v-chip> -->
                     </v-card-title>                    
-                    <v-card-subtitle>{{trip.owner}}</v-card-subtitle>
+                    <v-card-subtitle>{{trip.ownerUserID}}</v-card-subtitle>
                     <v-divider class="mx-5"></v-divider>
                     <v-card-title class="black--text">Places In Trip <v-card-subtitle class="mt-1">{{trip.numPlace}} places</v-card-subtitle></v-card-title>
                     <v-row
-                      v-for="(place, j) in trip.placeList"
+                      v-for="(place, j) in trip.placeList_List.split(',')"
                       :key="j"
                       class="mx-10"
                     >
@@ -86,7 +86,8 @@ export default {
   },
 
   data: () => ({
-    savedTrips: []
+    savedTrips: [],
+    tripName: ""
   }),
 
   methods: {
