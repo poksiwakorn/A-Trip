@@ -124,7 +124,7 @@ def location():
         print(content)
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Place ORDER BY keyID')
+            cursor.execute('SELECT * FROM Atrip_Place1 ORDER BY keyID')
             account = cursor.fetchall()
             print(account)
     return jsonify(account)
@@ -138,7 +138,7 @@ def trip():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Trip ORDER BY keyID')
+            cursor.execute('SELECT * FROM Atrip_Trip1 ORDER BY keyID')
             account = cursor.fetchall()
             print(account)
     return jsonify(account)
@@ -148,7 +148,7 @@ def trip():
 def tripInfo(keyID):
     if request.method == 'GET':
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM Atrip_Trip WHERE keyID = %s',[keyID])
+        cursor.execute('SELECT * FROM Atrip_Trip1 WHERE keyID = %s',[keyID])
         account = cursor.fetchall()
         print(account)
     return jsonify(account)
@@ -163,7 +163,7 @@ def getPlace():
         print(len(content["place"]))
         if content["place"]:
             contentinput = content["place"].split(",")
-            form = "SELECT * FROM Atrip_Place WHERE keyID = " + " or keyID = ".join(contentinput)
+            form = "SELECT * FROM Atrip_Place1 WHERE keyID = " + " or keyID = ".join(contentinput)
             print(form)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(form)

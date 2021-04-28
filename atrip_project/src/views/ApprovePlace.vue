@@ -4,7 +4,7 @@
     <div class="ApprovePlace">
       <v-col cols="3" class="listCard">
           <v-row v-for="(place, i) in places" :key="i">
-            <v-card v-if="place.isVerify == '1'" class="ma-3">
+            <v-card v-if="place.isVerify == '0'" class="ma-3">
               <v-img src = "../assets/temple1.jpg" class="placePic"></v-img>
               <v-card-title>
                 {{ place.nameTH }}
