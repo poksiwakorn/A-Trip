@@ -7,6 +7,7 @@
 </template>
 
 <script>
+
 import Home from "./views/Home";
 import SignIn from "./views/SignIn";
 import Register from "./views/Register";
@@ -15,13 +16,17 @@ import YourPlan from "./views/YourPlan";
 import Account from "./views/Account";
 import Landing from "./views/Landing";
 import PlaceInfo from "./views/PlaceInfo";
+import TripInfo from "./views/TripInfo";
 import ListTrip from "./views/ListTrip";
+import AddPlace from "./views/AddPlace";
+import ApprovePlace from "./views/ApprovePlace";
+import ApproveInfo from "./views/ApproveInfo";
 
 export default {
   name: "App",
 
   components: {
-    Home,Register,SignIn,AllPlan,YourPlan,Account,Landing,PlaceInfo,ListTrip
+    Home,Register,SignIn,AllPlan,YourPlan,Account,Landing,PlaceInfo,TripInfo,ListTrip,AddPlace,ApprovePlace,ApproveInfo
   },
 
   data: () => ({
@@ -29,3 +34,5 @@ export default {
   }),
 };
 </script>
+
+

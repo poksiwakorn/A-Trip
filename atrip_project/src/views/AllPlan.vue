@@ -3,13 +3,13 @@
     <TripBar/>
     <div class="AllPlan">
         <v-row class="ml-5 mt-1">
-          <v-col cols = "12">
+          <!-- <v-col cols = "12">
             <v-btn color = "primary" class="choose-btn">
               Choose district you want
             </v-btn>
-          </v-col>
+          </v-col> -->
           <v-col cols="7">
-            <v-card >
+            <v-card class="allTripCard">
               <v-card-title class="white--text orange darken-4 text-h4">
                 Interesting Trips
                 <v-spacer></v-spacer>
@@ -20,51 +20,51 @@
                   color = "orange"
                   class = "search-field"
                 ></v-text-field>
-                <!-- <v-btn icon color="white">
-                  <v-icon>mdi-magnify</v-icon>
-                </v-btn> -->
+                <v-btn icon color="white" tile height="50px" class="ml-3">
+                  <v-icon size="30" >mdi-magnify</v-icon>
+                </v-btn>
               </v-card-title>
               
               <v-divider></v-divider>
               <v-virtual-scroll
-                :items = "items"
-                :item-height = "1000"
-                height = "480"
+                :items = "trips"
+                :item-height = "500"
+                height = "700"
                 class="my-5"
               >
-                <!-- <template v-slot:default = "{item}">
-                  <v-list-item>
-                    <img src = "../assets/sea1.jpg" class="img_content">
-                    <v-list-item-content>
-                      {{item}}
-                    </v-list-item-content>
-                  </v-list-item>
-                </template> -->
-                <v-col
-                  v-for = "(item, i) in items"
-                  :key = "i"
-                  cols="6"
-                >
-                  <v-card>
-                    <v-img src = "../assets/sea1.jpg" height="200px"></v-img>
-                    <v-card-title>
-                      {{item.title}}
-                      <v-spacer></v-spacer>
-                      <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
-                      <v-chip class="ma-2" color="#FF9100" outlined>Bankok</v-chip>
-                    </v-card-title>                    
-                    <v-card-subtitle>CrazyboyOO1</v-card-subtitle>
-                    <v-card-subtitle class="black--text">4 Places</v-card-subtitle>
-                    <v-btn color="#FF9100" outlined class="ma-2">view info <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon></v-btn>
-                    <v-btn icon color="#FF9100"><v-icon>mdi-thumb-up</v-icon></v-btn>
+                <template v-slot = "trip">  
+                  <v-card class="tripCard">
+                    <v-img src = "../assets/temple1.jpg" height="200px"></v-img>
+                      <v-card-title>
+                        {{trip.item.nameTH}}
+                        <v-spacer></v-spacer>
+                        <!-- <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
+                        <v-chip class="ma-2" color="#FF9100" outlined>Bankok</v-chip> -->
+                        <v-chip-group class="ma-2">
+                          <v-chip
+                            v-for="province in trip.item.provinceTH_List.split(',')"
+                            :key="province"
+                            color="#FF9100"
+                            outlined
+                            >{{province}}</v-chip
+                          >
+                        </v-chip-group>
+                      </v-card-title>                    
+                      <v-card-subtitle>{{trip.item.owner}}</v-card-subtitle>
+                      <v-divider class="mx-5"></v-divider>
+                      <v-card-title class="black--text">Places In Trip <v-card-subtitle class="mt-1">{{trip.item.numPlace}} places</v-card-subtitle></v-card-title>
+                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" @click="goTripInfo(trip.item.keyID)">
+                        view info 
+                        <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
+                      </v-btn>
                   </v-card>
-                </v-col>
+                </template>  
               </v-virtual-scroll>
             </v-card>
           </v-col>
           <!-- RIGHT -->
           <v-col cols="4" class="ml-13">
-            <v-card>
+            <v-card class="adsCard">
               <v-img src = "../assets/gallery1.jpg" height="200px"></v-img>
               <v-card-title>
                 Musuem Of Contemporary Art (MOCA)
@@ -73,9 +73,7 @@
               </v-card-title>
               <v-divider class="mx-4"></v-divider>
               <v-card-text class="text--primary ma-2">Place Description</v-card-text>
-              <v-card-action>
-                <v-btn color="#FF9100" text class="ma-2">EXPLORE</v-btn>
-              </v-card-action>
+              <v-btn color="#FF9100" text class="ma-2">EXPLORE</v-btn>
             </v-card>
           </v-col>
         </v-row>
@@ -86,7 +84,7 @@
 <script>
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
-
+import axios from "axios";
 export default {
   name: "AllPlan",
   components: {
@@ -94,48 +92,31 @@ export default {
   },
 
   data: () => ({
-    items: [
-      {
-        src: "../assets/aquarium1.jpg",
-        title: "AQUARIUM",
-        info: "This is Aquarium",
-      },
-      {
-        src: "../assets/island1.jpg",
-        title: "ISLAND",
-        info: "This is Island",
-      },
-      {
-        src: "../assets/market1.jpg",
-        title: "MARKET",
-        info: "This is Market",
-      },
-      {
-        src: "../assets/passage1.jpg",
-        title: "PASSAGE",
-        info: "This is Passage",
-      },
-      {
-        src: "../assets/road1.jpg",
-        title: "ROAD",
-        info: "This is Road",
-      },
-      {
-        src: "../assets/sea1.jpg",
-        title: "SEA",
-        info: "This is Sea",
-      },
-      {
-        src: "../assets/temple1.jpg",
-        title: "TEMPLE",
-        info: "This is Temple",
-      }
-    ]
+    trips: []
   }),
+  methods: {
+    count: function(item){
+      return item.length;
+    },
+    goTripInfo(keyID){
+      this.$router.push("/TripInfo/" + keyID);
+    },
+    async callTrips(){
+      await axios.post("trip",{query:""}).then((res)=>this.trips = res.data);
+    },
+  },
+  created: function(){
+    this.callTrips()
+  }
 };
 </script>
 
 <style scoped>
+  .AllPlan{
+    margin-top: 30px;
+    background-image: linear-gradient(to top, #77cee3, #6bc4dd, #60bad7, #55afd1, #4ba5cb, #439ec7, #3b96c3, #338fbf, #2c88bc, #2681ba, #227ab6, #2073b3);
+  }
+
   .choose-btn{
     margin-top: 73px;
   }
@@ -155,8 +136,26 @@ export default {
     height: 48px;
   }
 
+  .tripCard{
+    width: 80%;
+    height: 440px;
+    left: 10%;
+  }
+
   .inner-img{
     height: 200px;
   }
+  
+  .viewInfo-btn{
+    position: absolute;
+    bottom: 0px;
+  }
 
+  .allTripCard{
+    margin-top: 100px;
+  }
+
+  .adsCard{
+    margin-top: 100px;
+  }
 </style>

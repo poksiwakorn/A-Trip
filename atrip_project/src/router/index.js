@@ -9,8 +9,11 @@ import Account from '../views/Account.vue'
 import Landing from '../views/Landing.vue'
 import About from '../views/About.vue'
 import PlaceInfo from '../views/PlaceInfo.vue'
+import TripInfo from '../views/TripInfo.vue'
 import ListTrip from '../views/ListTrip.vue'
-
+import AddPlace from '../views/AddPlace.vue'
+import ApprovePlace from '../views/ApprovePlace.vue'
+import ApproveInfo from '../views/ApproveInfo.vue'
 
 Vue.use(VueRouter)
 
@@ -59,12 +62,32 @@ const routes = [
     path: '/PlaceInfo',
     name: 'PlaceInfo',
     component: PlaceInfo
-  }
-  ,
+  },
+  {
+    path: '/TripInfo/:keyID',
+    name: 'TripInfo',
+    component: TripInfo,
+    props: true
+  },
   {
     path: '/ListTrip',
     name: 'ListTrip',
     component: ListTrip
+  },
+  {
+    path: '/AddPlace',
+    name: 'AddPlace',
+    component: AddPlace
+  },
+  {
+    path: '/ApprovePlace',
+    name: 'ApprovePlace',
+    component: ApprovePlace
+  },
+  {
+    path: '/ApproveInfo',
+    name: 'ApproveInfo',
+    component: ApproveInfo
   }
 ]
 

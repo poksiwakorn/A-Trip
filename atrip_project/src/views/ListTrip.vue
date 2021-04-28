@@ -2,37 +2,139 @@
   <v-content>
     <TripBar />
     <div class="ListTrip">
-      <div class="chipBar">
-        <v-chip-group
-            mandatory
+        <v-row class="chipBar">
+          <!-- <v-chip-group
             active-class="chipActive white--text"
-        >
-        <v-chip v-for="tag in tags" :key="tag">{{ tag }}</v-chip>
-        </v-chip-group>
-      </div>
+            v-model = "typeGroup"
+            class="mt-2"
+          >
+          <v-chip v-for="type in types" :key="type">{{ type }}</v-chip>
+          </v-chip-group> -->
+          <v-autocomplete
+            v-model="typeValue"
+            :items="types"
+            filled
+            rounded
+          ></v-autocomplete>
+          <v-text-field
+            placeholder="Search..."
+            regular
+            clearable
+            color = "orange"
+            class = "search-field ml-2"
+            height="30"
+          ></v-text-field>
+          <v-btn icon tile color="orange" height="40px" width="40px" class="mt-3 ml-2"><v-icon size="35">mdi-magnify</v-icon></v-btn>
+        </v-row>   
       <v-row>
-        <v-col cols="4">
-          <div class="map"></div>
-        </v-col>
-        <v-col cols="3" class="listPlace">
-          <v-row v-for="(item, i) in items" :key="i">
-            <v-card class="ma-3">
-              <v-img src="../assets/sea1.jpg" height="200px"></v-img>
+        <div class="mapCard">
+          <Map v-bind:loca="coordinates" v-bind:Mark="totalMark" />
+        </div>
+        <v-col cols="3" class="listCard">
+          <v-row v-for="(place, i) in places" :key="i">
+            <v-card v-if="place.isVerify == '1'  && keyNotUsed(place.keyID) && (place.typeTH.includes(typeValue) || typeValue == 'ทั้งหมด')" class="ma-3">
+              <v-img src = "../assets/temple1.jpg" class="placePic"></v-img>
               <v-card-title>
-                {{ item.title }}
+                {{ place.nameTH }}
                 <v-spacer></v-spacer>
-                <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
+                <v-chip class="ma-2" color="#FF9100" outlined>{{
+                  place.provinceTH
+                }}</v-chip>
               </v-card-title>
-              <v-card-subtitle>CrazyboyOO1</v-card-subtitle>
+              <v-card-subtitle>{{place.typeTH}}</v-card-subtitle>
               <v-btn color="#FF9100" outlined class="ma-2" link to = "/PlaceInfo"
                 >view info
-                <v-icon class="ml-2"
-                  >mdi-clipboard-text-search-outline</v-icon
-                ></v-btn
-              >
-              <v-btn icon color="#FF9100"><v-icon>mdi-thumb-up</v-icon></v-btn>
+                <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
+              </v-btn>
+              <v-btn
+                color="#FF9100"
+                outlined
+                class="ma-2"
+                @click="addPlace(place)"
+                >ADD TO TRIP
+                <v-icon class="ml-2">mdi-plus-outline</v-icon>
+              </v-btn>
             </v-card>
           </v-row>
+        </v-col>
+
+        <v-col cols="5" class="tripCard">
+          <v-card class="ma-3">
+            <v-card-title class="yourTripTitle white--text"
+              >Your Trip</v-card-title
+            >
+            <v-divider></v-divider>
+            <v-form class="mt-1">
+              <v-row>
+                <v-col cols="4">
+                  <v-card-title>Trip's Name</v-card-title>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="tripName"
+                    regular
+                    placeholder="myTrip"
+                    color="orange"
+                    required
+                    clearable
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-card-subtitle>Please choose at least 2 places</v-card-subtitle>
+              <v-card class="scrollCard">
+                <v-virtual-scroll
+                  page-mode
+                  :items="placesInTrip"
+                  :item-height="150"
+                  height="566"
+                >
+                  <template v-slot="place">
+                    <v-row>
+                      <v-col cols="2" class="ml-2">
+                        <v-card class="numberCard mb-5">
+                          {{ place.index + 1 }}
+                        </v-card>
+                      </v-col>
+                      <v-col cols="4">
+                        <v-card class="mb-5">
+                          <v-img
+                            src="../assets/temple1.jpg"
+                            class="placeImage"
+                          ></v-img>
+                        </v-card>
+                      </v-col>
+                      <v-col cols="5">
+                        <v-card class="mt-3">
+                          <v-row>
+                            <v-card-title
+                              class="ml-2"
+                              style="font-weight: 200; font-size: 14px"
+                              >{{ place.item.nameTH }}</v-card-title
+                            >
+                            <v-spacer></v-spacer>
+                            <v-btn
+                              icon
+                              class="mt-3 mr-4"
+                              @click="canclePlace(place.index)"
+                              ><v-icon color="error">mdi-close</v-icon></v-btn
+                            >
+                          </v-row>
+                          <v-chip class="ma-2" color="#FF9100" outlined>{{
+                            place.item.provinceTH
+                          }}</v-chip>
+                        </v-card>
+                      </v-col>
+                    </v-row>
+                  </template>
+                </v-virtual-scroll>
+              </v-card>
+              <v-row>
+                <v-btn text class="makeTripButton" @click="placesInTrip.length >= 2 ? makeTrip() : makeFail()">Make A Trip</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn text class="updateButton">Update Route</v-btn>
+              </v-row>
+            </v-form>
+          </v-card>
         </v-col>
       </v-row>
     </div>
@@ -42,76 +144,156 @@
 <script>
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
-
+import axios from "axios";
+import Map from "../components/Map";
 export default {
   name: "ListTrip",
   components: {
     TripBar,
+    Map,
   },
 
   data: () => ({
-    tags: ["All", "Restaurant", "Photograph", "Residence"],
-    items: [
-      {
-        src: "../assets/aquarium1.jpg",
-        title: "AQUARIUM",
-        info: "This is Aquarium",
-      },
-      {
-        src: "../assets/island1.jpg",
-        title: "ISLAND",
-        info: "This is Island",
-      },
-      {
-        src: "../assets/market1.jpg",
-        title: "MARKET",
-        info: "This is Market",
-      },
-      {
-        src: "../assets/passage1.jpg",
-        title: "PASSAGE",
-        info: "This is Passage",
-      },
-      {
-        src: "../assets/road1.jpg",
-        title: "ROAD",
-        info: "This is Road",
-      },
-      {
-        src: "../assets/sea1.jpg",
-        title: "SEA",
-        info: "This is Sea",
-      },
-      {
-        src: "../assets/temple1.jpg",
-        title: "TEMPLE",
-        info: "This is Temple",
-      },
+    types: ["ทั้งหมด","วัด", "สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ","ดอย","น้ำตก","ศาลเจ้า","จุดชมวิว"],
+    typeValue: "ทั้งหมด",
+    totalMark: 0,
+    lastLoca: [],
+    coordinates: [
+      
     ],
+    typeGroup: 0,
+    tripName: "",
+    placesInTrip: [],
+    places: [],
   }),
+  methods: {
+    addPlace: function(item) {
+      this.placesInTrip.push(item);
+      this.coordinates.push({ lat: item.latitude, lng: item.longitude });
+      this.totalMark = this.coordinates.length;
+    },
+    canclePlace: function(index) {
+      this.placesInTrip.splice(index, 1);
+      this.coordinates.splice(index, 1);
+      this.totalMark = this.coordinates.length;
+    },
+    getItem: function(items, item) {
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].title == item) {
+          return items[i];
+        }
+      }
+    },
+    async makeTrip (){
+      await axios.post("makeTrip",{userID: this.$store.getters.StateID, tripName: this.tripName, placesInTrip: this.placesInTrip}).then((res)=>this.$router.push("/Account")).catch(this.$router.push("/Account"));
+    },
+    makeFail: function(){
+      alert("Add Fail");
+    },
+    keyNotUsed: function(keyID){
+      var i;
+      for(i=0;i < this.placesInTrip.length;i++){
+        // console.log(this.placesInTrip[i].keyID);
+        if(keyID == this.placesInTrip[i].keyID){
+          return false;
+        }
+      }
+      return true;
+    },
+    async callPlaces(){
+      await axios.post("location",{query:""}).then((res)=>this.places = res.data);
+    },
+  },
+  created: function() {
+    this.callPlaces();
+  },
 };
 </script>
 
 <style scoped>
-    .chipBar {
-        margin: 10px;
-        position: fixed;
-        margin-top: 83px;
-    }
+.chipBar {
+  margin: 10px;
+  position: fixed;
+  margin-top: 60px;
+}
 
-    .chipActive {
-        background-color: #ff9100;
-    }
+.chipActive {
+  background-color: #ff9100;
+}
 
-    .map {
-        position: fixed;
-        width: 500px;
-        height: 630px;
-        margin-top: 123px;
-        background-image: url(../assets/map1.png);
-    }
+.search-field {
+  width: 200px;
+}
 
-    .listPlace {
-        margin-top: 123px;
-    }
+.mapCard {
+  position: fixed;
+  margin-top: 150px;
+  margin-left: 15px;
+}
+
+.mapPic {
+  background-image: url(../assets/map1.png);
+}
+
+.listCard {
+  position: absolute;
+  margin-top: 7vh;
+  left: 33vw;
+}
+
+.placePic {
+  width: 800px;
+  height: 280px;
+}
+
+.tripCard {
+  position: fixed;
+  /* margin-top: 70px;
+      margin-left: 905px; */
+  top: 7%;
+  left: calc(59% - 10px);
+}
+
+.yourTripTitle {
+  background-color: #faae4b;
+  font-size: 30px;
+}
+
+.numberCard {
+  background-color: #faae4b;
+  color: black;
+  font-size: 45px;
+  font-weight: 80;
+  text-align: center;
+  padding-top: 25%;
+  height: 87%;
+}
+
+.scrollCard {
+  margin-left: 20px;
+  padding-left: 15px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  width: 95%;
+  height: 60vh;
+}
+
+.makeTripButton {
+  margin-left: 45px;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  color: #ff9100;
+}
+
+.updateButton {
+  margin-right: 40px;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  color: #ff9100;
+}
+
+.placeImage {
+  width: 100%;
+  height: 100px;
+}
 </style>

@@ -1,7 +1,7 @@
 <template>
   <v-content>
     <TripBar/>
-    <div class="PlaceInfo">
+    <div class="ApproveInfo">
       <v-row>
         <v-col cols = "4" class="mapZone">
           <v-card class="mapCard pb-7">
@@ -36,9 +36,9 @@
             <v-card-title class="imageTitle">
               Passage
               <v-spacer></v-spacer>
-              <v-chip class="ma-2" color="#FF9100" outlined>{{nearbys[0].province}}</v-chip>
+              <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
             </v-card-title>
-            <v-card-subtitle class="imageSubTitle mt-1 ml-1">{{nearbys[0].info}}</v-card-subtitle>
+            <v-card-subtitle class="imageSubTitle mt-1 ml-1">Photograph,Residence,Restaurant</v-card-subtitle>
             <v-divider class="mx-2"></v-divider>
             <v-card-text class="imageText">
               This is the text that should describe the hide-detail
@@ -46,23 +46,9 @@
             </v-card-text>
           </v-card>
         </v-col>
-        <v-col cols = "4" class="nearbyZone">
-            <v-card class="nearbyCard mr-10">Nearby Place</v-card>
-            <v-row v-for="(nearby, i) in nearbys" :key="i">
-              <v-card class="placeCard ma-3">
-                <v-img :src = "nearby.src[0]" class="placePic"></v-img>
-                <v-card-title>
-                  {{ nearby.title }}
-                  <v-spacer></v-spacer>
-                  <v-chip class="ma-2" color="#FF9100" outlined>{{nearby.province}}</v-chip>
-                </v-card-title>
-                <v-card-subtitle>{{nearby.info}}</v-card-subtitle>
-                <v-btn color="#FF9100" outlined class="ma-2" @click = "goNext(nearby.title)"
-                  >view info
-                  <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
-                </v-btn>
-              </v-card>
-            </v-row>
+        <v-col cols = "4" class="buttonZone">
+            <v-btn color="green" class="approve-btn white--text" height="100px" link to="ApprovePlace" >Approve</v-btn>
+            <v-btn color="error" class="decline-btn" height="100px" link to="ApprovePlace">Decline</v-btn>
         </v-col>
       </v-row>
     </div>
@@ -74,38 +60,15 @@
 import TripBar from "../components/TripBar";
 
 export default {
-  name: "PlaceInfo",
+  name: "ApproveInfo",
   components: {
     TripBar
   },
-
-  data: () => ({
-    nearbys: [
-      {
-        src: [require("../assets/island1.jpg")],
-        title: "ISLAND",
-        info: "Photograph,Residence,Restaurant",
-        province: "Phuket"
-      },
-      {
-        src: [require("../assets/market1.jpg")],
-        title: "MARKET",
-        info: "Photograph,Restaurant",
-        province: "China"
-      }
-    ]
-  }),
-  methods:{
-    goNext(title){
-      this.$router.push("/PlaceInfo/"+title)
-    }
-  }
 };
 </script>
 
-
 <style scoped>
-  .PlaceInfo{
+    .ApproveInfo{
     /* background-image: linear-gradient(to right bottom, #f4e3a6, #f5e194, #f7df81, #f7dd6e, #f8db59, #f9d84c, #f9d43e, #fad12d, #fbcc25, #fdc71b, #fec110, #ffbc00); */
     /* background-image: linear-gradient(to bottom, #f4e3a6, #f7e39b, #f9e490, #fbe484, #fde578, #fee26c, #fede60, #ffdb54, #ffd246, #ffc937, #ffc026, #ffb611); */
     background-image: linear-gradient(to top, #77cee3, #6bc4dd, #60bad7, #55afd1, #4ba5cb, #439ec7, #3b96c3, #338fbf, #2c88bc, #2681ba, #227ab6, #2073b3);
@@ -160,35 +123,24 @@ export default {
     line-height: 30px;
   }
 
-  .nearbyZone{
+  .buttonZone{
     width: 100%;
     height: calc(100vh + 12px);
   }
 
-  .nearbyCard{
+  .approve-btn{
+    margin-top: 50%;
+    margin-bottom: 20px;
+    margin-left: 35px;
+    width: 84%;
+    font-size: 30px;
+  }
+
+  .decline-btn{
     margin-top: 83px;
     margin-bottom: 20px;
     margin-left: 35px;
     width: 84%;
-    height: 100px;
-    font-size: 45px;
-    font-weight: 300;
-    text-align: center;
-    padding-top: 15px;
-  }
-
-  .placeCard{
-    left: 6%;
-    width: 80%;
-    height: 360px;
-  }
-
-  .placePic{
-    width: cover;
-    height: 200px;
-  }
-
-  .subtitle{
-    font-size: 17px;
+    font-size: 30px;
   }
 </style>
