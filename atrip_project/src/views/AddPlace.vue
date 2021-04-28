@@ -11,9 +11,9 @@
             </v-card>
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">Website</v-card-title>
-            <v-text-field class="mx-9" placeholder="www.example.com" ></v-text-field>
+            <v-text-field v-model = "form.website" class="mx-9" placeholder="www.example.com" ></v-text-field>
             <v-divider class="mx-5"></v-divider>
-            <v-card-title class="mx-4">Phone Number</v-card-title>
+            <v-card-title v-model = "form.phone" class="mx-4">Phone Number</v-card-title>
             <v-text-field class="mx-9" placeholder="xxxxxxxxxx"></v-text-field>
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">Business Hours</v-card-title>
@@ -34,15 +34,15 @@
             <v-img src = "../assets/passage1.jpg" class="imagePic"></v-img>
             <v-divider></v-divider>
             <v-card-title class="imageTitle">
-              <v-text-field placeholder="Place's Name" :rules="placeNameRule"></v-text-field>
+              <v-text-field v-model = "form.placeName" placeholder="Place's Name" :rules="placeNameRule"></v-text-field>
               <v-spacer></v-spacer>
-              <v-text-field placeholder="Place's province" ></v-text-field>
+              <v-text-field v-model = "form.province" placeholder="Place's province" ></v-text-field>
             </v-card-title>
             <v-divider class="mx-2"></v-divider>
             <v-card-text class="imageText">
-                <v-textarea filled label="Place's description" height="250px" class="mr-2"></v-textarea>
+                <v-textarea  v-model = "form.description" filled label="Place's description" height="250px" class="mr-2"></v-textarea>
                 </v-card-text>
-                <v-btn color="primary" class="recommend-btn mx-5 my-5" height="50px" >
+                <v-btn @click = "sendData" color="primary" class="recommend-btn mx-5 my-5" height="50px" >
                     Recommend place
                 <v-icon class="ml-2" size="30" >mdi-bookmark-plus</v-icon>
             </v-btn>
@@ -56,6 +56,7 @@
 <script>
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
+import axios from "axios";
 
 export default {
   name: "AddPlace",
@@ -67,8 +68,33 @@ export default {
     placeNameRule: [
         v => !!v || 'place\'s name is required',
         v => v.length <= 10 || 'place\'s name must be less than 10 characters'
-    ]
-  })
+    ],
+    form : {
+      website : "",
+      phone : "",
+      placeName : "",
+      province : "",
+      description : ""
+    }
+  }),
+
+  methods : {
+    async sendData(){
+      await axios.post("addLocation",this.form)
+      .then((res) => 
+      {
+        alert(res.data.msg)
+        console.log(res.data)
+        if (res.data.isSuccess){
+          this.form.website = ""
+          this.form.phone = ""
+          this.form.placeName = ""
+          this.form.province = ""
+          this.form.description = ""
+        }
+      })
+    }
+  }
 };
 </script>
 
