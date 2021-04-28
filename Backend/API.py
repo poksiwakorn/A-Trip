@@ -171,10 +171,6 @@ def getPlace():
             return jsonify(account)
         else:
             return jsonify(Testform)
-            # cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            # cursor.execute('SELECT * FROM Atrip_Place Where %s',)
-            # account = cursor.fetchall()
-            # return jsonify("account")
 
 @app.route("/addLocation", methods = ['GET', 'POST'])
 @cross_origin()
@@ -199,7 +195,7 @@ def addLocation():
             return jsonify(form)
 
         else:
-            form["msg"] = "Error no PlaceName"
+            form["msg"] = "Error no PlaceName :d"
             return jsonify(form)
 
 
