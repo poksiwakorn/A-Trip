@@ -106,7 +106,6 @@ export default {
       for(i=0;i<this.provinces.length;i++){
         this.provinceNames.push(this.provinces[i].provinceTH);
       }
-      console.log(this.provinceNames);
     },
   },
   created: function(){
