@@ -34,9 +34,14 @@
             <v-img src = "../assets/passage1.jpg" class="imagePic"></v-img>
             <v-divider></v-divider>
             <v-card-title class="imageTitle">
-              <v-text-field v-model = "form.placeName" placeholder="Place's Name" :rules="placeNameRule"></v-text-field>
+              <v-text-field v-model = "form.placeName" label="Place's Name" :rules="placeNameRule"></v-text-field>
               <v-spacer></v-spacer>
-              <v-text-field v-model = "form.province" placeholder="Place's province" ></v-text-field>
+              <v-autocomplete
+                v-model="form.province"
+                :items="provinceNames"
+                label="Place's Province"
+              ></v-autocomplete>
+              <!-- <v-text-field v-model = "form.province" placeholder="Place's province" ></v-text-field> -->
             </v-card-title>
             <v-divider class="mx-2"></v-divider>
             <v-card-text class="imageText">
@@ -65,6 +70,8 @@ export default {
   },
 
   data: () => ({
+    provinces: [],
+    provinceNames: [],
     placeNameRule: [
         v => !!v || 'place\'s name is required',
         v => v.length <= 10 || 'place\'s name must be less than 10 characters'
@@ -84,7 +91,6 @@ export default {
       .then((res) => 
       {
         alert(res.data.msg)
-        console.log(res.data)
         if (res.data.isSuccess){
           this.form.website = ""
           this.form.phone = ""
@@ -93,7 +99,17 @@ export default {
           this.form.description = ""
         }
       })
-    }
+    },
+    async callProvinces(){
+      await axios.get("province").then((res)=>this.provinces = res.data);
+      var i;
+      for(i=0;i<this.provinces.length;i++){
+        this.provinceNames.push(this.provinces[i].provinceTH);
+      }
+    },
+  },
+  created: function(){
+    this.callProvinces()
   }
 };
 </script>

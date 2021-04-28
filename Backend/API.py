@@ -117,14 +117,12 @@ def login():
 @app.route("/location", methods = ['GET', 'POST'])
 @cross_origin()
 def location():
-    form = {'title' : "", 'Info' : "", 'Latitude' : "" , 'Longitude' : "" , "review" : "" , "rating" : "" ,"NumberRating" : "","src" : "","lPicture2" : "","lPicture3" : "","lPicture4" : ""}
-    back = []
     if request.method == 'POST':
         content = request.get_json()
         print(content)
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Place1 ORDER BY keyID')
+            cursor.execute('SELECT * FROM Atrip_Place ORDER BY keyID')
             account = cursor.fetchall()
             print(account)
     return jsonify(account)
@@ -132,15 +130,23 @@ def location():
 @app.route("/trip", methods = ['GET', 'POST'])
 @cross_origin()
 def trip():
-    form = {'title' : "", 'Info' : "", 'Latitude' : "" , 'Longitude' : "" , "review" : "" , "rating" : "" ,"NumberRating" : "","src" : "","lPicture2" : "","lPicture3" : "","lPicture4" : ""}
-    back = []
     if request.method == 'POST':
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Trip1 ORDER BY keyID')
+            cursor.execute('SELECT * FROM Atrip_Trip ORDER BY keyID')
             account = cursor.fetchall()
             print(account)
+    return jsonify(account)
+
+@app.route("/province", methods = ['GET'])
+@cross_origin()
+def province():
+    if request.method == 'GET':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM Atrip_Province ORDER BY keyID')
+        account = cursor.fetchall()
+        print(account)
     return jsonify(account)
 
 @app.route("/tripInfo/<keyID>", methods = ['GET'])
@@ -148,7 +154,7 @@ def trip():
 def tripInfo(keyID):
     if request.method == 'GET':
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM Atrip_Trip1 WHERE keyID = %s',[keyID])
+        cursor.execute('SELECT * FROM Atrip_Trip WHERE keyID = %s',[keyID])
         account = cursor.fetchall()
         print(account)
     return jsonify(account)
@@ -164,7 +170,7 @@ def getPlace():
         if content["place"]:
             contentinput = content["place"][1:len(content["place"])-1].split(",")
             print(contentinput)
-            form = "SELECT * FROM Atrip_Place1 WHERE keyID = " + " or keyID = ".join(contentinput)
+            form = "SELECT * FROM Atrip_Place WHERE keyID = " + " or keyID = ".join(contentinput)
             print(form)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(form)
@@ -182,7 +188,7 @@ def addLocation():
         print(content)
         if content["placeName"]:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Place1 WHERE nameTH = %s',[content["placeName"]])
+            cursor.execute('SELECT * FROM Atrip_Place WHERE nameTH = %s',[content["placeName"]])
             account = cursor.fetchall()
             if account:
                 print("enter")
@@ -191,7 +197,7 @@ def addLocation():
             else:
                 form["isSuccess"] = True
                 form["msg"] = "Successfully add to database"
-                cursor.execute('INSERT INTO Atrip_Place1 (website,phoneNumber,nameTH,provinceTH,descriptionTH) VALUES (%s, %s, %s, %s, %s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"]))
+                cursor.execute('INSERT INTO Atrip_Place (website,phoneNumber,nameTH,provinceTH,descriptionTH) VALUES (%s, %s, %s, %s, %s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"]))
                 mysql.connection.commit()
             return jsonify(form)
 

@@ -11,7 +11,7 @@
               </v-avatar>
             </div>
             <v-col class="profileName my-10">
-              BaoFollow
+              {{this.$store.getters.StateUsername}}
             </v-col>
             <v-btn class="editProfile-btn white--text" width="40%" height="50px" color="#FF9100">
               Edit Profile
