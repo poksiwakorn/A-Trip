@@ -13,7 +13,7 @@ def makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSe
     data = list()
     for i in listOfKeyOfSelectedPlace:
         for j in listOfKeyOfSelectedPlace:
-            listOfKeyOfPointToKeyOfPoint = list()          
+            listOfKeyOfPointToKeyOfPoint = list()
             if(j is not i):
                 listOfKeyOfPointToKeyOfPoint.append(i)
                 listOfKeyOfPointToKeyOfPoint.append(j)
@@ -66,7 +66,7 @@ def makeList_Of_ListOf_AllListOfRoute_ListofDistance_And_SumOfDistance(numberOfS
 
 def something(listOfKeyOfSelectedPlace, dictFromGooglemapsAPI):
     return makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DistanceBetweenPointToPoint(makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace(listOfKeyOfSelectedPlace), makeList_Of_DistanceBetweenPointToPoint_From_DictFromGooglemapsAPI(dictFromGooglemapsAPI))
-    
+
 
 a = makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace(["A","B","C","D"])
 print(a)

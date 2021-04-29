@@ -71,10 +71,9 @@ export default {
     async Login(){
       try {
         await this.$store.dispatch("LogIn",this.form);
-        if (this.$store.getters.StateIsLogIn == true){
+        if (this.$store.getters.isAuthenticated){
           this.$router.push("/Home")
         }
-        alert(this.$store.getters.StateMsg)
       }
       catch(error){
         console.log(error)

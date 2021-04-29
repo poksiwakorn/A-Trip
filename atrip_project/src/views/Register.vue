@@ -80,11 +80,12 @@ export default {
     async register(){
       try {
         await this.$store.dispatch("Register",this.form);
-        if (this.$store.getters.StateMsg == "You have successfully registered!")
+        if (this.$store.getters.StateMsg == "You have successfully registered!"){
+          this.$store.dispatch("removeMsg")
           this.$router.push("/SignIn");
-        this.showMsg = true
+        }
       } catch (error) {
-        this.showMsg = true
+        console.log(error)
       }
     }
   },
