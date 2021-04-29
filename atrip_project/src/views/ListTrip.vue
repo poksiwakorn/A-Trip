@@ -167,7 +167,7 @@ export default {
     provinceNames: ["ทั้งหมด"],
     provinceValue: "ทั้งหมด",
     totalMark: 0,
-    lastLoca: [],
+  
     coordinates: [
       
     ],

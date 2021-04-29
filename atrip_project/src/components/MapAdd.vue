@@ -1,35 +1,9 @@
 <template>
   <div>
-    <div v-if="Mark == 0">
       <GmapMap
         :center="coordinates"
         :zoom="16"
-        style=" width: 32vw; height:800px;"
-        :options="{
-          zoomControl: false,
-          mapTypeControl: false,
-          scaleControl: false,
-          streetViewControl: true,
-          rotateControl: false,
-          fullscreenControl: false,
-          disableDefaultUi: false,
-        }"
-      >
-        <!-- <GmapMarker
-          v-for="(m, index) in userlocation"
-          :key="index"
-          :position="m"
-          :clickable="true"
-          :draggable="false"
-          @click="centerPosition = m"
-        /> -->
-      </GmapMap>
-    </div>
-    <div v-else>
-      <GmapMap
-        :center="centerPosition"
-        :zoom="16"
-        style=" width: 32vw; height:800px;"
+        style=" width: 37vw; height:300px;"
         :options="{
           zoomControl: false,
           mapTypeControl: false,
@@ -41,15 +15,15 @@
         }"
       >
         <GmapMarker
-          v-for="(m, index) in this.loca"
+          v-for="(m, index) in userlocation"
           :key="index"
           :position="m"
           :clickable="true"
-          :draggable="false"
-          @click="centerPosition = m"
+          :draggable="true"
+          @click="coordinates = m"
         />
       </GmapMap>
-    </div>
+    
   </div>
 </template>
 
@@ -64,7 +38,6 @@ export default {
       recenter:{
 
       },
-      centerPosition: this.loca[0],
       userlocation: [
         {
           lat: 0,
@@ -87,6 +60,6 @@ export default {
 
     
   },
-  props: ["loca", "Mark",],
+ 
 };
 </script>
