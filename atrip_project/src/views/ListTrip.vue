@@ -185,7 +185,10 @@ export default {
       }
     },
     async makeTrip (){
-      await axios.post("makeTrip",{userID: this.$store.getters.StateID, tripName: this.tripName, placesInTrip: this.placesInTrip}).then((res)=>this.$router.push("/Account")).catch(this.$router.push("/Account"));
+      await axios.post("makeTrip",{"userID": this.$store.getters.StateID , "tripName": this.tripName, "placesInTrip": this.placesInTrip})
+      .then((res)=>{
+        alert(res.data.msg)
+        })
     },
     makeFail: function(){
       alert("Add Fail");
