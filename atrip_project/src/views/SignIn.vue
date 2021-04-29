@@ -4,12 +4,12 @@
       <v-form class="sign-in-form">
         <v-row>
           <v-col cols="12">
-            <h1>Sign In</h1>
+            <h1 style="font-size: 30px;" class="grey--text">ลงชื่อเข้าใช้งาน</h1>
           </v-col>     
           <v-col cols="12">
             <v-text-field
               v-model = "form.username"
-              label="Username"
+              label="ชื่อผู้ใช้"
               placeholder="Username"
               :rules = "usernameRule"
               regular
@@ -20,7 +20,7 @@
           <v-col cols="12">
             <v-text-field
               v-model = "form.password"
-              label="Password"
+              label="รหัสผ่าน"
               placeholder="Password1234"
               :rules = "passwordRule"
               :append-icon = "showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -31,13 +31,13 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12">
-            <v-btn @click = "Login" align-center color="info">Sign in</v-btn>
+            <v-btn @click = "Login" align-center color="info" style="font-size: 20px;">ถัดไป</v-btn>
           </v-col>
           <v-col cols="12">
-            <router-link to="/about">Forget your password?</router-link>
+            <!-- <router-link to="/about">Forget your password?</router-link> -->
           </v-col>
           <v-col cols="12">
-            <router-link to="/Register">Create your own account</router-link>
+            <router-link to="/Register">ยังไม่มีรหัสอีกเหรอ? กดตรงนี้สิ</router-link>
           </v-col>
         </v-row>
       </v-form>

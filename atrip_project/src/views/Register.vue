@@ -2,10 +2,10 @@
   <div class="Register">
     <img class="img1" />
     <v-form class="register-form" v-model="valid">
-      <span class="text1">Register</span>
+      <span class="text1">สมัครสมาชิก</span>
       <v-text-field
         v-model = "form.username"
-        label="Username"
+        label="ชื่อผู้ใช้"
         placeholder="Username"
         :rules = "usernameRule"
         regular
@@ -14,7 +14,7 @@
       ></v-text-field>
       <v-text-field
         v-model = "form.password"
-        label="Password"
+        label="รหัสผ่าน"
         placeholder="Password1234"
         :rules = "passwordRule"
         :append-icon = "showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -27,7 +27,7 @@
         <v-col cols="6">
           <v-text-field
             v-model = "form.firstname"
-            label="Firstname"
+            label="ชื่อ"
             placeholder="Firstname"
             :rules = "firstnameRule"
             regular
@@ -37,7 +37,7 @@
         <v-col cols="6">
           <v-text-field
             v-model = "form.lastname"
-            label="Lastname"
+            label="นามสกุล"
             placeholder="Lastname"
             :rules = "lastnameRule"
             regular
@@ -49,7 +49,7 @@
         <template v-slot:activator = "{on,attrs}">
           <v-text-field
             v-model="birthdayText"
-            label="Birthday"
+            label="วัน-เดือน-ปี เกิด"
             placeholder="yy/mm/dd"
             regular
             class="mt-7 mb-3"
@@ -63,12 +63,12 @@
       </v-menu>
       <v-text-field
         v-model = "form.email"
-        label="Email"
+        label="อีเมล"
         placeholder="myEmail@hotmail.com"
         regular
         class="mt-7 mb-3"
       ></v-text-field>
-      <v-btn @click = "register" text color = "#F57F17" class="btn1">Submit</v-btn>
+      <v-btn @click = "register" text color = "#F57F17" class="btn1" style="font-size: 27px;">ยืนยัน</v-btn>
     </v-form>
   </div>
 </template>

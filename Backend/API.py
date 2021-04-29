@@ -86,7 +86,7 @@ def login():
         # Check if account exists using MySQL
         if username and password:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Users WHERE BINARY username = %s AND  BINARY password = %s', (username, password))
+            cursor.execute('SELECT * FROM Atrip_Users WHERE BINARY username = %s AND  BINARY password = %s', (username, password))
             # Fetch one record and return result
             account = cursor.fetchone()
             # If account exists in accounts table in out database
@@ -123,7 +123,7 @@ def location():
         print(content)
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Place ORDER BY keyID')
+            cursor.execute('SELECT * FROM Atrip_Places ORDER BY keyID')
             account = cursor.fetchall()
             print(account)
     return jsonify(account)
@@ -135,7 +135,7 @@ def trip():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Trip ORDER BY keyID')
+            cursor.execute('SELECT * FROM Atrip_Trips ORDER BY keyID')
             account = cursor.fetchall()
             print(account)
     return jsonify(account)
@@ -145,7 +145,7 @@ def trip():
 def province():
     if request.method == 'GET':
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM Atrip_Province ORDER BY keyID')
+        cursor.execute('SELECT * FROM Atrip_Provinces ORDER BY keyID')
         account = cursor.fetchall()
         print(account)
     return jsonify(account)
@@ -155,7 +155,7 @@ def province():
 def tripInfo(keyID):
     if request.method == 'GET':
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM Atrip_Trip WHERE keyID = %s',[keyID])
+        cursor.execute('SELECT * FROM Atrip_Trips WHERE keyID = %s',[keyID])
         account = cursor.fetchall()
         print(account)
     return jsonify(account)
@@ -170,7 +170,7 @@ def getPlace():
         print(len(content["place"]))
         if content["place"]:
             contentinput = content["place"].split(",")
-            form = "SELECT * FROM Atrip_Place WHERE keyID = " + " or keyID = ".join(contentinput)
+            form = "SELECT * FROM Atrip_Places WHERE keyID = " + " or keyID = ".join(contentinput)
             print(form)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(form)
@@ -188,7 +188,7 @@ def getTrip():
         print(len(content["trip"]))
         if content["trip"]:
             contentinput = content["trip"].split(",")
-            form = "SELECT * FROM Atrip_Trip WHERE keyID = " + " or keyID = ".join(contentinput)
+            form = "SELECT * FROM Atrip_Trips WHERE keyID = " + " or keyID = ".join(contentinput)
             print(form)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(form)
@@ -206,7 +206,7 @@ def addLocation():
         print(content)
         if content["placeName"]:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Place WHERE nameTH = %s',[content["placeName"]])
+            cursor.execute('SELECT * FROM Atrip_Places WHERE nameTH = %s',[content["placeName"]])
             account = cursor.fetchall()
             if account:
                 print("enter")
@@ -215,7 +215,7 @@ def addLocation():
             else:
                 form["isSuccess"] = True
                 form["msg"] = "Successfully add to database"
-                cursor.execute('INSERT INTO Atrip_Place (website,phoneNumber,nameTH,provinceTH,descriptionTH) VALUES (%s, %s, %s, %s, %s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"]))
+                cursor.execute('INSERT INTO Atrip_Places (website,phoneNumber,nameTH,provinceTH,descriptionTH) VALUES (%s, %s, %s, %s, %s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"]))
                 mysql.connection.commit()
             return jsonify(form)
 
