@@ -27,7 +27,7 @@
     </div>
     <div v-else>
       <GmapMap
-        :center="centerPosition"
+        :center="centerPosition[Mark - 1]"
         :zoom="16"
         style=" width: 32vw; height:800px;"
         :options="{
@@ -61,10 +61,7 @@ export default {
         getlat: 0,
         getlng: 0,
       },
-      recenter:{
-
-      },
-      centerPosition: this.loca[0],
+      centerPosition: this.loca,
       userlocation: [
         {
           lat: 0,
@@ -81,7 +78,6 @@ export default {
         this.coordinates = coordinates;
         this.userlocation[0].lat = coordinates.lat;
         this.userlocation[0].lng = coordinates.lng;
-
       })
       .catch((error) => alert(error));
 

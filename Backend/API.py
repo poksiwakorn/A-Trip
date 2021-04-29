@@ -179,6 +179,24 @@ def getPlace():
         else:
             return jsonify(Testform)
 
+@app.route("/getTrip", methods = ['GET', 'POST'])
+@cross_origin()
+def getTrip():
+    if request.method == 'POST':
+        content = request.get_json()
+        print(content["trip"])
+        print(len(content["trip"]))
+        if content["trip"]:
+            contentinput = content["trip"].split(",")
+            form = "SELECT * FROM Atrip_Trip WHERE keyID = " + " or keyID = ".join(contentinput)
+            print(form)
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute(form)
+            account = cursor.fetchall()
+            return jsonify(account)
+        else:
+            return jsonify(Testform)
+
 @app.route("/addLocation", methods = ['GET', 'POST'])
 @cross_origin()
 def addLocation():
