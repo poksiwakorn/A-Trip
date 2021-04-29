@@ -5,26 +5,38 @@
       <v-row>
         <v-col cols = "6" class="mapZone">
           <v-card class="mapCard pb-7">
-            <v-card-title class="mx-4">Map</v-card-title>
+            <v-card-title class="mx-4">แผนที่</v-card-title>
             <v-card class="mx-10 mb-7">
               <MapAdd />
             </v-card>
             <v-divider class="mx-5"></v-divider>
-            <v-card-title class="mx-4">Website</v-card-title>
+            <v-card-title class="mx-4">เว็บไซต์</v-card-title>
             <v-text-field v-model = "form.website" class="mx-9" placeholder="www.example.com" ></v-text-field>
             <v-divider class="mx-5"></v-divider>
-            <v-card-title v-model = "form.phone" class="mx-4">Phone Number</v-card-title>
+            <v-card-title v-model = "form.phone" class="mx-4">เบอร์โทรศัพท์</v-card-title>
             <v-text-field class="mx-9" placeholder="xxxxxxxxxx"></v-text-field>
             <v-divider class="mx-5"></v-divider>
-            <v-card-title class="mx-4">Business Hours</v-card-title>
+            <v-card-title class="mx-4">เวลาทำการ</v-card-title>
             <v-row>
-              <v-card-subtitle class="mx-10 subtitle">Monday - Friday</v-card-subtitle>
-              <v-spacer></v-spacer>
-              <v-chip class="ma-2 mx-10" color="#FF9100" outlined>8:00 - 22.00</v-chip>
+              <v-card-subtitle class="ml-15 mr-15 subtitle">วันจันทร์</v-card-subtitle>
+              <v-card-subtitle class="ml-8 mr-15 subtitle">วันอังคาร</v-card-subtitle>
+              <v-card-subtitle class="ml-10 mr-15 subtitle">วันพุธ</v-card-subtitle>
+              <v-card-subtitle class="ml-10 mr-15 subtitle">วันพฤหัส</v-card-subtitle>
             </v-row>
             <v-row>
-              <v-card-subtitle class="mx-10 subtitle">Saturday</v-card-subtitle>
-              <v-spacer></v-spacer>
+              <v-chip class="ma-2 ml-12 mr-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
+              <v-chip class="ma-2 mx-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
+              <v-chip class="ma-2 mx-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
+              <v-chip class="ma-2 mx-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
+            </v-row>
+            <v-row>
+              <v-card-subtitle class="ml-16 mr-15 subtitle">วันศุกร์</v-card-subtitle>
+              <v-card-subtitle class="ml-11 mr-15 subtitle">วันเสาร์</v-card-subtitle>
+              <v-card-subtitle class="ml-9 mr-15 subtitle">วันอาทิตย์</v-card-subtitle>  
+            </v-row>
+            <v-row>
+              <v-chip class="ma-2 ml-12 mr-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
+              <v-chip class="ma-2 mx-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
               <v-chip class="ma-2 mx-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
             </v-row>
           </v-card>
@@ -34,21 +46,21 @@
             <v-img src = "../assets/passage1.jpg" class="imagePic"></v-img>
             <v-divider></v-divider>
             <v-card-title class="imageTitle">
-              <v-text-field v-model = "form.placeName" label="Place's Name" :rules="placeNameRule"></v-text-field>
+              <v-text-field v-model = "form.placeName" label="ชื่อสถานที่" :rules="placeNameRule"></v-text-field>
               <v-spacer></v-spacer>
               <v-autocomplete
                 v-model="form.province"
                 :items="provinceNames"
-                label="Place's Province"
+                label="จังหวัด"
               ></v-autocomplete>
               <!-- <v-text-field v-model = "form.province" placeholder="Place's province" ></v-text-field> -->
             </v-card-title>
             <v-divider class="mx-2"></v-divider>
             <v-card-text class="imageText">
-                <v-textarea  v-model = "form.description" filled label="Place's description" height="250px" class="mr-2"></v-textarea>
+                <v-textarea  v-model = "form.description" filled label="ข้อมูลสถานที่เพิ่มเติม" height="250px" class="mr-2"></v-textarea>
                 </v-card-text>
                 <v-btn @click = "sendData" color="primary" class="recommend-btn mx-5 my-5" height="50px" >
-                    Recommend place
+                    แนะนำสถานที่
                 <v-icon class="ml-2" size="30" >mdi-bookmark-plus</v-icon>
             </v-btn>
           </v-card>
@@ -74,8 +86,7 @@ export default {
     provinces: [],
     provinceNames: [],
     placeNameRule: [
-        v => !!v || 'place\'s name is required',
-        v => v.length <= 10 || 'place\'s name must be less than 10 characters'
+        v => !!v || 'จำเป็น',
     ],
     form : {
       website : "",
@@ -107,17 +118,17 @@ export default {
       for(i=0;i<this.provinces.length;i++){
         this.provinceNames.push(this.provinces[i].provinceTH);
       }
-      console.log(this.provinceNames);
     },
   },
   created: function(){
-    this.callProvinces()
+    this.callProvinces();
   }
 };
 </script>
 
 <style scoped>
   .AddPlace{
+    height: 110vh;
     background-image: linear-gradient(to top, #77cee3, #6bc4dd, #60bad7, #55afd1, #4ba5cb, #439ec7, #3b96c3, #338fbf, #2c88bc, #2681ba, #227ab6, #2073b3);
   }
 
@@ -176,5 +187,10 @@ export default {
   .recommend-btn{
       width: calc(100% - 40px);
       font-size: 23px;
+  }
+
+  .subtitle{
+    font-size: 17px;
+    font-weight: 450;
   }
 </style>

@@ -6,8 +6,8 @@
     <div class="rec"></div>
     <span class="text1">START YOUR PLAN</span>
     <span class="text2">START YOUR JOURNEY</span>
-    <v-btn plain class="btn_register" link to="/Register">register</v-btn>
-    <v-btn plain class="btn_signin" @click = "Login">sign in</v-btn>
+    <v-btn plain class="btn_register" link to="/Register">สมัครสมาชิก</v-btn>
+    <v-btn plain class="btn_signin" @click = "Login">เข้าสู่ระบบ</v-btn>
   </div>
 </template>
 
@@ -77,17 +77,17 @@
 
   .btn_register{
     position: absolute;
-    right: 250px;
-    top: 25px;
-    font-size: 25px;
+    right: 300px;
+    top: 20px;
+    font-size: 30px;
     font-weight: 700;
   }
 
   .btn_signin{
     position: absolute;
     right: 50px;
-    top: 25px;
-    font-size: 25px;
+    top: 20px;
+    font-size: 30px;
     font-weight: 700;
   }
 

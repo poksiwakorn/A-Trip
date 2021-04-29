@@ -11,7 +11,7 @@
           <v-col cols="7">
             <v-card class="allTripCard">
               <v-card-title class="white--text orange darken-4 text-h4">
-                Interesting Trips
+                ทริปที่น่าสนใจ
                 <v-spacer></v-spacer>
                 <v-text-field
                   placeholder="Search..."
@@ -38,8 +38,6 @@
                       <v-card-title>
                         {{trip.item.nameTH}}
                         <v-spacer></v-spacer>
-                        <!-- <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
-                        <v-chip class="ma-2" color="#FF9100" outlined>Bankok</v-chip> -->
                         <v-chip-group class="ma-2">
                           <v-chip
                             v-for="province in trip.item.provinceTH_List.split(',')"
@@ -52,7 +50,7 @@
                       </v-card-title>                    
                       <v-card-subtitle>{{trip.item.owner}}</v-card-subtitle>
                       <v-divider class="mx-5"></v-divider>
-                      <v-card-title class="black--text">Places In Trip <v-card-subtitle class="mt-1">{{trip.item.numPlace}} places</v-card-subtitle></v-card-title>
+                      <v-card-title class="black--text">สถานที่ภายในทริป <v-card-subtitle class="mt-1">{{trip.item.numPlace}} สถานที่</v-card-subtitle></v-card-title>
                       <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" @click="goTripInfo(trip.item.keyID)">
                         view info 
                         <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
