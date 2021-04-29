@@ -46,19 +46,19 @@
                       <!-- <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
                       <v-chip class="ma-2" color="#FF9100" outlined>Bankok</v-chip> -->
                     </v-card-title>                    
-                    <v-card-subtitle>{{trip.ownerUserID}}</v-card-subtitle>
+                    <v-card-subtitle>{{trip.ownerID}}</v-card-subtitle>
                     <v-divider class="mx-5"></v-divider>
                     <v-card-title class="black--text">Places In Trip <v-card-subtitle class="mt-1">{{trip.numPlace}} places</v-card-subtitle></v-card-title>
-                    <v-row
+                    <!-- <v-row
                       v-for="(place, j) in trip.placeList_List.split(',')"
                       :key="j"
                       class="mx-10"
                     >
                       <h5>{{place}}</h5>
-                    </v-row>
+                    </v-row> -->
                     <v-row class="oneTripAction">
                       <v-scale-transition>
-                        <v-btn color="#FF9100" outlined class="ma-2" link to = "/TripInfo">
+                        <v-btn color="#FF9100" outlined class="ma-2" @click="goTripInfo(trip.keyID)">
                           view info 
                           <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
                         </v-btn>
@@ -93,6 +93,9 @@ export default {
   methods: {
     deleteTrip: function(index){
       this.savedTrips.splice(index,1);
+    },
+    goTripInfo(keyID){
+      this.$router.push("/TripInfo/" + keyID);
     },
     async callTrips(){
       await axios.post("trip",{query:""}).then((res)=>this.savedTrips = res.data);

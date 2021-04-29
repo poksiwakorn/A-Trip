@@ -38,8 +38,6 @@
                       <v-card-title>
                         {{trip.item.nameTH}}
                         <v-spacer></v-spacer>
-                        <!-- <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
-                        <v-chip class="ma-2" color="#FF9100" outlined>Bankok</v-chip> -->
                         <v-chip-group class="ma-2">
                           <v-chip
                             v-for="province in trip.item.provinceTH_List.split(',')"

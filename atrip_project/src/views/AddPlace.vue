@@ -109,7 +109,7 @@ export default {
     },
   },
   created: function(){
-    this.callProvinces()
+    this.callProvinces();
   }
 };
 </script>

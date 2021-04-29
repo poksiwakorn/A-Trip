@@ -3,28 +3,31 @@
     <TripBar />
     <div class="ListTrip">
         <v-row class="chipBar">
-          <!-- <v-chip-group
-            active-class="chipActive white--text"
-            v-model = "typeGroup"
-            class="mt-2"
-          >
-          <v-chip v-for="type in types" :key="type">{{ type }}</v-chip>
-          </v-chip-group> -->
           <v-autocomplete
             v-model="typeValue"
             :items="types"
             filled
             rounded
+            label="ประเภท"
+            color="#FF9100"
           ></v-autocomplete>
-          <v-text-field
+          <v-autocomplete
+            v-model="provinceValue"
+            :items="provinceNames"
+            filled
+            rounded
+            label="จังหวัด"
+            color="#FF9100"
+          ></v-autocomplete>
+          <!-- <v-text-field
             placeholder="Search..."
             regular
             clearable
             color = "orange"
             class = "search-field ml-2"
             height="30"
-          ></v-text-field>
-          <v-btn icon tile color="orange" height="40px" width="40px" class="mt-3 ml-2"><v-icon size="35">mdi-magnify</v-icon></v-btn>
+          ></v-text-field> 
+          <v-btn icon tile color="orange" height="40px" width="40px" class="mt-3 ml-2"><v-icon size="35">mdi-magnify</v-icon></v-btn>-->
         </v-row>   
       <v-row>
         <div class="mapCard">
@@ -32,7 +35,11 @@
         </div>
         <v-col cols="3" class="listCard">
           <v-row v-for="(place, i) in places" :key="i">
-            <v-card v-if="place.isVerify == '1'  && keyNotUsed(place.keyID) && (place.typeTH.includes(typeValue) || typeValue == 'ทั้งหมด')" class="ma-3">
+            <v-card v-if="place.isVerify == '1'  
+                          && keyNotUsed(place.keyID) 
+                          && (place.typeTH.includes(typeValue) || typeValue == 'ทั้งหมด')
+                          && (place.provinceTH.includes(provinceValue) || provinceValue == 'ทั้งหมด')"
+                          class="ma-3">
               <v-img src = "../assets/temple1.jpg" class="placePic"></v-img>
               <v-card-title>
                 {{ place.nameTH }}
@@ -154,8 +161,11 @@ export default {
   },
 
   data: () => ({
-    types: ["ทั้งหมด","วัด", "สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ","ดอย","น้ำตก","ศาลเจ้า","จุดชมวิว"],
+    types: ["ทั้งหมด","จุดชมวิว","ดอย","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ"],
     typeValue: "ทั้งหมด",
+    provinces: [],
+    provinceNames: ["ทั้งหมด"],
+    provinceValue: "ทั้งหมด",
     totalMark: 0,
     lastLoca: [],
     coordinates: [
@@ -203,9 +213,17 @@ export default {
     async callPlaces(){
       await axios.post("location",{query:""}).then((res)=>this.places = res.data);
     },
+    async callProvinces(){
+      await axios.get("province").then((res)=>this.provinces = res.data);
+      var i;
+      for(i=0;i<this.provinces.length;i++){
+        this.provinceNames.push(this.provinces[i].provinceTH);
+      }
+    }
   },
   created: function() {
     this.callPlaces();
+    this.callProvinces();
   },
 };
 </script>
@@ -214,7 +232,7 @@ export default {
 .chipBar {
   margin: 10px;
   position: fixed;
-  margin-top: 60px;
+  margin-top: 70px;
 }
 
 .chipActive {
