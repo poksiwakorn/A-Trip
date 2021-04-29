@@ -166,7 +166,8 @@ def getPlace():
         content = request.get_json()
         print(content)
         if content["place"]:
-            contentinput = content["place"][1:len(content["place"])-1].split(",")
+            contentinput = content["place"].split(",")
+            print(contentinput)
             form = "SELECT * FROM Atrip_Places WHERE keyID = " + " or keyID = ".join(contentinput)
             print(form)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
