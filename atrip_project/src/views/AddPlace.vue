@@ -7,7 +7,7 @@
           <v-card class="mapCard pb-7">
             <v-card-title class="mx-4">Map</v-card-title>
             <v-card class="mx-10 mb-7">
-              <v-img src = "../assets/map1.png" class="mapPic"></v-img>
+              <MapAdd />
             </v-card>
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">Website</v-card-title>
@@ -62,11 +62,12 @@
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
 import axios from "axios";
-
+import MapAdd from "../components/MapAdd";
 export default {
   name: "AddPlace",
   components: {
-    TripBar
+    TripBar,
+    MapAdd,
   },
 
   data: () => ({
