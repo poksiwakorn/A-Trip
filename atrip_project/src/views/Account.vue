@@ -49,13 +49,13 @@
                     <v-card-subtitle>{{trip.ownerID}}</v-card-subtitle>
                     <v-divider class="mx-5"></v-divider>
                     <v-card-title class="black--text">Places In Trip <v-card-subtitle class="mt-1">{{trip.numPlace}} places</v-card-subtitle></v-card-title>
-                    <!-- <v-row
-                      v-for="(place, j) in trip.placeList_List.split(',')"
+                    <v-row
+                      v-for="(place, j) in trip.placeList.split(',')"
                       :key="j"
                       class="mx-10"
                     >
                       <h5>{{place}}</h5>
-                    </v-row> -->
+                    </v-row>
                     <v-row class="oneTripAction">
                       <v-scale-transition>
                         <v-btn color="#FF9100" outlined class="ma-2" @click="goTripInfo(trip.keyID)">

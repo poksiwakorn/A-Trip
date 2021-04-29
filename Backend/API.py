@@ -166,11 +166,10 @@ def tripInfo(keyID):
 def getPlace():
     if request.method == 'POST':
         content = request.get_json()
-        print(content)
+        print(content["place"])
         print(len(content["place"]))
         if content["place"]:
-            contentinput = content["place"][1:len(content["place"])-1].split(",")
-            print(contentinput)
+            contentinput = content["place"].split(",")
             form = "SELECT * FROM Atrip_Place WHERE keyID = " + " or keyID = ".join(contentinput)
             print(form)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)

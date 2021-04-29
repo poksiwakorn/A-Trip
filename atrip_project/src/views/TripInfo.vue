@@ -23,7 +23,7 @@
               </v-row>
             </v-card-title>
             <v-card-subtitle class="tripSubTitle mt-1 ml-1">
-              {{ trip.ownerID }}
+              {{ trip.owner }}
             </v-card-subtitle>
             <v-divider class="mx-2"></v-divider>
             <v-col class="pb-15">
@@ -106,7 +106,7 @@ export default {
     },
     async getInfo(){
       await axios.get("tripInfo/" + this.keyID).then((res)=>this.trip = res.data[0]);
-      await axios.post("getPlace",{place : this.trip.placeList_List}).then((res) => console.log(res.data));
+      await axios.post("getPlace",{place : this.trip.placeList}).then((res) => this.places = res.data);
     }
   },
   created: function(){
