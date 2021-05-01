@@ -12,7 +12,8 @@ import PlaceInfo from '../views/PlaceInfo.vue'
 import TripInfo from '../views/TripInfo.vue'
 import ListTrip from '../views/ListTrip.vue'
 import AddPlace from '../views/AddPlace.vue'
-
+import ApprovePlace from '../views/ApprovePlace.vue'
+import ApproveInfo from '../views/ApproveInfo.vue'
 
 Vue.use(VueRouter)
 
@@ -58,14 +59,16 @@ const routes = [
     component: Landing
   },
   {
-    path: '/PlaceInfo',
+    path: '/PlaceInfo/:keyID',
     name: 'PlaceInfo',
-    component: PlaceInfo
+    component: PlaceInfo,
+    props: true
   },
   {
-    path: '/TripInfo',
+    path: '/TripInfo/:keyID',
     name: 'TripInfo',
-    component: TripInfo
+    component: TripInfo,
+    props: true
   },
   {
     path: '/ListTrip',
@@ -76,6 +79,16 @@ const routes = [
     path: '/AddPlace',
     name: 'AddPlace',
     component: AddPlace
+  },
+  {
+    path: '/ApprovePlace',
+    name: 'ApprovePlace',
+    component: ApprovePlace
+  },
+  {
+    path: '/ApproveInfo',
+    name: 'ApproveInfo',
+    component: ApproveInfo
   }
 ]
 
