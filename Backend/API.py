@@ -160,6 +160,16 @@ def tripInfo(keyID):
         print(account)
     return jsonify(account)
 
+@app.route("/placeInfo/<keyID>", methods = ['GET'])
+@cross_origin()
+def placeInfo(keyID):
+    if request.method == 'GET':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM Atrip_Places WHERE keyID = %s',[keyID])
+        account = cursor.fetchall()
+        print(account)
+    return jsonify(account)
+
 
 @app.route("/getPlace", methods = ['GET', 'POST'])
 @cross_origin()

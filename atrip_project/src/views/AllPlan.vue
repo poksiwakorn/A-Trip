@@ -51,8 +51,8 @@
                       <v-card-subtitle>{{trip.item.owner}}</v-card-subtitle>
                       <v-divider class="mx-5"></v-divider>
                       <v-card-title class="black--text">สถานที่ภายในทริป <v-card-subtitle class="mt-1">{{trip.item.numPlace}} สถานที่</v-card-subtitle></v-card-title>
-                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" @click="goTripInfo(trip.item.keyID)">
-                        view info 
+                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" style="font-size: 18px;" @click="goTripInfo(trip.item.keyID)">
+                        ข้อมูลเพิ่มเติม 
                         <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
                       </v-btn>
                   </v-card>
