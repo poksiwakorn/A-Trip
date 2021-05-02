@@ -42,9 +42,6 @@
                   </v-img>
                     <v-card-title>
                       {{trip.nameTH}}
-                      <!-- <v-spacer></v-spacer> -->
-                      <!-- <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
-                      <v-chip class="ma-2" color="#FF9100" outlined>Bankok</v-chip> -->
                     </v-card-title>                    
                     <v-card-subtitle>{{trip.ownerID}}</v-card-subtitle>
                     <v-divider class="mx-5"></v-divider>
@@ -98,9 +95,8 @@ export default {
       this.$router.push("/TripInfo/" + keyID);
     },
     async callTrips(){
-      await axios.post("myTrip",{"query":"","id" : this.$store.getters.StateID}).then((res)=>
-        console.log(res.data)
-        );
+      await axios.post("myTrip",{"query":"","id" : this.$store.getters.StateID}).then((res)=>this.savedTrips = res.data);
+      console.log(this.savedTrips)
     },
   },
   created: function(){
