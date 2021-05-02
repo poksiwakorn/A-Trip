@@ -140,7 +140,7 @@
               <v-row>
                 <v-btn text class="makeTripButton" @click="placesInTrip.length >= 2 ? makeTrip() : makeFail()">สร้างทริป</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn text class="updateButton">อัพเดตเส้นทาง</v-btn>
+                <v-btn text class="updateButton" @click="makeRoute()">สร้างเส้นทาง</v-btn>
               </v-row>
             </v-form>
           </v-card>
@@ -208,6 +208,10 @@ export default {
     makeFail: function(){
       alert("Add Fail");
     },
+    async makeRoute (){
+      await axios.post("makeRoute",{"placesInTrip": this.placesInTrip});
+    }
+    ,
     keyNotUsed: function(keyID){
       var i;
       for(i=0;i < this.placesInTrip.length;i++){
