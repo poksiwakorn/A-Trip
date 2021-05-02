@@ -161,13 +161,12 @@ export default {
     provinceValue: "ทั้งหมด",
     totalMark: 0,
   
-    coordinates: [
-      
-    ],
+    coordinates: [],
     typeGroup: 0,
     tripName: "",
     placesInTrip: [],
     places: [],
+    placesInTripTemp: []
   }),
   methods: {
     addPlace: function(item) {

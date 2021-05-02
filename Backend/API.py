@@ -300,7 +300,7 @@ def makeRoute():
             coordinateList.append(content["placesInTrip"][i]["coordinate"])
         results = dict()
         x = gmaps.distance_matrix(coordinateList,coordinateList,mode='driving')
-        results["results"] = sortResult(allResults(placeIDList,x))
+        results["results"] = sortResult(allResults(placeIDList,x))[0]
         for i in results["results"]:
             print(i)
         '''
