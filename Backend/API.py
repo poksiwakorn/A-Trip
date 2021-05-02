@@ -59,7 +59,7 @@ def register():
             print('Please fill out the form!')
         else:
             # Account doesnt exists and the form data is valid, now insert new account into accounts table
-            cursor.execute('INSERT INTO Atrip_Users (username,password,email,role,FirstName,LastName) VALUES (%s, %s, %s, %s, %s, %s)', (username, password, email,"user",firstname,lastname))
+            cursor.execute('INSERT INTO Atrip_Users (username,password,email,role,FirstName,LastName,Nickname) VALUES (%s, %s, %s, %s, %s, %s, %s ,%s)', (username, password, email,"user",firstname,lastname,username))
             mysql.connection.commit()
             form['result'] = True
             form['msg'] = 'You have successfully registered!'
