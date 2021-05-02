@@ -133,8 +133,9 @@ def trip():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Trips ORDER BY keyID')
+            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username FROM Atrip_Trips INNER JOIN Atrip_Users where Atrip_Trips.ownerID = Atrip_Users.ID  ORDER BY keyID')
             account = cursor.fetchall()
+            print(account)
     return jsonify(account)
 
 @app.route("/province", methods = ['GET'])
@@ -239,21 +240,23 @@ def makeTrip():
     form = {"isSuccess" : False , "msg" : ""}
     if request.method == 'POST':
         content = request.get_json()
+        print(content)
         if content['userID'] and content["tripName"] and content["placesInTrip"]:
             key = ""
             for i in range(0,len(content["placesInTrip"]),1):
                 key = key + str(content["placesInTrip"][i]["keyID"]) + ","
             key = key[0:len(key)-1]
             qkey = key.split(",")
-            sqlform = "SELECT provinceTH FROM Atrip_Places WHERE keyID = " + " or keyID = ".join(qkey)
+            sqlform = "SELECT DISTINCT provinceTH FROM Atrip_Places WHERE keyID = " + " or keyID = ".join(qkey)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(sqlform)
             account = cursor.fetchall()
+            print(account)
             sqlprovince = ""
             for i in range(len(account)):
                 sqlprovince = sqlprovince + account[i]["provinceTH"] + ","
             sqlprovince = sqlprovince[0:len(sqlprovince)-1]
-            cursor.execute('INSERT INTO Atrip_Trips (nameTH,placeList,owner,provinceTH_List) VALUES (%s, %s, %s, %s)', (content['tripName'],key,content["userID"],sqlprovince))
+            cursor.execute('INSERT INTO Atrip_Trips (nameTH,placeList,provinceTH_List,ownerID,numPlace) VALUES (%s, %s, %s, %s,%s)', (content['tripName'],key,sqlprovince,content["userID"],len(qkey)))
             mysql.connection.commit()
             form["isSuccess"] = True
             form["msg"] = "Successfully add to database"
@@ -270,7 +273,7 @@ def myTrip():
         print(content)
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Trips where owner = %s ORDER BY keyID',[content["id"]])
+            cursor.execute('SELECT * FROM Atrip_Trips where ownerID = %s ORDER BY keyID',[content["id"]])
             account = cursor.fetchall()
             print(account)
     return jsonify(account)
