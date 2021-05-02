@@ -58,16 +58,18 @@
                   </v-col>
                   <v-col>
                     <v-card class="placeInfoCard">
-                      <v-card-title class="ml-2" style="font-weight: 400; font-size: 20px;"
-                        >{{ place.item.nameTH }}
+                      <v-card-title class="ml-2" style="font-weight: 400; font-size: 20px;">
+                        {{ place.item.nameTH }}
+                      </v-card-title>
+                      <v-card-title class="typeText ml-2 grey--text" style="font-size: 18px;">
+                        {{place.item.typeTH}}
                         <v-spacer></v-spacer>
                         <v-chip class="mx-2" color="#FF9100" outlined>{{
                           place.item.provinceTH
                         }}</v-chip>
                       </v-card-title>
-                      <v-card-subtitle class="ml-2">{{place.item.owner}}</v-card-subtitle>
-                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" link to = "/PlaceInfo">
-                        view info 
+                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" style="font-size: 18px;" @click="goPlaceInfo(place.item.keyID)">
+                        ข้อมูลเพิ่มเติม
                         <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
                       </v-btn>
                     </v-card>
@@ -104,7 +106,11 @@ export default {
     count: function (item) {
       return item.length;
     },
+    goPlaceInfo(keyID){
+      this.$router.push("/PlaceInfo/" + keyID);
+    },
     async getInfo(){
+      console.log(this.keyID);
       await axios.get("tripInfo/" + this.keyID).then((res)=>this.trip = res.data[0]);
       await axios.post("getPlace",{place : this.trip.placeList}).then((res) => this.places = res.data);
     }
@@ -169,9 +175,9 @@ export default {
 }
 
 .saveTrip-btn {
-    position: absolute;
-    left: 10px;
-    bottom: 10px;
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
 }
 
 .placeZone {
@@ -218,6 +224,10 @@ export default {
 .placeInfoCard {
   width: 470px;
   height: 90%;
+}
+
+.typeText{
+  margin-top: -20px;
 }
 
 .viewInfo-btn {

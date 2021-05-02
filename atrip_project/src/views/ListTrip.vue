@@ -10,6 +10,7 @@
             rounded
             label="ประเภท"
             color="#FF9100"
+            class="mx-6"
           ></v-autocomplete>
           <v-autocomplete
             v-model="provinceValue"
@@ -49,16 +50,17 @@
                 }}</v-chip>
               </v-card-title>
               <v-card-subtitle>{{place.typeTH}}</v-card-subtitle>
-              <v-btn color="#FF9100" outlined class="ma-2" link to = "/PlaceInfo"
-                >view info
+              <v-btn color="#FF9100" outlined class="ma-2" @click = "goPlaceInfo(place.keyID)" style="font-size: 20px;"
+                >ดูข้อมูล
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
               </v-btn>
               <v-btn
                 color="#FF9100"
                 outlined
                 class="ma-2"
+                style="font-size: 20px;"
                 @click="addPlace(place)"
-                >ADD TO TRIP
+                >เพิ่มเข้าทริป
                 <v-icon class="ml-2">mdi-plus-outline</v-icon>
               </v-btn>
             </v-card>
@@ -68,26 +70,26 @@
         <v-col cols="5" class="tripCard">
           <v-card class="ma-3">
             <v-card-title class="yourTripTitle white--text"
-              >Your Trip</v-card-title
+              >ทริป</v-card-title
             >
             <v-divider></v-divider>
             <v-form class="mt-1">
               <v-row>
                 <v-col cols="4">
-                  <v-card-title>Trip's Name</v-card-title>
+                  <v-card-title>ชื่อทริป</v-card-title>
                 </v-col>
                 <v-col cols="6">
                   <v-text-field
                     v-model="tripName"
                     regular
-                    placeholder="myTrip"
+                    placeholder="ทริปของฉัน"
                     color="orange"
                     required
                     clearable
                   ></v-text-field>
                 </v-col>
               </v-row>
-              <v-card-subtitle>Please choose at least 2 places</v-card-subtitle>
+              <v-card-subtitle>เลือกมาอย่างน้อย 2 สถานที่</v-card-subtitle>
               <v-card class="scrollCard">
                 <v-virtual-scroll
                   page-mode
@@ -136,9 +138,9 @@
                 </v-virtual-scroll>
               </v-card>
               <v-row>
-                <v-btn text class="makeTripButton" @click="placesInTrip.length >= 2 ? makeTrip() : makeFail()">Make A Trip</v-btn>
+                <v-btn text class="makeTripButton" @click="placesInTrip.length >= 2 ? makeTrip() : makeFail()">สร้างทริป</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn text class="updateButton">Update Route</v-btn>
+                <v-btn text class="updateButton">อัพเดตเส้นทาง</v-btn>
               </v-row>
             </v-form>
           </v-card>
@@ -194,8 +196,14 @@ export default {
         }
       }
     },
+    goPlaceInfo(keyID){
+      this.$router.push("/PlaceInfo/" + keyID);
+    },
     async makeTrip (){
-      await axios.post("makeTrip",{userID: this.$store.getters.StateID, tripName: this.tripName, placesInTrip: this.placesInTrip}).then((res)=>this.$router.push("/Account")).catch(this.$router.push("/Account"));
+      await axios.post("makeTrip",{"userID": this.$store.getters.StateID , "tripName": this.tripName, "placesInTrip": this.placesInTrip})
+      .then((res)=>{
+        alert(res.data.msg)
+        })
     },
     makeFail: function(){
       alert("Add Fail");
@@ -245,8 +253,8 @@ export default {
 
 .mapCard {
   position: fixed;
-  margin-top: 150px;
-  margin-left: 15px;
+  margin-top: 140px;
+  margin-left: 27px;
 }
 
 .mapPic {
@@ -274,7 +282,7 @@ export default {
 
 .yourTripTitle {
   background-color: #faae4b;
-  font-size: 30px;
+  font-size: 35px;
 }
 
 .numberCard {
@@ -301,6 +309,7 @@ export default {
   margin-top: 30px;
   margin-bottom: 15px;
   color: #ff9100;
+  font-size: 20px;
 }
 
 .updateButton {
@@ -308,6 +317,7 @@ export default {
   margin-top: 30px;
   margin-bottom: 15px;
   color: #ff9100;
+  font-size: 20px;
 }
 
 .placeImage {

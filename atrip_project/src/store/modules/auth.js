@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const state = {
-  ID: null,
+  id: null,
   Username: null,
   FirstName: null,
   LastName: null,
@@ -19,7 +19,7 @@ const state = {
 
 const getters = {
   isAuthenticated: (state) => !!state.Username,
-  StateID: (state) => state.ID,
+  StateID: (state) => state.id,
   StateUsername: (state) => state.Username,
   StateFirstName: (state) => state.FirstName,
   StateLastName: (state) => state.LastName,
@@ -41,6 +41,7 @@ const actions = {
   },
 
   LogOut(context){
+    context.commit("setID",null)
     context.commit("setUsername",null)
     context.commit("setFirstName",null)
     context.commit("setLastName",null)
@@ -71,6 +72,7 @@ const actions = {
     .then((response)=>
     {
       if (response.data.msg == "Logged in successfully!"){
+        context.commit("setID",response.data.id)
         context.commit("setUsername",response.data.Username)
         context.commit("setFirstName",response.data.FirstName)
         context.commit("setLastName",response.data.LastName)
@@ -92,6 +94,9 @@ const actions = {
 };
 
 const mutations = {
+  setID(state,id){
+    state.id = id
+  },
   setUsername(state, username) {
     state.Username = username;
   },

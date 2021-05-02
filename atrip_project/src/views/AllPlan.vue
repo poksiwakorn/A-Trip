@@ -11,7 +11,7 @@
           <v-col cols="7">
             <v-card class="allTripCard">
               <v-card-title class="white--text orange darken-4 text-h4">
-                Interesting Trips
+                ทริปที่น่าสนใจ
                 <v-spacer></v-spacer>
                 <v-text-field
                   placeholder="Search..."
@@ -48,11 +48,11 @@
                           >
                         </v-chip-group>
                       </v-card-title>                    
-                      <v-card-subtitle>{{trip.item.owner}}</v-card-subtitle>
+                      <v-card-subtitle>{{trip.item.ownerID}}</v-card-subtitle>
                       <v-divider class="mx-5"></v-divider>
-                      <v-card-title class="black--text">Places In Trip <v-card-subtitle class="mt-1">{{trip.item.numPlace}} places</v-card-subtitle></v-card-title>
-                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" @click="goTripInfo(trip.item.keyID)">
-                        view info 
+                      <v-card-title class="black--text">สถานที่ภายในทริป <v-card-subtitle class="mt-1">{{trip.item.numPlace}} สถานที่</v-card-subtitle></v-card-title>
+                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" style="font-size: 18px;" @click="goTripInfo(trip.item.keyID)">
+                        ข้อมูลเพิ่มเติม 
                         <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
                       </v-btn>
                   </v-card>
@@ -71,6 +71,9 @@
               </v-card-title>
               <v-divider class="mx-4"></v-divider>
               <v-card-text class="text--primary ma-2">Place Description</v-card-text>
+              <v-card-text>
+                {{trips[0]}}
+              </v-card-text>
               <v-btn color="#FF9100" text class="ma-2">EXPLORE</v-btn>
             </v-card>
           </v-col>
@@ -100,7 +103,7 @@ export default {
       this.$router.push("/TripInfo/" + keyID);
     },
     async callTrips(){
-      await axios.post("trip",{query:""}).then((res)=>this.trips = res.data);
+      await axios.post("trip",{"query":"" }).then((res)=>this.trips = res.data);
     },
   },
   created: function(){
