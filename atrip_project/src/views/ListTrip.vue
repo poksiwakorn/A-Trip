@@ -20,15 +20,6 @@
             label="จังหวัด"
             color="#FF9100"
           ></v-autocomplete>
-          <!-- <v-text-field
-            placeholder="Search..."
-            regular
-            clearable
-            color = "orange"
-            class = "search-field ml-2"
-            height="30"
-          ></v-text-field> 
-          <v-btn icon tile color="orange" height="40px" width="40px" class="mt-3 ml-2"><v-icon size="35">mdi-magnify</v-icon></v-btn>-->
         </v-row>   
       <v-row>
         <div class="mapCard">
@@ -50,7 +41,7 @@
                 }}</v-chip>
               </v-card-title>
               <v-card-subtitle>{{place.typeTH}}</v-card-subtitle>
-              <v-btn color="#FF9100" outlined class="ma-2" link to = "/PlaceInfo" style="font-size: 20px;"
+              <v-btn color="#FF9100" outlined class="ma-2" @click = "goPlaceInfo(place.keyID)" style="font-size: 20px;"
                 >ดูข้อมูล
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
               </v-btn>
@@ -68,6 +59,7 @@
         </v-col>
 
         <v-col cols="5" class="tripCard">
+          {{this.bestPath}}
           <v-card class="ma-3">
             <v-card-title class="yourTripTitle white--text"
               >ทริป</v-card-title
@@ -140,7 +132,7 @@
               <v-row>
                 <v-btn text class="makeTripButton" @click="placesInTrip.length >= 2 ? makeTrip() : makeFail()">สร้างทริป</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn text class="updateButton">อัพเดตเส้นทาง</v-btn>
+                <v-btn text class="updateButton" @click="makeRoute()">สร้างเส้นทาง</v-btn>
               </v-row>
             </v-form>
           </v-card>
@@ -170,13 +162,13 @@ export default {
     provinceValue: "ทั้งหมด",
     totalMark: 0,
   
-    coordinates: [
-      
-    ],
+    coordinates: [],
     typeGroup: 0,
     tripName: "",
     placesInTrip: [],
     places: [],
+    placesInTripTemp: [],
+    bestPath: []
   }),
   methods: {
     addPlace: function(item) {
@@ -196,11 +188,32 @@ export default {
         }
       }
     },
+    goPlaceInfo(keyID){
+      this.$router.push("/PlaceInfo/" + keyID);
+    },
     async makeTrip (){
-      await axios.post("makeTrip",{userID: this.$store.getters.StateID, tripName: this.tripName, placesInTrip: this.placesInTrip}).then((res)=>this.$router.push("/Account")).catch(this.$router.push("/Account"));
+      await axios.post("makeTrip",{"userID": this.$store.getters.StateID , "tripName": this.tripName, "placesInTrip": this.placesInTrip})
+      .then((res)=>{
+        alert(res.data.msg)
+        })
     },
     makeFail: function(){
       alert("Add Fail");
+    },
+    async makeRoute (){
+      await axios.post("makeRoute",{"placesInTrip": this.placesInTrip}).then((res)=>this.bestPath = res.data['results'][0]);
+      // Update Route //
+      this.updateRoute();
+    },
+    updateRoute: function(){
+      for (var i = 0; i < this.bestPath.length; i++) {
+        for (var j = 0; j < this.placesInTrip.length; j++) {
+          if(this.placesInTrip[j].keyID == this.bestPath[i]){
+            this.placesInTripTemp.push(this.placesInTrip[j]);
+          }
+        }
+      }
+      this.placesInTrip = this.placesInTripTemp;
     },
     keyNotUsed: function(keyID){
       var i;
@@ -268,8 +281,6 @@ export default {
 
 .tripCard {
   position: fixed;
-  /* margin-top: 70px;
-      margin-left: 905px; */
   top: 7%;
   left: calc(59% - 10px);
 }
