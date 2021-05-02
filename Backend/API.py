@@ -241,10 +241,21 @@ def myTrip():
         print(content)
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Trips where ownerID = %s ORDER BY keyID',[content["id"]])
-            account = cursor.fetchall()
-            print(account)
-    return jsonify(account)
+            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username FROM Atrip_Trips INNER JOIN Atrip_Users where (Atrip_Trips.ownerID = Atrip_Users.ID) and ownerID = %s ORDER BY keyID',[content["id"]])
+            data = list(cursor.fetchall())
+            for i in range(0,len(data),1):
+                placeList = data[i]["placeList"].split(",")
+                form = "SELECT nameTH FROM Atrip_Places WHERE keyID = " + " or keyID = ".join(placeList)
+                cursor.execute(form)
+                placeList = list(cursor.fetchall())
+                placename = ""
+                for j in placeList:
+                    placename = placename + j["nameTH"] + ","
+                placename = placename[0:len(placename)-1]
+                data[i]["placeList"] = placename
+            print(data)
+
+    return jsonify(data)
 
 
 if __name__ == '__main__':
