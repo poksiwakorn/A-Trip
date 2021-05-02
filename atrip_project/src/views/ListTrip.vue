@@ -59,6 +59,7 @@
         </v-col>
 
         <v-col cols="5" class="tripCard">
+          {{this.bestPath}}
           <v-card class="ma-3">
             <v-card-title class="yourTripTitle white--text"
               >ทริป</v-card-title
@@ -166,7 +167,8 @@ export default {
     tripName: "",
     placesInTrip: [],
     places: [],
-    placesInTripTemp: []
+    placesInTripTemp: [],
+    bestPath: []
   }),
   methods: {
     addPlace: function(item) {
@@ -199,9 +201,20 @@ export default {
       alert("Add Fail");
     },
     async makeRoute (){
-      await axios.post("makeRoute",{"placesInTrip": this.placesInTrip}).then((res)=>console.log(res.data));
-    }
-    ,
+      await axios.post("makeRoute",{"placesInTrip": this.placesInTrip}).then((res)=>this.bestPath = res.data['results'][0]);
+      // Update Route //
+      this.updateRoute();
+    },
+    updateRoute: function(){
+      for (var i = 0; i < this.bestPath.length; i++) {
+        for (var j = 0; j < this.placesInTrip.length; j++) {
+          if(this.placesInTrip[j].keyID == this.bestPath[i]){
+            this.placesInTripTemp.push(this.placesInTrip[j]);
+          }
+        }
+      }
+      this.placesInTrip = this.placesInTripTemp;
+    },
     keyNotUsed: function(keyID){
       var i;
       for(i=0;i < this.placesInTrip.length;i++){

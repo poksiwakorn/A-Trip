@@ -43,15 +43,15 @@
                     <v-card-title>
                       {{trip.nameTH}}
                     </v-card-title>                    
-                    <v-card-subtitle>{{trip.ownerID}}</v-card-subtitle>
+                    <v-card-subtitle>{{trip.Username}}</v-card-subtitle>
                     <v-divider class="mx-5"></v-divider>
-                    <v-card-title class="black--text">สถานที่ภายในทริป<v-card-subtitle class="mt-1">{{trip.numPlace}} สถานที่</v-card-subtitle></v-card-title>
+                    <v-card-title class="placeTitle black--text">สถานที่ภายในทริป<v-card-subtitle class="mt-1">{{trip.numPlace}} สถานที่</v-card-subtitle></v-card-title>
                     <v-row
                       v-for="(place, j) in trip.placeList.split(',')"
                       :key="j"
                       class="mx-10"
                     >
-                      <h5>{{place}}</h5>
+                      <h5 class="placeSubTitle" style="color: grey;">{{place}}</h5>
                     </v-row>
                     <v-row class="oneTripAction">
                       <v-scale-transition>
@@ -178,6 +178,15 @@ export default {
   .deleteTrip-btn{
     position: absolute;
     right: 0px;
+  }
+
+  .placeTitle{
+    margin-top: -10px;
+  }
+
+  .placeSubTitle{
+    margin-top: -10px;
+    margin-bottom: 15px;
   }
 
   .oneTripAction{
