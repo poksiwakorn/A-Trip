@@ -40,8 +40,8 @@
             <v-row justify="center">
               <v-card-subtitle class="mx-7 mr-15 subtitle">วันอาทิตย์</v-card-subtitle> 
             </v-row>
-            <v-row justify="center">
-              <v-chip class="ma-2" color="#FF9100" outlined>10:00 - 20.00</v-chip>
+            <v-row>
+              <v-chip class="ma-2" style="left: 227px;" color="#FF9100" outlined>10:00 - 20.00</v-chip>
             </v-row>
           </v-card>
         </v-col>

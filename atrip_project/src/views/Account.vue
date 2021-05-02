@@ -11,7 +11,7 @@
               </v-avatar>
             </div>
             <v-col class="profileName my-10">
-              {{this.$store.getters.StateUsername}}
+              {{this.$store.getters.StateRole}}
             </v-col>
             <v-btn class="editProfile-btn white--text" width="40%" height="50px" style="font-size: 27px;" color="#FF9100">
               แก้ไขโปรไฟล์

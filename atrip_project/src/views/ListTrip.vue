@@ -50,7 +50,7 @@
                 }}</v-chip>
               </v-card-title>
               <v-card-subtitle>{{place.typeTH}}</v-card-subtitle>
-              <v-btn color="#FF9100" outlined class="ma-2" link to = "/PlaceInfo" style="font-size: 20px;"
+              <v-btn color="#FF9100" outlined class="ma-2" @click = "goPlaceInfo(place.keyID)" style="font-size: 20px;"
                 >ดูข้อมูล
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
               </v-btn>
@@ -195,6 +195,9 @@ export default {
           return items[i];
         }
       }
+    },
+    goPlaceInfo(keyID){
+      this.$router.push("/PlaceInfo/" + keyID);
     },
     async makeTrip (){
       await axios.post("makeTrip",{userID: this.$store.getters.StateID, tripName: this.tripName, placesInTrip: this.placesInTrip}).then((res)=>this.$router.push("/Account")).catch(this.$router.push("/Account"));

@@ -47,7 +47,16 @@ export default {
   },
 
   created: function(){
-    this.callPlaces()
+    if(this.$store.getters.isAuthenticated){
+      if(this.$store.getters.StateRole == 'Admin'){
+        this.callPlaces();
+      }else{
+        this.$router.push('/Home');
+      }
+    }
+    else{
+      this.$router.push('/');
+    }
   }
 };
 </script>
