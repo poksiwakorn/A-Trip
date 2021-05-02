@@ -68,11 +68,11 @@ def something(listOfKeyOfSelectedPlace, dictFromGooglemapsAPI):
     temp = makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DistanceBetweenPointToPoint(makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace(listOfKeyOfSelectedPlace), makeList_Of_DistanceBetweenPointToPoint_From_DictFromGooglemapsAPI(dictFromGooglemapsAPI))
     return makeList_Of_ListOf_AllListOfRoute_ListofDistance_And_SumOfDistance(len(listOfKeyOfSelectedPlace),temp,list() ,list(), list())
 
-yo = something(["A","B","C"],test)
+#yo = something(["A","B","C"],test)
 
-d = makeList_Of_ListOf_AllListOfRoute_ListofDistance_And_SumOfDistance(4,c,list() ,list(), list())
-for i in yo:
-    print(i)
+#d = makeList_Of_ListOf_AllListOfRoute_ListofDistance_And_SumOfDistance(4,c,list() ,list(), list())
+#for i in yo:
+#    print(i)
     
 
 '''

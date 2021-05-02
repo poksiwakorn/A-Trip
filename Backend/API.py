@@ -278,3 +278,10 @@ def myTrip():
 
 if __name__ == '__main__':
    app.run(host="0.0.0.0", port=34673, debug=True)
+
+@app.route("/makeRoute", methods = ['GET', 'POST'])
+@cross_origin()
+def makeRoute():
+    if request.method == 'POST':
+        content = request.get_json()
+        print(content)
