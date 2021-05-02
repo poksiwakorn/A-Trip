@@ -20,15 +20,6 @@
             label="จังหวัด"
             color="#FF9100"
           ></v-autocomplete>
-          <!-- <v-text-field
-            placeholder="Search..."
-            regular
-            clearable
-            color = "orange"
-            class = "search-field ml-2"
-            height="30"
-          ></v-text-field> 
-          <v-btn icon tile color="orange" height="40px" width="40px" class="mt-3 ml-2"><v-icon size="35">mdi-magnify</v-icon></v-btn>-->
         </v-row>   
       <v-row>
         <div class="mapCard">
@@ -278,8 +269,6 @@ export default {
 
 .tripCard {
   position: fixed;
-  /* margin-top: 70px;
-      margin-left: 905px; */
   top: 7%;
   left: calc(59% - 10px);
 }

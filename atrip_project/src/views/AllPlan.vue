@@ -2,15 +2,20 @@
   <v-content>
     <TripBar/>
     <div class="AllPlan">
+      <v-row class="chipBar">
+        <v-autocomplete
+          v-model="provinceValue"
+          :items="provinceNames"
+          filled
+          rounded
+          label="จังหวัด"
+          color="#FF9100"
+        ></v-autocomplete>
+      </v-row>  
         <v-row class="ml-5 mt-1">
-          <!-- <v-col cols = "12">
-            <v-btn color = "primary" class="choose-btn">
-              Choose district you want
-            </v-btn>
-          </v-col> -->
-          <v-col cols="7">
+          <!-- <v-col cols="7"> -->
             <v-card class="allTripCard">
-              <v-card-title class="white--text orange darken-4 text-h4">
+              <v-card-title class="tripTitle white--text">
                 ทริปที่น่าสนใจ
                 <v-spacer></v-spacer>
                 <v-text-field
@@ -59,7 +64,7 @@
                 </template>  
               </v-virtual-scroll>
             </v-card>
-          </v-col>
+          <!-- </v-col> -->
           <!-- RIGHT -->
           <v-col cols="4" class="ml-13">
             <v-card class="adsCard">
@@ -93,7 +98,9 @@ export default {
   },
 
   data: () => ({
-    trips: []
+    trips: [],
+    provinceNames: ["ทั้งหมด"],
+    provinceValue: "ทั้งหมด",
   }),
   methods: {
     count: function(item){
@@ -105,17 +112,31 @@ export default {
     async callTrips(){
       await axios.post("trip",{"query":"" }).then((res)=>this.trips = res.data);
     },
+    async callProvinces(){
+      await axios.get("province").then((res)=>this.provinces = res.data);
+      var i;
+      for(i=0;i<this.provinces.length;i++){
+        this.provinceNames.push(this.provinces[i].provinceTH);
+      }
+    }
   },
   created: function(){
-    this.callTrips()
+    this.callTrips();
+    this.callProvinces();
   }
 };
 </script>
 
 <style scoped>
-  .AllPlan{
-    margin-top: 30px;
-    background-image: linear-gradient(to top, #77cee3, #6bc4dd, #60bad7, #55afd1, #4ba5cb, #439ec7, #3b96c3, #338fbf, #2c88bc, #2681ba, #227ab6, #2073b3);
+  .chipBar {
+    margin: 10px;
+    margin-top: 90px;
+    width: 300px;
+  }
+
+  .tripTitle {
+    background-color: #faae4b;
+    font-size: 35px;
   }
 
   .choose-btn{
@@ -153,7 +174,8 @@ export default {
   }
 
   .allTripCard{
-    margin-top: 100px;
+    margin-top: -20px;
+    width: 50vw;
   }
 
   .adsCard{
