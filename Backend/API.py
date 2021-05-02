@@ -7,7 +7,7 @@ import MySQLdb.cursors
 import re
 
 import googlemaps
-from findRoute import allResults,sortResult
+from findRoute import allResults,sortResult,makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace,makeList_Of_DurationBetweenPointToPoint_From_DictFromGooglemapsAPI,makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DurationBetweenPointToPoint
 
 
 app = Flask(__name__)
@@ -295,21 +295,18 @@ def makeRoute():
         for i in range(numPlace):
             placeIDList.append(content["placesInTrip"][i]["keyID"])
             coordinateList.append(content["placesInTrip"][i]["coordinate"])
-        #ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint = makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace(placeIDList)
-        #dictFromGooglemapsAPI = gmaps.distance_matrix(coordinateList,coordinateList,mode='driving')
-        #DistanceBetweenPointToPoint = makeList_Of_DistanceBetweenPointToPoint_From_DictFromGooglemapsAPI(dictFromGooglemapsAPI)
-        #print(allResults(placeIDList,gmaps.distance_matrix(coordinateList,coordinateList,mode='driving')))
-        #print(ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint)
-        #print(makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DistanceBetweenPointToPoint(ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint,gmaps.distance_matrix(coordinateList,coordinateList,mode='driving')))
-        #print(DistanceBetweenPointToPoint)
-        #ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint = makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DistanceBetweenPointToPoint(ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint,DistanceBetweenPointToPoint)
-        #print(ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint)
-        #x = makeList_Of_ListOf_AllListOfRoute_ListofDistance_And_SumOfDistance(numPlace,ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint,list() ,list(), list())
-        #print(x)
         results = dict()
-        results["results"] = sortResult(allResults(placeIDList,gmaps.distance_matrix(coordinateList,coordinateList,mode='driving')))
+        x = gmaps.distance_matrix(coordinateList,coordinateList,mode='driving')
+        results["results"] = sortResult(allResults(placeIDList,x))
         for i in results["results"]:
             print(i)
+        '''
+        y = makeList_Of_DurationBetweenPointToPoint_From_DictFromGooglemapsAPI(x)
+        print(y)
+        z = makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace(placeIDList)
+        a = makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DurationBetweenPointToPoint(z,y)
+        print(a)
+        '''
 
     return jsonify(results)
 

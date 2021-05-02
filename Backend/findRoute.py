@@ -9,6 +9,17 @@ def makeList_Of_DistanceBetweenPointToPoint_From_DictFromGooglemapsAPI(dictFromG
     #data = [26.3, 19.4, 25.2, 27.5, 19.6, 35.1, 45.7, 12.5, 13.7, 21.5, 18.7, 11.1]
     return dataOut
 
+def makeList_Of_DurationBetweenPointToPoint_From_DictFromGooglemapsAPI(dictFromGooglemapsAPI):
+    dataOut = list()
+    for i in range(len(dictFromGooglemapsAPI["rows"])):
+        counters = 0
+        for j in dictFromGooglemapsAPI["rows"][i]["elements"]:
+            if i != counters:
+                dataOut.append(j["duration"]["text"])
+            counters += 1
+    #data = ['17 mins', '22 mins', '13 mins', '13 mins', '20 mins', '12 mins']
+    return dataOut
+
 def makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace(listOfKeyOfSelectedPlace):
     data = list()
     for i in listOfKeyOfSelectedPlace:
@@ -29,6 +40,17 @@ def makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DistanceBetwee
         temp.append(DistanceBetweenPointToPoint[i])
         data.append(temp)
     #data = [[['A', 'B'], 26.3], [['A', 'C'], 19.4], [['A', 'D'], 25.2], [['B', 'A'], 27.5], [['B', 'C'], 19.6], [['B', 'D'], 35.1], [['C', 'A'], 45.7], [['C', 'B'], 12.5], [['C', 'D'], 13.7], [['D', 'A'], 21.5], [['D', 'B'], 18.7], [['D', 'C'], 11.1]]
+    return data
+
+def makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DurationBetweenPointToPoint(ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint, DistanceBetweenPointToPoint, DurationBetweenPointToPoint):
+    data = list()
+    for i in range(len(ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint)):
+        temp = list()
+        temp.append(ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint[i])
+        temp.append(DistanceBetweenPointToPoint[i])
+        temp.append(DurationBetweenPointToPoint[i])
+        data.append(temp)
+    #data = [[[1, 2], '17 mins'], [[1, 4], '22 mins'], [[2, 1], '13 mins'], [[2, 4], '13 mins'], [[4, 1], '20 mins'], [[4, 2], '12 mins']]
     return data
 
 def makeList_Of_ListOf_AllListOfRoute_ListofDistance_And_SumOfDistance(numberOfSelectedPlace, ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DistanceBetweenPointToPoint, path, distance, data, currentPoint = None):
@@ -63,10 +85,52 @@ def makeList_Of_ListOf_AllListOfRoute_ListofDistance_And_SumOfDistance(numberOfS
                 path.pop()
                 distance.pop()
 
+def makeList_Of_ListOf_AllListOfRoute_ListofDistance_ListofDuration_And_SumOfDistance(numberOfSelectedPlace, ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DistanceBetweenPointToPoint, path, distance, duration, data, currentPoint = None):
+    if currentPoint is None:
+        for i in ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DistanceBetweenPointToPoint:
+            path.append(i[0][0])
+            distance.append(i[1])
+            duration.append(i[2])
+            nextPoint = i[0][1]
+            makeList_Of_ListOf_AllListOfRoute_ListofDistance_ListofDuration_And_SumOfDistance(numberOfSelectedPlace,ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DistanceBetweenPointToPoint,path, distance, duration, data, nextPoint)
+            path.pop()
+            distance.pop()
+            duration.pop()
+        return data
+    else:
+        for i in ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DistanceBetweenPointToPoint:
+            if i[0][0] == currentPoint and path.count(i[0][1]) == 0:
+                path.append(i[0][0])
+                distance.append(i[1])
+                duration.append(i[2])
+                nextPoint = i[0][1]
+                makeList_Of_ListOf_AllListOfRoute_ListofDistance_ListofDuration_And_SumOfDistance(numberOfSelectedPlace,ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DistanceBetweenPointToPoint,path, distance, duration, data, nextPoint)
+                if len(path) == numberOfSelectedPlace-1:
+                    listPath = list()
+                    listDistance = list()
+                    listDuration = list()
+                    sumOfDistance = 0.
+                    path.append(nextPoint)
+                    for j in path:
+                        listPath.append(j)
+                    for j in distance:
+                        listDistance.append(j)
+                        sumOfDistance += j
+                    for j in duration:
+                        listDuration.append(j)
+                    data.append([listPath,listDistance,listDuration,round(sumOfDistance,2)])
+                    path.pop()
+                path.pop()
+                distance.pop()
+                duration.pop()
+
 
 def allResults(listOfKeyOfSelectedPlace, dictFromGooglemapsAPI):
-    temp = makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DistanceBetweenPointToPoint(makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace(listOfKeyOfSelectedPlace), makeList_Of_DistanceBetweenPointToPoint_From_DictFromGooglemapsAPI(dictFromGooglemapsAPI))
-    return makeList_Of_ListOf_AllListOfRoute_ListofDistance_And_SumOfDistance(len(listOfKeyOfSelectedPlace),temp,list() ,list(), list())
+    temp = makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DurationBetweenPointToPoint(makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace(listOfKeyOfSelectedPlace), makeList_Of_DistanceBetweenPointToPoint_From_DictFromGooglemapsAPI(dictFromGooglemapsAPI), makeList_Of_DurationBetweenPointToPoint_From_DictFromGooglemapsAPI(dictFromGooglemapsAPI))
+    #print(temp)
+    #temp = makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DistanceBetweenPointToPoint(makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace(listOfKeyOfSelectedPlace), makeList_Of_DistanceBetweenPointToPoint_From_DictFromGooglemapsAPI(dictFromGooglemapsAPI))
+    #return makeList_Of_ListOf_AllListOfRoute_ListofDistance_And_SumOfDistance(len(listOfKeyOfSelectedPlace),temp,list() ,list(), list())
+    return makeList_Of_ListOf_AllListOfRoute_ListofDistance_ListofDuration_And_SumOfDistance(len(listOfKeyOfSelectedPlace),temp,list(), list() ,list(), list())
 
 def sortResult(result): 
     for _ in range(len(result)):
