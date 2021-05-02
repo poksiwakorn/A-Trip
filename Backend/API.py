@@ -63,7 +63,7 @@ def register():
             print('Please fill out the form!')
         else:
             # Account doesnt exists and the form data is valid, now insert new account into accounts table
-            cursor.execute('INSERT INTO Atrip_Users (username,password,email,role,FirstName,LastName) VALUES (%s, %s, %s, %s, %s, %s)', (username, password, email,"user",firstname,lastname))
+            cursor.execute('INSERT INTO Atrip_Users (username,password,email,role,FirstName,LastName,Nickname) VALUES (%s, %s, %s, %s, %s, %s, %s ,%s)', (username, password, email,"user",firstname,lastname,username))
             mysql.connection.commit()
             form['result'] = True
             form['msg'] = 'You have successfully registered!'
@@ -277,10 +277,21 @@ def myTrip():
         print(content)
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Trips where ownerID = %s ORDER BY keyID',[content["id"]])
-            account = cursor.fetchall()
-            print(account)
-    return jsonify(account)
+            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username FROM Atrip_Trips INNER JOIN Atrip_Users where (Atrip_Trips.ownerID = Atrip_Users.ID) and ownerID = %s ORDER BY keyID',[content["id"]])
+            data = list(cursor.fetchall())
+            for i in range(0,len(data),1):
+                placeList = data[i]["placeList"].split(",")
+                form = "SELECT nameTH FROM Atrip_Places WHERE keyID = " + " or keyID = ".join(placeList)
+                cursor.execute(form)
+                placeList = list(cursor.fetchall())
+                placename = ""
+                for j in placeList:
+                    placename = placename + j["nameTH"] + ","
+                placename = placename[0:len(placename)-1]
+                data[i]["placeList"] = placename
+            print(data)
+
+    return jsonify(data)
 
 @app.route("/makeRoute", methods = ['GET', 'POST'])
 @cross_origin()
