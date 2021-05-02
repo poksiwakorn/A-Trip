@@ -86,9 +86,10 @@ const routes = [
     component: ApprovePlace
   },
   {
-    path: '/ApproveInfo',
+    path: '/ApproveInfo/:keyID',
     name: 'ApproveInfo',
-    component: ApproveInfo
+    component: ApproveInfo,
+    props: true
   }
 ]
 

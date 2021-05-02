@@ -15,7 +15,7 @@
                 <v-chip class="ma-2" color="#FF9100" outlined>{{place.provinceTH}}</v-chip>
               </v-card-title>
               <v-card-subtitle>{{place.ownerID}}</v-card-subtitle>
-              <v-btn color="#FF9100" outlined class="ma-2" link to = "/ApproveInfo"
+              <v-btn color="#FF9100" outlined class="ma-2" @click="goApproveInfo(place.keyID)"
                 >view info
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
               </v-btn>
@@ -41,6 +41,9 @@ export default {
     ],
   }),
   methods: {
+    goApproveInfo(keyID){
+      this.$router.push("/ApproveInfo/" + keyID);
+    },
     async callPlaces(){
       await axios.post("location",{query:""}).then((res)=>this.places = res.data);
     }
