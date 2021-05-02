@@ -135,7 +135,7 @@ def allResults(listOfKeyOfSelectedPlace, dictFromGooglemapsAPI):
 def sortResult(result): 
     for _ in range(len(result)):
         for i in range(len(result)-1):
-            if result[i][2] > result[i+1][2]:
+            if result[i][3] > result[i+1][3]:
                 result[i], result[i+1] = result[i+1], result[i]
     return result
             
