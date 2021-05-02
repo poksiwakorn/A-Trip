@@ -5,6 +5,7 @@ from flask_mysqldb import MySQL
 from datetime import timedelta
 import MySQLdb.cursors
 import re
+import findRoute
 
 app = Flask(__name__)
 app.secret_key = 'SoftDev'
@@ -283,5 +284,6 @@ if __name__ == '__main__':
 @cross_origin()
 def makeRoute():
     if request.method == 'POST':
+        print("HelloWorld")
         content = request.get_json()
         print(content)
