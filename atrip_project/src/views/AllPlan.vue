@@ -102,7 +102,7 @@ export default {
       this.$router.push("/TripInfo/" + keyID);
     },
     async callTrips(){
-      await axios.post("trip",{"query":"" , "id" : this.$store.getters.StateID}).then((res)=>this.trips = res.data);
+      await axios.post("trip",{"query":"" }).then((res)=>this.trips = res.data);
     },
   },
   created: function(){
