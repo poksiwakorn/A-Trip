@@ -71,6 +71,9 @@
               </v-card-title>
               <v-divider class="mx-4"></v-divider>
               <v-card-text class="text--primary ma-2">Place Description</v-card-text>
+              <v-card-text>
+                {{trips[0]}}
+              </v-card-text>
               <v-btn color="#FF9100" text class="ma-2">EXPLORE</v-btn>
             </v-card>
           </v-col>
@@ -99,12 +102,12 @@ export default {
     goTripInfo(keyID){
       this.$router.push("/TripInfo/" + keyID);
     },
-    async callTrips(){
-      await axios.post("trip",{"query":"" , "id" : this.$store.getters.StateID}).then((res)=>this.trips = res.data);
+    async getTrip(){
+      await axios.post("getTrip").then((res)=>this.trips = res.data);
     },
   },
   created: function(){
-    this.callTrips()
+    this.getTrip()
   }
 };
 </script>
