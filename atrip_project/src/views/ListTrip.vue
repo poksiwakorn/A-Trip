@@ -200,7 +200,7 @@ export default {
       alert("Add Fail");
     },
     async makeRoute (){
-      await axios.post("makeRoute",{"placesInTrip": this.placesInTrip});
+      await axios.post("makeRoute",{"placesInTrip": this.placesInTrip}).then((res)=>console.log(res.data));
     }
     ,
     keyNotUsed: function(keyID){
