@@ -102,8 +102,8 @@ export default {
     goTripInfo(keyID){
       this.$router.push("/TripInfo/" + keyID);
     },
-    async getTrip(){
-      await axios.post("getTrip").then((res)=>this.trips = res.data);
+    async callTrips(){
+      await axios.post("trip",{"query":"" }).then((res)=>this.trips = res.data);
     },
   },
   created: function(){

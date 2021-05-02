@@ -131,10 +131,9 @@ def location():
 def trip():
     if request.method == 'POST':
         content = request.get_json()
-        print(content["id"])
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Trips where owner = %s ORDER BY keyID',[content["id"]])
+            cursor.execute('SELECT * FROM Atrip_Trips ORDER BY keyID')
             account = cursor.fetchall()
     return jsonify(account)
 
@@ -178,6 +177,7 @@ def getPlace():
         print(len(content["place"]))
         if content["place"]:
             contentinput = content["place"].split(",")
+            print(contentinput)
             form = "SELECT * FROM Atrip_Places WHERE keyID = " + " or keyID = ".join(contentinput)
             print(form)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -262,6 +262,18 @@ def makeTrip():
             form["msg"] = "Error"
             return jsonify(form)
 
+@app.route("/myTrip", methods = ['GET', 'POST'])
+@cross_origin()
+def myTrip():
+    if request.method == 'POST':
+        content = request.get_json()
+        print(content)
+        if content["query"] == "":
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT * FROM Atrip_Trips where owner = %s ORDER BY keyID',[content["id"]])
+            account = cursor.fetchall()
+            print(account)
+    return jsonify(account)
 
 
 if __name__ == '__main__':
