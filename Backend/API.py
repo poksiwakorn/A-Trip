@@ -246,13 +246,18 @@ def makeTrip():
         content = request.get_json()
         print(content)
         if content['userID'] and content["tripName"] and content["placesInTrip"]:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("SELECT * from Atrip_Trips where nameTH = %s",[content['tripName']])
+            check = cursor.fetchone()
+            if (check):
+                form["msg"] = "This name already exists"
+                return jsonify(form)
             key = ""
             for i in range(0,len(content["placesInTrip"]),1):
                 key = key + str(content["placesInTrip"][i]["keyID"]) + ","
             key = key[0:len(key)-1]
             qkey = key.split(",")
             sqlform = "SELECT DISTINCT provinceTH FROM Atrip_Places WHERE keyID = " + " or keyID = ".join(qkey)
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(sqlform)
             account = cursor.fetchall()
             print(account)
