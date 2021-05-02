@@ -59,7 +59,6 @@
         </v-col>
 
         <v-col cols="5" class="tripCard">
-          {{this.bestPath}}
           <v-card class="ma-3">
             <v-card-title class="yourTripTitle white--text"
               >ทริป</v-card-title
@@ -214,6 +213,7 @@ export default {
         }
       }
       this.placesInTrip = this.placesInTripTemp;
+      this.placesInTripTemp = [];
     },
     keyNotUsed: function(keyID){
       var i;
