@@ -17,7 +17,7 @@
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เบอร์โทรศัพท์</v-card-title>
             <v-card-subtitle class="mx-7 subtitle">0914259634</v-card-subtitle>
-            <v-divider class="mx-5"></v-divider>
+            <!-- <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เวลาทำการ</v-card-title>
             <v-row>
               <v-card-subtitle class="ml-13 mr-15 subtitle">วันจันทร์</v-card-subtitle>
@@ -44,7 +44,7 @@
             </v-row>
             <v-row>
               <v-chip class="ma-2" style="left: 227px;" color="#FF9100" outlined>10:00 - 20.00</v-chip>
-            </v-row>
+            </v-row> -->
           </v-card>
         </v-col>
         <v-col cols = "4" class="imageZone">

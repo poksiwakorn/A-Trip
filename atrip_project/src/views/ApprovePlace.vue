@@ -5,7 +5,7 @@
       <v-col cols="3" class="listCard">
           <v-row v-for="(place, i) in places" :key="i">
             <v-card v-if="place.isVerify == '0'" class="ma-3">
-              <v-img src = "../assets/temple1.jpg" class="placePic"></v-img>
+              <v-img :src="place.pictureURL" class="placePic"></v-img>
               <v-card-title>
                 {{ place.nameTH }}
               </v-card-title>
@@ -14,7 +14,7 @@
                 <v-spacer></v-spacer>
                 <v-chip class="ma-2" color="#FF9100" outlined>{{place.provinceTH}}</v-chip>
               </v-card-title>
-              <v-card-subtitle>{{place.ownerID}}</v-card-subtitle>
+              <v-card-subtitle>{{place.Username}}</v-card-subtitle>
               <v-btn color="#FF9100" outlined class="ma-2" @click="goApproveInfo(place.keyID)"
                 >view info
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
@@ -45,7 +45,7 @@ export default {
       this.$router.push("/ApproveInfo/" + keyID);
     },
     async callPlaces(){
-      await axios.post("location",{query:""}).then((res)=>this.places = res.data);
+      await axios.get("approvelocation").then((res)=>this.places = res.data);
     }
   },
 
