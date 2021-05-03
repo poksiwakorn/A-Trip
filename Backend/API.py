@@ -130,6 +130,7 @@ def location():
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+            print(account[i])
     return jsonify(account)
 
 @app.route("/trip", methods = ['GET', 'POST'])
@@ -171,6 +172,8 @@ def placeInfo(keyID):
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM Atrip_Places WHERE keyID = %s',[keyID])
         account = cursor.fetchall()
+        for i in range(0,len(account),1):
+            account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
         print(account)
     return jsonify(account)
 
@@ -190,6 +193,8 @@ def getPlace():
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(form)
             account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
             return jsonify(account)
         else:
             return jsonify(Testform)
@@ -223,6 +228,8 @@ def addLocation():
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('SELECT * FROM Atrip_Places WHERE nameTH = %s',[content["placeName"]])
             account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
             if account:
                 print("enter")
                 form["isSuccess"] = False
@@ -233,7 +240,6 @@ def addLocation():
                 form["isSuccess"] = True
                 form["msg"] = "Successfully add to database"
             return jsonify(form)
-
         else:
             form["msg"] = "Error no PlaceName :d"
             return jsonify(form)
