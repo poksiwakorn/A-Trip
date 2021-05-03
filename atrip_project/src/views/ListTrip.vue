@@ -23,6 +23,7 @@
         </v-row>   
       <v-row>
         <div class="mapCard">
+          <Listmap />
           <Map v-bind:loca="coordinates" v-bind:Mark="totalMark" />
         </div>
         <v-col cols="3" class="listCard">
@@ -32,7 +33,7 @@
                           && (place.typeTH.includes(typeValue) || typeValue == 'ทั้งหมด')
                           && (place.provinceTH.includes(provinceValue) || provinceValue == 'ทั้งหมด')"
                           class="ma-3">
-              <v-img src = "../assets/temple1.jpg" class="placePic"></v-img>
+              <v-img :src="place.pictureURL" class="placePic"></v-img>
               <v-card-title>
                 {{ place.nameTH }}
                 <v-spacer></v-spacer>
@@ -41,7 +42,7 @@
                 }}</v-chip>
               </v-card-title>
               <v-card-subtitle>{{place.typeTH}}</v-card-subtitle>
-              <v-btn color="#FF9100" outlined class="ma-2" @click = "goPlaceInfo(place.keyID)" style="font-size: 20px;"
+              <v-btn color="#FF9100" outlined class="ma-2" @click = "showOverlay(place)" style="font-size: 20px;"
                 >ดูข้อมูล
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
               </v-btn>
@@ -98,7 +99,7 @@
                       <v-col cols="4">
                         <v-card class="mb-5">
                           <v-img
-                            src="../assets/temple1.jpg"
+                            :src="place.item.pictureURL"
                             class="placeImage"
                           ></v-img>
                         </v-card>
@@ -137,6 +138,25 @@
           </v-card>
         </v-col>
       </v-row>
+      <!-- Overlay -->
+      <v-overlay
+        :z-index=0
+        :value="overlay"
+      >
+        <v-card class="editCard">
+          <v-card-title class="black--text" style="font-size: 30px;">
+            {{overlayValue.nameTH}}
+            <v-spacer></v-spacer>
+            <v-btn
+              class="white--text"
+              color="error"
+              @click="overlay = false"
+            >
+              X
+            </v-btn>
+          </v-card-title>
+        </v-card>
+      </v-overlay>
     </div>
   </v-content>
 </template>
@@ -146,14 +166,17 @@
 import TripBar from "../components/TripBar";
 import axios from "axios";
 import Map from "../components/Map";
+import Listmap from "../components/Listmap";
 export default {
   name: "ListTrip",
   components: {
     TripBar,
     Map,
+    Listmap,
   },
 
   data: () => ({
+    overlay: false,
     types: ["ทั้งหมด","จุดชมวิว","ดอย","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ"],
     typeValue: "ทั้งหมด",
     provinces: [],
@@ -167,7 +190,8 @@ export default {
     placesInTrip: [],
     places: [],
     placesInTripTemp: [],
-    bestPath: []
+    bestPath: [],
+    overlayValue: []
   }),
   methods: {
     addPlace: function(item) {
@@ -186,6 +210,10 @@ export default {
           return items[i];
         }
       }
+    },
+    showOverlay(place){
+      this.overlayValue = place;
+      this.overlay = !this.overlay;
     },
     goPlaceInfo(keyID){
       this.$router.push("/PlaceInfo/" + keyID);
@@ -227,6 +255,7 @@ export default {
     },
     async callPlaces(){
       await axios.post("location",{query:""}).then((res)=>this.places = res.data);
+      console.log(this.places[0].pictureURL);
     },
     async callProvinces(){
       await axios.get("province").then((res)=>this.provinces = res.data);
@@ -328,5 +357,11 @@ export default {
 .placeImage {
   width: 100%;
   height: 100px;
+}
+
+.editCard{
+  width: 55vw;
+  height: 70vh;
+  background-color: white;
 }
 </style>

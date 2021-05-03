@@ -7,15 +7,17 @@
           <v-card class="mapCard pb-7">
             <v-card-title class="mx-4">แผนที่</v-card-title>
             <v-card class="mx-10 mb-7">
-              <MapAdd />
+              <Addmap @changeLat="placeLat = $event" @changeLng="placeLng = $event"/>
             </v-card>
+            {{placeLat}}
+            {{placeLng}}
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เว็บไซต์</v-card-title>
             <v-text-field v-model = "form.website" class="mx-9" placeholder="www.example.com" ></v-text-field>
             <v-divider class="mx-5"></v-divider>
             <v-card-title v-model = "form.phone" class="mx-4">เบอร์โทรศัพท์</v-card-title>
             <v-text-field class="mx-9" placeholder="xxxxxxxxxx"></v-text-field>
-            <v-divider class="mx-5"></v-divider>
+            <!-- <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เวลาทำการ</v-card-title>
             <v-row>
               <v-card-subtitle class="ml-15 mr-15 subtitle">วันจันทร์</v-card-subtitle>
@@ -38,7 +40,7 @@
               <v-chip class="ma-2 ml-12 mr-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
               <v-chip class="ma-2 mx-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
               <v-chip class="ma-2 mx-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
-            </v-row>
+            </v-row> -->
           </v-card>
         </v-col>
         <v-col cols = "6" class="imageZone">
@@ -75,17 +77,19 @@
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
 import axios from "axios";
-import MapAdd from "../components/MapAdd";
+import Addmap from "../components/Addmap";
 export default {
   name: "AddPlace",
   components: {
     TripBar,
-    MapAdd,
+    Addmap,
   },
 
   data: () => ({
     image: require("../assets/passage1.jpg"),
     provinces: [],
+    placeLat: "asdad",
+    placeLng: "",
     provinceNames: [],
     placeNameRule: [
         v => !!v || 'จำเป็น',
@@ -101,8 +105,8 @@ export default {
 
   methods : {
     async sendData(){
-      console.log(this.myimage)
-      await axios.post("addLocation",{"website" : this.form.website , "phone" : this.form.phone , "placeName" : this.form.placeName , "province" : this.form.province , "description" : this.form.description , "image" : document.getElementById('showImage').src})
+      // console.log(this.marker.getPosition().lat())
+      await axios.post("addLocation",{"website" : this.form.website , "phone" : this.form.phone , "placeName" : this.form.placeName , "province" : this.form.province , "description" : this.form.description , "image" : document.getElementById('showImage').src, "lat" : this.marker.getPosition().lat()})
       .then((res) => 
       {
         alert(res.data.msg)
@@ -158,7 +162,7 @@ export default {
     margin-top: 100px;
     margin-left: 100px;
     margin-right: 50px;
-    min-height: 850px;
+    min-height: 600px;
   }
 
   .mapPic{
