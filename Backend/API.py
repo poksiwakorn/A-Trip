@@ -168,7 +168,7 @@ def trip():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username FROM Atrip_Trips INNER JOIN Atrip_Users where Atrip_Trips.ownerID = Atrip_Users.ID and permission = public  ORDER BY keyID')
+            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username FROM Atrip_Trips INNER JOIN Atrip_Users where (Atrip_Trips.ownerID = Atrip_Users.ID) and permission = "public" ORDER BY keyID')
             account = cursor.fetchall()
             print(account)
     return jsonify(account)

@@ -15,8 +15,8 @@
             <v-card-title class="mx-4">เว็บไซต์</v-card-title>
             <v-text-field v-model = "form.website" class="mx-9" placeholder="www.example.com" ></v-text-field>
             <v-divider class="mx-5"></v-divider>
-            <v-card-title v-model = "form.phone" class="mx-4">เบอร์โทรศัพท์</v-card-title>
-            <v-text-field class="mx-9" placeholder="xxxxxxxxxx"></v-text-field>
+            <v-card-title class="mx-4">เบอร์โทรศัพท์</v-card-title>
+            <v-text-field v-model = "form.phone" class="mx-9" placeholder="xxxxxxxxxx"></v-text-field>
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">ประเภท</v-card-title>
             <v-autocomplete
@@ -114,8 +114,8 @@ export default {
 
   methods : {
     async sendData(){
-      // console.log(this.marker.getPosition().lat())
-      await axios.post("addLocation",{"website" : this.form.website , "phone" : this.form.phone , "placeName" : this.form.placeName , "province" : this.form.province , "description" : this.form.description , "image" : document.getElementById('showImage').src, "latitude" : 9.060866349602573 , "longtitude" : 99.30363949057889 , "User" : this.$store.getters.StateID , "type" : this.form.type})
+      console.log(this.form.phone)
+      await axios.post("addLocation",{"website" : this.form.website , "phone" : this.form.phone , "placeName" : this.form.placeName , "province" : this.form.province , "description" : this.form.description , "image" : document.getElementById('showImage').src, "latitude" : 1.5, "longtitude" : 1.3 , "User" : this.$store.getters.StateID , "type" : this.form.type})
       .then((res) => 
       {
         alert(res.data.msg)
