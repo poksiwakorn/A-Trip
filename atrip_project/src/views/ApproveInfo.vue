@@ -65,8 +65,8 @@
           </v-card>
         </v-col>
         <v-col cols = "4" class="buttonZone">
-            <v-btn color="green" class="approve-btn white--text" height="100px" link to="ApprovePlace" >Approve</v-btn>
-            <v-btn color="error" class="decline-btn" height="100px" link to="ApprovePlace">Decline</v-btn>
+            <v-btn color="green" class="approve-btn white--text" height="100px" @click="approvePlace">Approve</v-btn>
+            <v-btn color="error" class="decline-btn" height="100px" @click="declinePlace">Decline</v-btn>
         </v-col>
       </v-row>
     </div>
