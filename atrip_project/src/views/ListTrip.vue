@@ -23,7 +23,8 @@
         </v-row>   
       <v-row>
         <div class="mapCard">
-          <Map v-bind:loca="coordinates" v-bind:Mark="totalMark" />
+          <Listmap ref="Addmap" />
+          
         </div>
         <v-col cols="3" class="listCard">
           <v-row v-for="(place, i) in places" :key="i">
@@ -50,7 +51,7 @@
                 outlined
                 class="ma-2"
                 style="font-size: 20px;"
-                @click="addPlace(place)"
+                @click="addPlace(place),$refs.Addmap. moveToLocation(place.latitude,place.longitude),$refs.Addmap.addMarker(place.latitude,place.longitude)" 
                 >เพิ่มเข้าทริป
                 <v-icon class="ml-2">mdi-plus-outline</v-icon>
               </v-btn>
@@ -115,7 +116,7 @@
                             <v-btn
                               icon
                               class="mt-3 mr-4"
-                              @click="canclePlace(place.index)"
+                              @click="canclePlace(place.index) ,$refs.Addmap.removeMarker(place.item.latitude,place.item.longitude)"
                               ><v-icon color="error">mdi-close</v-icon></v-btn
                             >
                           </v-row>
@@ -171,13 +172,13 @@
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
 import axios from "axios";
-import Map from "../components/Map";
+import Listmap from "../components/Listmap";
 
 export default {
   name: "ListTrip",
   components: {
     TripBar,
-    Map,
+    Listmap,
   },
 
   data: () => ({
@@ -187,9 +188,6 @@ export default {
     provinces: [],
     provinceNames: ["ทั้งหมด"],
     provinceValue: "ทั้งหมด",
-    totalMark: 0,
-  
-    coordinates: [],
     typeGroup: 0,
     tripName: "",
     placesInTrip: [],
@@ -200,14 +198,10 @@ export default {
   }),
   methods: {
     addPlace: function(item) {
-      this.placesInTrip.push(item);
-      this.coordinates.push({ lat: item.latitude, lng: item.longitude });
-      this.totalMark = this.coordinates.length;
+      this.placesInTrip.push(item); 
     },
     canclePlace: function(index) {
-      this.placesInTrip.splice(index, 1);
-      this.coordinates.splice(index, 1);
-      this.totalMark = this.coordinates.length;
+      this.placesInTrip.splice(index, 1); 
     },
     getItem: function(items, item) {
       for (var i = 0; i < items.length; i++) {
