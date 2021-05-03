@@ -126,7 +126,7 @@ def location():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Places ORDER BY keyID')
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID ORDER BY keyID')
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
@@ -138,7 +138,7 @@ def location():
 def approvelocation():
     if request.method == 'GET':
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM Atrip_Places where isVerify = 0 ORDER BY keyID')
+        cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID where isVerify = 0 ORDER BY keyID')
         account = cursor.fetchall()
         for i in range(0,len(account),1):
             account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
@@ -261,7 +261,7 @@ def addLocation():
                 form["isSuccess"] = False
                 form["msg"] = "Already have data"
             else:
-                cursor.execute('INSERT INTO Atrip_Places (website,phoneNumber,nameTH,provinceTH,descriptionTH,pictureURL,latitude,longitude,coordinate,ownerID) VALUES (%s, %s, %s, %s, %s ,%s,%s,%s,%s ,%s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"],content["image"],content["latitude"],content["longtitude"],str(content["latitude"])+", "+str(content["longtitude"]),content["User"]))
+                cursor.execute('INSERT INTO Atrip_Places (website,phoneNumber,nameTH,provinceTH,descriptionTH,pictureURL,latitude,longitude,coordinate,ownerID,typeTH) VALUES (%s, %s, %s, %s, %s ,%s,%s,%s,%s ,%s,%s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"],content["image"],content["latitude"],content["longtitude"],str(content["latitude"])+", "+str(content["longtitude"]),content["User"],content["type"]))
                 mysql.connection.commit()
                 form["isSuccess"] = True
                 form["msg"] = "Successfully add to database"
