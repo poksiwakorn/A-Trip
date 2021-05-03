@@ -7,8 +7,10 @@
           <v-card class="mapCard pb-7">
             <v-card-title class="mx-4">แผนที่</v-card-title>
             <v-card class="mx-10 mb-7">
-              <Addmap />
+              <Addmap @changeLat="placeLat = $event" @changeLng="placeLng = $event"/>
             </v-card>
+            {{placeLat}}
+            {{placeLng}}
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เว็บไซต์</v-card-title>
             <v-text-field v-model = "form.website" class="mx-9" placeholder="www.example.com" ></v-text-field>
@@ -86,6 +88,8 @@ export default {
   data: () => ({
     image: require("../assets/passage1.jpg"),
     provinces: [],
+    placeLat: "asdad",
+    placeLng: "",
     provinceNames: [],
     placeNameRule: [
         v => !!v || 'จำเป็น',
@@ -101,8 +105,8 @@ export default {
 
   methods : {
     async sendData(){
-      console.log(this.myimage)
-      await axios.post("addLocation",{"website" : this.form.website , "phone" : this.form.phone , "placeName" : this.form.placeName , "province" : this.form.province , "description" : this.form.description , "image" : document.getElementById('showImage').src})
+      // console.log(this.marker.getPosition().lat())
+      await axios.post("addLocation",{"website" : this.form.website , "phone" : this.form.phone , "placeName" : this.form.placeName , "province" : this.form.province , "description" : this.form.description , "image" : document.getElementById('showImage').src, "lat" : this.marker.getPosition().lat()})
       .then((res) => 
       {
         alert(res.data.msg)

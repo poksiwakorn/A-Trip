@@ -70,6 +70,8 @@ export default {
         draggable: true,
         animation: google.maps.Animation.DROP,
       });
+      this.$emit('changeLat',this.marker.getPosition().lat());
+      this.$emit('changeLng',this.marker.getPosition().lng());
     },
     
   },
