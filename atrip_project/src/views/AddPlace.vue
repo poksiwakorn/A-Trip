@@ -115,7 +115,7 @@ export default {
   methods : {
     async sendData(){
       console.log(this.form.phone)
-      await axios.post("addLocation",{"website" : this.form.website , "phone" : this.form.phone , "placeName" : this.form.placeName , "province" : this.form.province , "description" : this.form.description , "image" : document.getElementById('showImage').src, "latitude" : 1.5, "longtitude" : 1.3 , "User" : this.$store.getters.StateID , "type" : this.form.type})
+      await axios.post("addLocation",{"website" : this.form.website , "phone" : this.form.phone , "placeName" : this.form.placeName , "province" : this.form.province , "description" : this.form.description , "image" : document.getElementById('showImage').src, "latitude" : this.placeLat, "longtitude" : this.placeLng , "User" : this.$store.getters.StateID , "type" : this.form.type})
       .then((res) => 
       {
         alert(res.data.msg)
