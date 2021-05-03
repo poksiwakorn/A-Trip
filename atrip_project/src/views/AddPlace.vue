@@ -15,7 +15,7 @@
             <v-divider class="mx-5"></v-divider>
             <v-card-title v-model = "form.phone" class="mx-4">เบอร์โทรศัพท์</v-card-title>
             <v-text-field class="mx-9" placeholder="xxxxxxxxxx"></v-text-field>
-            <v-divider class="mx-5"></v-divider>
+            <!-- <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เวลาทำการ</v-card-title>
             <v-row>
               <v-card-subtitle class="ml-15 mr-15 subtitle">วันจันทร์</v-card-subtitle>
@@ -38,7 +38,7 @@
               <v-chip class="ma-2 ml-12 mr-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
               <v-chip class="ma-2 mx-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
               <v-chip class="ma-2 mx-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
-            </v-row>
+            </v-row> -->
           </v-card>
         </v-col>
         <v-col cols = "6" class="imageZone">
@@ -158,7 +158,7 @@ export default {
     margin-top: 100px;
     margin-left: 100px;
     margin-right: 50px;
-    min-height: 850px;
+    min-height: 600px;
   }
 
   .mapPic{

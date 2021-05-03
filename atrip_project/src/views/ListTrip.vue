@@ -32,7 +32,7 @@
                           && (place.typeTH.includes(typeValue) || typeValue == 'ทั้งหมด')
                           && (place.provinceTH.includes(provinceValue) || provinceValue == 'ทั้งหมด')"
                           class="ma-3">
-              <v-img src = "../assets/temple1.jpg" class="placePic"></v-img>
+              <v-img :src="place.pictureURL" class="placePic"></v-img>
               <v-card-title>
                 {{ place.nameTH }}
                 <v-spacer></v-spacer>
@@ -98,7 +98,7 @@
                       <v-col cols="4">
                         <v-card class="mb-5">
                           <v-img
-                            src="../assets/temple1.jpg"
+                            :src="place.item.pictureURL"
                             class="placeImage"
                           ></v-img>
                         </v-card>
@@ -252,6 +252,7 @@ export default {
     },
     async callPlaces(){
       await axios.post("location",{query:""}).then((res)=>this.places = res.data);
+      console.log(this.places[0].pictureURL);
     },
     async callProvinces(){
       await axios.get("province").then((res)=>this.provinces = res.data);

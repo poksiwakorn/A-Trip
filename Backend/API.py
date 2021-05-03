@@ -129,7 +129,7 @@ def location():
             cursor.execute('SELECT * FROM Atrip_Places ORDER BY keyID')
             account = cursor.fetchall()
             for i in range(0,len(account),1):
-                account[i]["pictureURL"] = str(account[i]["pictureURL"])
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
     return jsonify(account)
 
 @app.route("/trip", methods = ['GET', 'POST'])
