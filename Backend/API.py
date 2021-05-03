@@ -126,7 +126,7 @@ def location():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID and permission = public ORDER BY keyID')
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID ORDER BY keyID')
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
@@ -168,7 +168,7 @@ def trip():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username FROM Atrip_Trips INNER JOIN Atrip_Users where Atrip_Trips.ownerID = Atrip_Users.ID  ORDER BY keyID')
+            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username FROM Atrip_Trips INNER JOIN Atrip_Users where Atrip_Trips.ownerID = Atrip_Users.ID and permission = public  ORDER BY keyID')
             account = cursor.fetchall()
             print(account)
     return jsonify(account)
