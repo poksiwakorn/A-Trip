@@ -96,13 +96,13 @@ export default {
       placeName : "",
       province : "",
       description : "",
-      // image: ""
-    }
+    },
   }),
 
   methods : {
     async sendData(){
-      await axios.post("addLocation",this.form)
+      console.log(this.myimage)
+      await axios.post("addLocation",{"website" : this.form.website , "phone" : this.form.phone , "placeName" : this.form.placeName , "province" : this.form.province , "description" : this.form.description , "image" : document.getElementById('showImage').src})
       .then((res) => 
       {
         alert(res.data.msg)
@@ -112,7 +112,7 @@ export default {
           this.form.placeName = ""
           this.form.province = ""
           this.form.description = ""
-          // document.getElementById('showImage').src = "";
+          document.getElementById('showImage').src = "";
         }
       })
     },
@@ -126,16 +126,15 @@ export default {
     handleImage(e){
       var selectedImage = e.target.files[0];
       this.createBase64Image(selectedImage);
-      console.log(selectedImage);
-      // this.form.image = selectedImage;
     },
-    createBase64Image(fileObject){
+    async createBase64Image(fileObject){
       var reader = new FileReader();
       reader.readAsDataURL(fileObject);
-      reader.onload = function(){
+      reader.onload = async function(){
         var result = reader.result;
         document.getElementById('showImage').src = result;
       };
+      
     }
   },
   created: function(){

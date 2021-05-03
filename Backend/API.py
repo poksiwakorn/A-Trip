@@ -226,12 +226,10 @@ def addLocation():
                 form["isSuccess"] = False
                 form["msg"] = "Already have data"
             else:
-                cursor.execute('INSERT INTO Atrip_Places (website,phoneNumber,nameTH,provinceTH,descriptionTH) VALUES (%s, %s, %s, %s, %s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"]))
+                cursor.execute('INSERT INTO Atrip_Places (website,phoneNumber,nameTH,provinceTH,descriptionTH,pictureURL) VALUES (%s, %s, %s, %s, %s ,%s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"],content["image"]))
                 mysql.connection.commit()
                 form["isSuccess"] = True
                 form["msg"] = "Successfully add to database"
-                cursor.execute('INSERT INTO Atrip_Places (website,phoneNumber,nameTH,provinceTH,descriptionTH) VALUES (%s, %s, %s, %s, %s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"]))
-                mysql.connection.commit()
             return jsonify(form)
 
         else:
@@ -332,4 +330,3 @@ def makeRoute():
 if __name__ == '__main__':
     gmaps = googlemaps.Client(key='AIzaSyCIHRdrSY885ctMMj_cvL-Ga69IktvnLs0')
     app.run(host="0.0.0.0", port=34673, debug=True)
-
