@@ -17,8 +17,14 @@
             <v-divider class="mx-5"></v-divider>
             <v-card-title v-model = "form.phone" class="mx-4">เบอร์โทรศัพท์</v-card-title>
             <v-text-field class="mx-9" placeholder="xxxxxxxxxx"></v-text-field>
-            <!-- <v-divider class="mx-5"></v-divider>
-            <v-card-title class="mx-4">เวลาทำการ</v-card-title>
+            <v-divider class="mx-5"></v-divider>
+            <v-card-title class="mx-4">ประเภท</v-card-title>
+            <v-autocomplete
+              v-model="form.type"
+              :items="types"
+              class="chooseType"
+            ></v-autocomplete>
+            <!-- <v-card-title class="mx-4">เวลาทำการ</v-card-title>
             <v-row>
               <v-card-subtitle class="ml-15 mr-15 subtitle">วันจันทร์</v-card-subtitle>
               <v-card-subtitle class="ml-8 mr-15 subtitle">วันอังคาร</v-card-subtitle>
@@ -87,6 +93,8 @@ export default {
 
   data: () => ({
     image: require("../assets/passage1.jpg"),
+    imageExample: "",
+    types: ["จุดชมวิว","ดอย","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ"],
     provinces: [],
     placeLat: "",
     placeLng: "",
@@ -100,6 +108,7 @@ export default {
       placeName : "",
       province : "",
       description : "",
+      type : "",
     },
   }),
 
@@ -117,6 +126,7 @@ export default {
           this.form.placeName = ""
           this.form.province = ""
           this.form.description = ""
+          this.form.type = ""
           document.getElementById('showImage').src = "";
         }
       })
@@ -137,6 +147,8 @@ export default {
       reader.readAsDataURL(fileObject);
       reader.onload = async function(){
         var result = reader.result;
+        // this.imageExample = result;
+        // console.log(this.imageExample);
         document.getElementById('showImage').src = result;
       };
       
@@ -169,6 +181,12 @@ export default {
   .mapPic{
     width: 100%;
     height: 300px;
+  }
+
+  .chooseType{
+    margin-left: 35px;
+    margin-right: 35px;
+    margin-top: 0px;
   }
 
   .imageZone{

@@ -75,7 +75,7 @@
         :value="overlay"
       >
         <v-card class="editCard">
-          <v-card-title class="black--text" style="font-size: 30px;">
+          <v-card-title class="white--text" style="font-size: 30px;">
             แก้ไขโปรไฟล์
             <v-spacer></v-spacer>
             <v-btn
@@ -86,6 +86,17 @@
               X
             </v-btn>
           </v-card-title>
+          <v-divider></v-divider>
+          <v-row>
+            <v-text-field
+              v-model = "nickname"
+              placeholder="ชื่อเล่น"
+              regular
+              class="mt-7 mb-3"
+              style="font-color: black; width: 200px; margin-left: 50px; color: black;"
+              width="200px"
+            ></v-text-field>
+          </v-row>
         </v-card>
       </v-overlay>
     </div>
@@ -106,7 +117,8 @@ export default {
   data: () => ({
     savedTrips: [],
     tripName: "",
-    overlay: false
+    overlay: false,
+    nickname: "myNickName"
   }),
 
   methods: {
@@ -220,6 +232,6 @@ export default {
   .editCard{
     width: 55vw;
     height: 70vh;
-    background-color: white;
+    /* background-color: white; */
   }
 </style>
