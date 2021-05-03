@@ -65,8 +65,8 @@
           </v-card>
         </v-col>
         <v-col cols = "4" class="buttonZone">
-            <v-btn color="green" class="approve-btn white--text" height="100px" link to="ApprovePlace" >Approve</v-btn>
-            <v-btn color="error" class="decline-btn" height="100px" link to="ApprovePlace">Decline</v-btn>
+            <v-btn color="green" class="approve-btn white--text" height="100px" @click = "Approve" >Approve</v-btn>
+            <v-btn color="error" class="decline-btn" height="100px" @click = "Decline">Decline</v-btn>
         </v-col>
       </v-row>
     </div>
@@ -94,6 +94,18 @@ export default {
     async getInfo(){
       await axios.get("placeInfo/" + this.keyID).then((res)=>this.place = res.data[0]);
       console.log(this.place)
+    },
+    async Approve(){
+      await axios.post("validate",{"key" : this.keyID,"status" : 1}).then((res)=>{
+        console.log(res.data)
+        this.$router.push("/ApprovePlace")
+        })
+    },
+    async Decline(){
+      await axios.post("validate",{"key" : this.keyID,"status" : 0}).then((res) => {
+        console.log(res.data)
+        this.$router.push("/ApprovePlace")
+        })
     }
   },
   created: function(){

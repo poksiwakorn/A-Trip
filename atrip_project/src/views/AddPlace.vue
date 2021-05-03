@@ -88,7 +88,7 @@ export default {
   data: () => ({
     image: require("../assets/passage1.jpg"),
     provinces: [],
-    placeLat: "asdad",
+    placeLat: "",
     placeLng: "",
     provinceNames: [],
     placeNameRule: [
@@ -106,10 +106,11 @@ export default {
   methods : {
     async sendData(){
       // console.log(this.marker.getPosition().lat())
-      await axios.post("addLocation",{"website" : this.form.website , "phone" : this.form.phone , "placeName" : this.form.placeName , "province" : this.form.province , "description" : this.form.description , "image" : document.getElementById('showImage').src, "lat" : this.marker.getPosition().lat()})
+      await axios.post("addLocation",{"website" : this.form.website , "phone" : this.form.phone , "placeName" : this.form.placeName , "province" : this.form.province , "description" : this.form.description , "image" : document.getElementById('showImage').src, "latitude" : this.placeLat , "longtitude" : this.placeLng , "User" : this.$store.getters.StateID})
       .then((res) => 
       {
         alert(res.data.msg)
+        console.log(res.data)
         if (res.data.isSuccess){
           this.form.website = ""
           this.form.phone = ""

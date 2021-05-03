@@ -133,6 +133,34 @@ def location():
             print(account[i])
     return jsonify(account)
 
+@app.route("/approvelocation", methods = ['GET', 'POST'])
+@cross_origin()
+def approvelocation():
+    if request.method == 'GET':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM Atrip_Places where isVerify = 0 ORDER BY keyID')
+        account = cursor.fetchall()
+        for i in range(0,len(account),1):
+            account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+        print(account[i])
+        return jsonify(account)
+    return jsonify({"msg" : "Error"})
+
+@app.route("/validate", methods = ['GET', 'POST'])
+@cross_origin()
+def validate():
+    if request.method == 'POST':
+        content = request.get_json()
+        if (content["status"] == 0):
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('Delete from Atrip_Places where keyID = %s',[content["key"]])
+            mysql.connection.commit()
+        else:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('Update Atrip_Places set isVerify = 1 where keyID = %s',[content["key"]])
+            mysql.connection.commit()
+    return jsonify({"msg" : "success"})
+
 @app.route("/trip", methods = ['GET', 'POST'])
 @cross_origin()
 def trip():
@@ -226,16 +254,14 @@ def addLocation():
         print(content)
         if content["placeName"]:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Places WHERE nameTH = %s',[content["placeName"]])
-            account = cursor.fetchall()
-            for i in range(0,len(account),1):
-                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+            cursor.execute('SELECT nameTH FROM Atrip_Places WHERE nameTH = %s',[content["placeName"]])
+            account = cursor.fetchone()
             if account:
                 print("enter")
                 form["isSuccess"] = False
                 form["msg"] = "Already have data"
             else:
-                cursor.execute('INSERT INTO Atrip_Places (website,phoneNumber,nameTH,provinceTH,descriptionTH,pictureURL) VALUES (%s, %s, %s, %s, %s ,%s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"],content["image"]))
+                cursor.execute('INSERT INTO Atrip_Places (website,phoneNumber,nameTH,provinceTH,descriptionTH,pictureURL,latitude,longitude,coordinate,ownerID) VALUES (%s, %s, %s, %s, %s ,%s,%s,%s,%s ,%s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"],content["image"],content["latitude"],content["longtitude"],str(content["latitude"])+", "+str(content["longtitude"]),content["User"]))
                 mysql.connection.commit()
                 form["isSuccess"] = True
                 form["msg"] = "Successfully add to database"

@@ -255,7 +255,7 @@ export default {
     },
     async callPlaces(){
       await axios.post("location",{query:""}).then((res)=>this.places = res.data);
-      console.log(this.places[0].pictureURL);
+      console.log(this.places);
     },
     async callProvinces(){
       await axios.get("province").then((res)=>this.provinces = res.data);
