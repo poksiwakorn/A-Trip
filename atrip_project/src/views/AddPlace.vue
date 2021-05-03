@@ -43,7 +43,9 @@
         </v-col>
         <v-col cols = "6" class="imageZone">
           <v-card class="imageCard">
-            <v-img src = "../assets/passage1.jpg" class="imagePic"></v-img>
+            <img id="showImage" class="imagePic">
+            <input type="file" @change="handleImage" ref="fileInput" style="display: none;">
+            <v-btn color="primary" class="uploadButton" @click="$refs.fileInput.click()">อัพโหลดรูปภาพ</v-btn>
             <v-divider></v-divider>
             <v-card-title class="imageTitle">
               <v-text-field v-model = "form.placeName" label="ชื่อสถานที่" :rules="placeNameRule"></v-text-field>
@@ -53,7 +55,6 @@
                 :items="provinceNames"
                 label="จังหวัด"
               ></v-autocomplete>
-              <!-- <v-text-field v-model = "form.province" placeholder="Place's province" ></v-text-field> -->
             </v-card-title>
             <v-divider class="mx-2"></v-divider>
             <v-card-text class="imageText">
@@ -83,6 +84,7 @@ export default {
   },
 
   data: () => ({
+    image: require("../assets/passage1.jpg"),
     provinces: [],
     provinceNames: [],
     placeNameRule: [
@@ -93,7 +95,8 @@ export default {
       phone : "",
       placeName : "",
       province : "",
-      description : ""
+      description : "",
+      // image: ""
     }
   }),
 
@@ -109,6 +112,7 @@ export default {
           this.form.placeName = ""
           this.form.province = ""
           this.form.description = ""
+          // document.getElementById('showImage').src = "";
         }
       })
     },
@@ -119,6 +123,20 @@ export default {
         this.provinceNames.push(this.provinces[i].provinceTH);
       }
     },
+    handleImage(e){
+      var selectedImage = e.target.files[0];
+      this.createBase64Image(selectedImage);
+      console.log(selectedImage);
+      // this.form.image = selectedImage;
+    },
+    createBase64Image(fileObject){
+      var reader = new FileReader();
+      reader.readAsDataURL(fileObject);
+      reader.onload = function(){
+        var result = reader.result;
+        document.getElementById('showImage').src = result;
+      };
+    }
   },
   created: function(){
     this.callProvinces();
@@ -158,12 +176,21 @@ export default {
     margin-top: 100px;
     margin-left: 50px;
     margin-right: 100px;
-    height: 850px;
+    min-height: 850px;
   }
 
   .imagePic{
     width: 100%;
-    height: 380px;
+    height: 410px;
+    size: cover;
+  }
+
+  .uploadButton {
+    margin-left: 295px;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    /* color: #ff9100; */
+    font-size: 20px;
   }
 
   .imageTitle{
