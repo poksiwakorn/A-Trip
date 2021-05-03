@@ -23,7 +23,6 @@
         </v-row>   
       <v-row>
         <div class="mapCard">
-          <Listmap />
           <Map v-bind:loca="coordinates" v-bind:Mark="totalMark" />
         </div>
         <v-col cols="3" class="listCard">
@@ -166,13 +165,12 @@
 import TripBar from "../components/TripBar";
 import axios from "axios";
 import Map from "../components/Map";
-import Listmap from "../components/Listmap";
+
 export default {
   name: "ListTrip",
   components: {
     TripBar,
     Map,
-    Listmap,
   },
 
   data: () => ({
@@ -255,7 +253,7 @@ export default {
     },
     async callPlaces(){
       await axios.post("location",{query:""}).then((res)=>this.places = res.data);
-      console.log(this.places[0].pictureURL);
+      console.log(this.places);
     },
     async callProvinces(){
       await axios.get("province").then((res)=>this.provinces = res.data);
