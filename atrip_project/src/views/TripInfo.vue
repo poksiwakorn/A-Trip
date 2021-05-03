@@ -13,7 +13,7 @@
                 <v-spacer></v-spacer>
                 <v-chip-group class="ma-2">
                   <v-chip
-                    v-for="province in trip.provinceTH"
+                    v-for="province in trip.provinceTH_List.split(',')"
                     :key="province"
                     color="#FF9100"
                     outlined
@@ -25,20 +25,20 @@
             <v-card-subtitle class="tripSubTitle mt-1 ml-1">
               {{ trip.owner }}
             </v-card-subtitle>
-            <v-divider class="mx-2"></v-divider>
+            <v-divider class="mx-2" style="margin-top: -10px;"></v-divider>
             <v-col class="pb-15">
                 <v-card-text class="tripText">
                     {{ describe }}
                 </v-card-text>
                 <v-btn color="#FF9100" outlined class="saveTrip-btn ma-2" link to = "/Account">
-                    save trip
+                    บันทึก
                     <v-icon class="ml-2">mdi-content-save</v-icon>
                 </v-btn>
             </v-col>
           </v-card>
         </v-col>
         <v-col cols="7" class="placeZone">
-          <v-card class="placeCard mr-10">Place List</v-card>
+          <v-card class="placeCard mr-10">รายชื่อสถานที่</v-card>
           <v-card class="scrollCard">
             <v-virtual-scroll :items="places" :item-height="250" height="690">
               <template v-slot="place">
@@ -51,23 +51,25 @@
                   <v-col cols="4">
                     <v-card class="mb-5">
                       <v-img
-                        :src="place.item.src[0]"
+                        src="../assets/temple1.jpg"
                         class="placeImage"
                       ></v-img>
                     </v-card>
                   </v-col>
-                  <v-col cols="5">
+                  <v-col>
                     <v-card class="placeInfoCard">
-                      <v-card-title class="ml-2" style="font-weight: 400"
-                        >{{ place.item.title }}
+                      <v-card-title class="ml-2" style="font-weight: 400; font-size: 20px;">
+                        {{ place.item.nameTH }}
+                      </v-card-title>
+                      <v-card-title class="typeText ml-2 grey--text" style="font-size: 18px;">
+                        {{place.item.typeTH}}
                         <v-spacer></v-spacer>
                         <v-chip class="mx-2" color="#FF9100" outlined>{{
-                          place.item.province
+                          place.item.provinceTH
                         }}</v-chip>
                       </v-card-title>
-                      <v-card-subtitle class="ml-2">{{place.item.owner}}</v-card-subtitle>
-                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" link to = "/PlaceInfo">
-                        view info 
+                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" style="font-size: 18px;" @click="goPlaceInfo(place.item.keyID)">
+                        ข้อมูลเพิ่มเติม
                         <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
                       </v-btn>
                     </v-card>
@@ -97,67 +99,20 @@ export default {
   data: () => ({
     trip: [],
     describe: "This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.",
-    places: [
-      {
-        src: [require("../assets/aquarium1.jpg")],
-        title: "AQUARIUM",
-        owner: "CrazyBoyOO1",
-        info: "Photograph",
-        province: "Bangkok",
-      },
-      {
-        src: [require("../assets/island1.jpg")],
-        title: "ISLAND",
-        owner: "CrazyBoyOO1",
-        info: "Photograph,Residence,Restaurant",
-        province: "Phuket",
-      },
-      {
-        src: [require("../assets/market1.jpg")],
-        title: "MARKET",
-        owner: "CrazyBoyOO1",
-        info: "Photograph,Restaurant",
-        province: "China",
-      },
-      {
-        src: [require("../assets/passage1.jpg")],
-        title: "PASSAGE",
-        owner: "CrazyBoyOO1",
-        info: "Photograph,Residence",
-        province: "Newzeland",
-      },
-      {
-        src: [require("../assets/road1.jpg")],
-        title: "ROAD",
-        owner: "CrazyBoyOO1",
-        info: "Photograph",
-        province: "Bangkok",
-      },
-      {
-        src: [require("../assets/sea1.jpg")],
-        title: "SEA",
-        owner: "CrazyBoyOO1",
-        info: "Photograph,Residence,Restaurant",
-        province: "Suratthani",
-      },
-      {
-        src: [require("../assets/temple1.jpg")],
-        title: "TEMPLE",
-        owner: "CrazyBoyOO1",
-        info: "Photograph",
-        province: "Nakornsitammarat",
-      },
-    ],
+    places: [],
   }),
 
   methods: {
     count: function (item) {
       return item.length;
     },
+    goPlaceInfo(keyID){
+      this.$router.push("/PlaceInfo/" + keyID);
+    },
     async getInfo(){
+      console.log(this.keyID);
       await axios.get("tripInfo/" + this.keyID).then((res)=>this.trip = res.data[0]);
-      await axios.post("getPlace",{place : this.trip.placeList}).then((res) =>
-      console.log(res.data))
+      await axios.post("getPlace",{place : this.trip.placeList}).then((res) => this.places = res.data);
     }
   },
   created: function(){
@@ -203,6 +158,7 @@ export default {
 }
 
 .tripTitle {
+  margin-top: 10px;
   font-size: 45px;
   font-weight: 300;
 }
@@ -220,9 +176,10 @@ export default {
 }
 
 .saveTrip-btn {
-    position: absolute;
-    left: 10px;
-    bottom: 10px;
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  font-size: 20px;
 }
 
 .placeZone {
@@ -267,7 +224,12 @@ export default {
 }
 
 .placeInfoCard {
+  width: 470px;
   height: 90%;
+}
+
+.typeText{
+  margin-top: -20px;
 }
 
 .viewInfo-btn {

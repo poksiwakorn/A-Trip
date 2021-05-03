@@ -1,45 +1,39 @@
 <template>
   <v-content>
     <TripBar />
-
     <div class="ListTrip">
-      <v-row class="chipBar">
-        <v-chip-group
-          active-class="chipActive white--text"
-          v-model="typeGroup"
-          class="mt-2"
-        >
-          <v-chip v-for="type in types" :key="type">{{ type }}</v-chip>
-        </v-chip-group>
-        <v-text-field
-          placeholder="Search..."
-          regular
-          clearable
-          color="orange"
-          class="search-field ml-2"
-          height="30"
-        ></v-text-field>
-        <v-btn
-          icon
-          tile
-          color="orange"
-          height="40px"
-          width="40px"
-          class="mt-3 ml-2"
-          ><v-icon size="35">mdi-magnify</v-icon></v-btn
-        >
-      </v-row>
+        <v-row class="chipBar">
+          <v-autocomplete
+            v-model="typeValue"
+            :items="types"
+            filled
+            rounded
+            label="ประเภท"
+            color="#FF9100"
+            class="mx-6"
+          ></v-autocomplete>
+          <v-autocomplete
+            v-model="provinceValue"
+            :items="provinceNames"
+            filled
+            rounded
+            label="จังหวัด"
+            color="#FF9100"
+          ></v-autocomplete>
+        </v-row>   
       <v-row>
-        <v-col cols="4" class="mapCard">
-          <v-card>
-            <!-- <v-img src = "..assets/map1.png" height="200px"></v-img> -->
-          </v-card>
-        </v-col>
-
+        <div class="mapCard">
+          <Listmap />
+          <Map v-bind:loca="coordinates" v-bind:Mark="totalMark" />
+        </div>
         <v-col cols="3" class="listCard">
           <v-row v-for="(place, i) in places" :key="i">
-            <v-card v-if="place.isVerify == '1'" class="ma-3">
-              <v-img src="../assets/temple1.jpg" class="placePic"></v-img>
+            <v-card v-if="place.isVerify == '1'  
+                          && keyNotUsed(place.keyID) 
+                          && (place.typeTH.includes(typeValue) || typeValue == 'ทั้งหมด')
+                          && (place.provinceTH.includes(provinceValue) || provinceValue == 'ทั้งหมด')"
+                          class="ma-3">
+              <v-img src = "../assets/temple1.jpg" class="placePic"></v-img>
               <v-card-title>
                 {{ place.nameTH }}
                 <v-spacer></v-spacer>
@@ -47,19 +41,18 @@
                   place.provinceTH
                 }}</v-chip>
               </v-card-title>
-              <v-card-subtitle
-                >{{ place.latitude }}, {{ place.longitude }}</v-card-subtitle
-              >
-              <v-btn color="#FF9100" outlined class="ma-2" link to="/PlaceInfo"
-                >view info
+              <v-card-subtitle>{{place.typeTH}}</v-card-subtitle>
+              <v-btn color="#FF9100" outlined class="ma-2" @click = "goPlaceInfo(place.keyID)" style="font-size: 20px;"
+                >ดูข้อมูล
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
               </v-btn>
               <v-btn
                 color="#FF9100"
                 outlined
                 class="ma-2"
+                style="font-size: 20px;"
                 @click="addPlace(place)"
-                >ADD TO TRIP
+                >เพิ่มเข้าทริป
                 <v-icon class="ml-2">mdi-plus-outline</v-icon>
               </v-btn>
             </v-card>
@@ -67,27 +60,29 @@
         </v-col>
 
         <v-col cols="5" class="tripCard">
+          {{this.bestPath}}
           <v-card class="ma-3">
             <v-card-title class="yourTripTitle white--text"
-              >Your Trip</v-card-title
+              >ทริป</v-card-title
             >
             <v-divider></v-divider>
             <v-form class="mt-1">
               <v-row>
                 <v-col cols="4">
-                  <v-card-title>Trip's Name</v-card-title>
+                  <v-card-title>ชื่อทริป</v-card-title>
                 </v-col>
                 <v-col cols="6">
                   <v-text-field
+                    v-model="tripName"
                     regular
-                    placeholder="myTrip"
+                    placeholder="ทริปของฉัน"
                     color="orange"
                     required
                     clearable
                   ></v-text-field>
                 </v-col>
               </v-row>
-              <v-card-subtitle>Please choose at least 2 places</v-card-subtitle>
+              <v-card-subtitle>เลือกมาอย่างน้อย 2 สถานที่</v-card-subtitle>
               <v-card class="scrollCard">
                 <v-virtual-scroll
                   page-mode
@@ -136,19 +131,14 @@
                 </v-virtual-scroll>
               </v-card>
               <v-row>
-                <v-btn text class="makeTripButton" link to="/account"
-                  >Make A Trip</v-btn
-                >
+                <v-btn text class="makeTripButton" @click="placesInTrip.length >= 2 ? makeTrip() : makeFail()">สร้างทริป</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn text class="updateButton">Update Route</v-btn>
+                <v-btn text class="updateButton" @click="makeRoute()">สร้างเส้นทาง</v-btn>
               </v-row>
             </v-form>
           </v-card>
         </v-col>
       </v-row>
-    </div>
-    <div class="mapCard">
-      <Map v-bind:loca="coordinates" v-bind:Mark="totalMark" />
     </div>
   </v-content>
 </template>
@@ -158,22 +148,30 @@
 import TripBar from "../components/TripBar";
 import axios from "axios";
 import Map from "../components/Map";
+import Listmap from "../components/Listmap";
 export default {
   name: "ListTrip",
   components: {
     TripBar,
     Map,
+    Listmap,
   },
 
   data: () => ({
-    types: ["ทั้งหมด", "วัด", "สวนสาธารณะ", "สวนสัตว์"],
+    types: ["ทั้งหมด","จุดชมวิว","ดอย","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ"],
+    typeValue: "ทั้งหมด",
+    provinces: [],
+    provinceNames: ["ทั้งหมด"],
+    provinceValue: "ทั้งหมด",
     totalMark: 0,
-    coordinates: [
-      
-    ],
+  
+    coordinates: [],
     typeGroup: 0,
+    tripName: "",
     placesInTrip: [],
     places: [],
+    placesInTripTemp: [],
+    bestPath: []
   }),
   methods: {
     addPlace: function(item) {
@@ -193,14 +191,57 @@ export default {
         }
       }
     },
-    async callPlaces() {
-      await axios
-        .post("location", { query: "" })
-        .then((res) => (this.places = res.data));
+    goPlaceInfo(keyID){
+      this.$router.push("/PlaceInfo/" + keyID);
     },
+    async makeTrip (){
+      await axios.post("makeTrip",{"userID": this.$store.getters.StateID , "tripName": this.tripName, "placesInTrip": this.placesInTrip})
+      .then((res)=>{
+        alert(res.data.msg)
+        })
+    },
+    makeFail: function(){
+      alert("Add Fail");
+    },
+    async makeRoute (){
+      await axios.post("makeRoute",{"placesInTrip": this.placesInTrip}).then((res)=>this.bestPath = res.data['results'][0]);
+      // Update Route //
+      this.updateRoute();
+    },
+    updateRoute: function(){
+      for (var i = 0; i < this.bestPath.length; i++) {
+        for (var j = 0; j < this.placesInTrip.length; j++) {
+          if(this.placesInTrip[j].keyID == this.bestPath[i]){
+            this.placesInTripTemp.push(this.placesInTrip[j]);
+          }
+        }
+      }
+      this.placesInTrip = this.placesInTripTemp;
+    },
+    keyNotUsed: function(keyID){
+      var i;
+      for(i=0;i < this.placesInTrip.length;i++){
+        // console.log(this.placesInTrip[i].keyID);
+        if(keyID == this.placesInTrip[i].keyID){
+          return false;
+        }
+      }
+      return true;
+    },
+    async callPlaces(){
+      await axios.post("location",{query:""}).then((res)=>this.places = res.data);
+    },
+    async callProvinces(){
+      await axios.get("province").then((res)=>this.provinces = res.data);
+      var i;
+      for(i=0;i<this.provinces.length;i++){
+        this.provinceNames.push(this.provinces[i].provinceTH);
+      }
+    }
   },
   created: function() {
     this.callPlaces();
+    this.callProvinces();
   },
 };
 </script>
@@ -209,7 +250,7 @@ export default {
 .chipBar {
   margin: 10px;
   position: fixed;
-  margin-top: 60px;
+  margin-top: 70px;
 }
 
 .chipActive {
@@ -222,8 +263,8 @@ export default {
 
 .mapCard {
   position: fixed;
-  margin-top: 150px;
-  margin-left: 15px;
+  margin-top: 140px;
+  margin-left: 27px;
 }
 
 .mapPic {
@@ -243,15 +284,13 @@ export default {
 
 .tripCard {
   position: fixed;
-  /* margin-top: 70px;
-      margin-left: 905px; */
   top: 7%;
   left: calc(59% - 10px);
 }
 
 .yourTripTitle {
   background-color: #faae4b;
-  font-size: 30px;
+  font-size: 35px;
 }
 
 .numberCard {
@@ -278,6 +317,7 @@ export default {
   margin-top: 30px;
   margin-bottom: 15px;
   color: #ff9100;
+  font-size: 20px;
 }
 
 .updateButton {
@@ -285,6 +325,7 @@ export default {
   margin-top: 30px;
   margin-bottom: 15px;
   color: #ff9100;
+  font-size: 20px;
 }
 
 .placeImage {

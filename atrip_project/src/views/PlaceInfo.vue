@@ -5,27 +5,45 @@
       <v-row>
         <v-col cols = "4" class="mapZone">
           <v-card class="mapCard pb-7">
-            <v-card-title class="mx-4">Map</v-card-title>
+            <v-card-title class="mx-4">แผนที่</v-card-title>
             <v-card class="mx-10 mb-7">
-              <v-img src = "../assets/map1.png" class="mapPic"></v-img>
+              <div style="mapPic">
+                <Infomap />
+              </div>
             </v-card>
             <v-divider class="mx-5"></v-divider>
-            <v-card-title class="mx-4">Website</v-card-title>
+            <v-card-title class="mx-4">เว็บไซต์</v-card-title>
             <v-card-subtitle class="mx-7 subtitle">www.A-Trip.co.th</v-card-subtitle>
             <v-divider class="mx-5"></v-divider>
-            <v-card-title class="mx-4">Phone Number</v-card-title>
+            <v-card-title class="mx-4">เบอร์โทรศัพท์</v-card-title>
             <v-card-subtitle class="mx-7 subtitle">0914259634</v-card-subtitle>
             <v-divider class="mx-5"></v-divider>
-            <v-card-title class="mx-4">Business Hours</v-card-title>
+            <v-card-title class="mx-4">เวลาทำการ</v-card-title>
             <v-row>
-              <v-card-subtitle class="mx-10 subtitle">Monday - Friday</v-card-subtitle>
-              <v-spacer></v-spacer>
-              <v-chip class="ma-2 mx-10" color="#FF9100" outlined>8:00 - 22.00</v-chip>
+              <v-card-subtitle class="ml-13 mr-15 subtitle">วันจันทร์</v-card-subtitle>
+              <v-card-subtitle class="ml-9 mr-15 subtitle">วันอังคาร</v-card-subtitle>
+              <v-card-subtitle class="ml-11 mr-15 subtitle">วันพุธ</v-card-subtitle>
             </v-row>
             <v-row>
-              <v-card-subtitle class="mx-10 subtitle">Saturday</v-card-subtitle>
-              <v-spacer></v-spacer>
+              <v-chip class="ma-2 ml-12 mr-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
               <v-chip class="ma-2 mx-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
+              <v-chip class="ma-2 mx-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
+            </v-row>
+            <v-row>
+              <v-card-subtitle class="ml-12 mr-15 subtitle">วันพฤหัส</v-card-subtitle>
+              <v-card-subtitle class="ml-12 mr-15 subtitle">วันศุกร์</v-card-subtitle>
+              <v-card-subtitle class="ml-11 mr-15 subtitle">วันเสาร์</v-card-subtitle>
+            </v-row>
+            <v-row>
+              <v-chip class="ma-2 ml-12 mr-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
+              <v-chip class="ma-2 mx-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
+              <v-chip class="ma-2 mx-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
+            </v-row>
+            <v-row justify="center">
+              <v-card-subtitle class="mx-7 mr-15 subtitle">วันอาทิตย์</v-card-subtitle> 
+            </v-row>
+            <v-row>
+              <v-chip class="ma-2" style="left: 227px;" color="#FF9100" outlined>10:00 - 20.00</v-chip>
             </v-row>
           </v-card>
         </v-col>
@@ -33,12 +51,14 @@
           <v-card class="imageCard">
             <v-img src = "../assets/passage1.jpg" class="imagePic"></v-img>
             <v-divider></v-divider>
-            <v-card-title class="imageTitle">
-              Passage
-              <v-spacer></v-spacer>
-              <v-chip class="ma-2" color="#FF9100" outlined>{{nearbys[0].province}}</v-chip>
+            <v-card-title class="imageTitle mt-3">
+              {{this.place.nameTH}}
             </v-card-title>
-            <v-card-subtitle class="imageSubTitle mt-1 ml-1">{{nearbys[0].info}}</v-card-subtitle>
+            <v-card-title class="imageSubTitle mt-1 ml-1">
+              {{this.place.typeTH}}
+              <v-spacer></v-spacer>
+              <v-chip class="ml-2" color="#FF9100" outlined>{{this.place.provinceTH}}</v-chip>
+            </v-card-title>
             <v-divider class="mx-2"></v-divider>
             <v-card-text class="imageText">
               This is the text that should describe the hide-detail
@@ -72,14 +92,19 @@
 <script>
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
+import axios from "axios";
+import Infomap from "../components/Infomap.vue";
 
 export default {
+  props: ["keyID"],
   name: "PlaceInfo",
   components: {
-    TripBar
+    TripBar,
+    Infomap,
   },
 
   data: () => ({
+    place: [],
     nearbys: [
       {
         src: [require("../assets/island1.jpg")],
@@ -98,7 +123,14 @@ export default {
   methods:{
     goNext(title){
       this.$router.push("/PlaceInfo/"+title)
+    },
+    async getInfo(){
+      await axios.get("placeInfo/" + this.keyID).then((res)=>this.place = res.data[0]);
+      console.log(this.place)
     }
+  },
+  created: function(){
+    this.getInfo();
   }
 };
 </script>
@@ -106,8 +138,7 @@ export default {
 
 <style scoped>
   .PlaceInfo{
-    /* background-image: linear-gradient(to right bottom, #f4e3a6, #f5e194, #f7df81, #f7dd6e, #f8db59, #f9d84c, #f9d43e, #fad12d, #fbcc25, #fdc71b, #fec110, #ffbc00); */
-    /* background-image: linear-gradient(to bottom, #f4e3a6, #f7e39b, #f9e490, #fbe484, #fde578, #fee26c, #fede60, #ffdb54, #ffd246, #ffc937, #ffc026, #ffb611); */
+    height: 115vh;
     background-image: linear-gradient(to top, #77cee3, #6bc4dd, #60bad7, #55afd1, #4ba5cb, #439ec7, #3b96c3, #338fbf, #2c88bc, #2681ba, #227ab6, #2073b3);
   }
 
@@ -151,6 +182,7 @@ export default {
   .imageSubTitle{
     font-size: 20px;
     font-weight: 450;
+    color: grey;
   }
 
   .imageText{

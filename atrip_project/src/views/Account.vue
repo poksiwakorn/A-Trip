@@ -11,17 +11,17 @@
               </v-avatar>
             </div>
             <v-col class="profileName my-10">
-              BaoFollow
+              {{this.$store.getters.StateUsername}}
             </v-col>
-            <v-btn class="editProfile-btn white--text" width="40%" height="50px" color="#FF9100">
-              Edit Profile
+            <v-btn class="editProfile-btn white--text" width="40%" height="50px" style="font-size: 27px;" color="#FF9100">
+              แก้ไขโปรไฟล์
               <v-icon class="ml-3" size = "30px">mdi-account-edit-outline</v-icon>
             </v-btn>
           </v-card>
         </v-col>
         <v-col cols = "7" class="tripZone">
           <v-scale-transition>
-            <v-card class="savedTripCard mr-10">Saved Trip</v-card>
+            <v-card class="savedTripCard mr-10">ทริปที่บันทึก</v-card>
           </v-scale-transition>
 
           <v-sheet class="savedTripSheet">
@@ -33,7 +33,7 @@
                 class="savedTripSlide"
               >
                 <v-card class="oneTripCard mx-3" @click="toggle">
-                  <v-img :src = "trip.src[0]" height="200px">
+                  <v-img src = "../assets/temple1.jpg" height="200px">
                     <v-scale-transition>
                       <v-btn v-if="active" text fab size="35px" class="deleteTrip-btn ma-2" @click="deleteTrip(i)">
                         <v-icon color = "error" size="45">mdi-close-circle-outline</v-icon>
@@ -41,25 +41,22 @@
                     </v-scale-transition>
                   </v-img>
                     <v-card-title>
-                      {{trip.title}}
-                      <v-spacer></v-spacer>
-                      <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
-                      <v-chip class="ma-2" color="#FF9100" outlined>Bankok</v-chip>
+                      {{trip.nameTH}}
                     </v-card-title>                    
-                    <v-card-subtitle>{{trip.owner}}</v-card-subtitle>
+                    <v-card-subtitle>{{trip.Username}}</v-card-subtitle>
                     <v-divider class="mx-5"></v-divider>
-                    <v-card-title class="black--text">Places In Trip <v-card-subtitle class="mt-1">{{count(trip.places)}} places</v-card-subtitle></v-card-title>
+                    <v-card-title class="placeTitle black--text">สถานที่ภายในทริป<v-card-subtitle class="mt-1">{{trip.numPlace}} สถานที่</v-card-subtitle></v-card-title>
                     <v-row
-                      v-for="(place, j) in trip.places"
+                      v-for="(place, j) in trip.placeList.split(',')"
                       :key="j"
                       class="mx-10"
                     >
-                      <h5>{{place}}</h5>
+                      <h5 class="placeSubTitle" style="color: grey;">{{place}}</h5>
                     </v-row>
                     <v-row class="oneTripAction">
                       <v-scale-transition>
-                        <v-btn color="#FF9100" outlined class="ma-2" link to = "/TripInfo">
-                          view info 
+                        <v-btn color="#FF9100" outlined class="ma-2" style="font-size: 17px;" @click="goTripInfo(trip.keyID)">
+                          ข้อมูลเพิ่มเติม
                           <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
                         </v-btn>
                       </v-scale-transition>
@@ -77,6 +74,7 @@
 <script>
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
+import axios from "axios";
 
 export default {
   name: "Account",
@@ -85,59 +83,24 @@ export default {
   },
 
   data: () => ({
-    savedTrips: [
-      {
-        src: [require("../assets/aquarium1.jpg")],
-        title: "TRIP 1",
-        owner: "CrazyBoyOO1",
-        places: ["A","B","C","D"]
-      },
-      {
-        src: [require("../assets/island1.jpg")],
-        title: "TRIP 2",
-        owner: "CrazyBoyOO2",
-        places: ["E","F","G"]
-      },
-      {
-        src: [require("../assets/market1.jpg")],
-        title: "TRIP 3",
-        owner: "CrazyBoyOO3",
-        places: ["H","I"]
-      },
-      {
-        src: [require("../assets/passage1.jpg")],
-        title: "TRIP 4",
-        owner: "CrazyBoyOO4",
-        places: ["J","K","L","M"]
-      },
-      {
-        src: [require("../assets/road1.jpg")],
-        title: "TRIP 5",
-        owner: "CrazyBoyOO5",
-        places: ["N","O","P","Q","R","S"]
-      },
-      {
-        src: [require("../assets/sea1.jpg")],
-        title: "TRIP 6",
-        owner: "CrazyBoyOO6",
-        places: ["T","U","V","W"]
-      },
-      {
-        src: [require("../assets/temple1.jpg")],
-        title: "TRIP 7",
-        owner: "CrazyBoyOO7",
-        places: ["X","Y","Z"]
-      }
-    ]
+    savedTrips: [],
+    tripName: ""
   }),
 
   methods: {
-    count: function(item){
-      return item.length;
-    },
     deleteTrip: function(index){
       this.savedTrips.splice(index,1);
-    }
+    },
+    goTripInfo(keyID){
+      this.$router.push("/TripInfo/" + keyID);
+    },
+    async callTrips(){
+      await axios.post("myTrip",{"query":"","id" : this.$store.getters.StateID}).then((res)=>this.savedTrips = res.data);
+      console.log(this.savedTrips)
+    },
+  },
+  created: function(){
+    this.callTrips()
   }
 };
 </script>
@@ -215,6 +178,15 @@ export default {
   .deleteTrip-btn{
     position: absolute;
     right: 0px;
+  }
+
+  .placeTitle{
+    margin-top: -10px;
+  }
+
+  .placeSubTitle{
+    margin-top: -10px;
+    margin-bottom: 15px;
   }
 
   .oneTripAction{
