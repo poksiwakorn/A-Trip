@@ -13,7 +13,10 @@
             <v-col class="profileName my-10">
               {{this.$store.getters.StateUsername}}
             </v-col>
-            <v-btn class="editProfile-btn white--text" width="40%" height="50px" style="font-size: 27px;" color="#FF9100">
+            <v-btn class="editProfile-btn white--text" 
+                    width="40%" height="50px" 
+                    style="font-size: 27px;" color="#FF9100"
+                    @click="overlay = !overlay">
               แก้ไขโปรไฟล์
               <v-icon class="ml-3" size = "30px">mdi-account-edit-outline</v-icon>
             </v-btn>
@@ -67,6 +70,24 @@
           </v-sheet>
         </v-col>
       </v-row>
+      <v-overlay
+        :z-index=0
+        :value="overlay"
+      >
+        <v-card class="editCard">
+          <v-card-title class="black--text" style="font-size: 30px;">
+            แก้ไขโปรไฟล์
+            <v-spacer></v-spacer>
+            <v-btn
+              class="white--text"
+              color="error"
+              @click="overlay = false"
+            >
+              X
+            </v-btn>
+          </v-card-title>
+        </v-card>
+      </v-overlay>
     </div>
   </v-content>
 </template>
@@ -84,7 +105,8 @@ export default {
 
   data: () => ({
     savedTrips: [],
-    tripName: ""
+    tripName: "",
+    overlay: false
   }),
 
   methods: {
@@ -193,5 +215,11 @@ export default {
     position: absolute;
     right: 30px;
     bottom: 80px;
+  }
+
+  .editCard{
+    width: 55vw;
+    height: 70vh;
+    background-color: white;
   }
 </style>

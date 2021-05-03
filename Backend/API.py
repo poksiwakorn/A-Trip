@@ -128,6 +128,9 @@ def location():
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('SELECT * FROM Atrip_Places ORDER BY keyID')
             account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+            print(account[i])
     return jsonify(account)
 
 @app.route("/trip", methods = ['GET', 'POST'])
@@ -169,6 +172,8 @@ def placeInfo(keyID):
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM Atrip_Places WHERE keyID = %s',[keyID])
         account = cursor.fetchall()
+        for i in range(0,len(account),1):
+            account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
         print(account)
     return jsonify(account)
 
@@ -188,6 +193,8 @@ def getPlace():
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(form)
             account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
             return jsonify(account)
         else:
             return jsonify(Testform)
@@ -221,19 +228,18 @@ def addLocation():
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('SELECT * FROM Atrip_Places WHERE nameTH = %s',[content["placeName"]])
             account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
             if account:
                 print("enter")
                 form["isSuccess"] = False
                 form["msg"] = "Already have data"
             else:
-                cursor.execute('INSERT INTO Atrip_Places (website,phoneNumber,nameTH,provinceTH,descriptionTH) VALUES (%s, %s, %s, %s, %s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"]))
+                cursor.execute('INSERT INTO Atrip_Places (website,phoneNumber,nameTH,provinceTH,descriptionTH,pictureURL) VALUES (%s, %s, %s, %s, %s ,%s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"],content["image"]))
                 mysql.connection.commit()
                 form["isSuccess"] = True
                 form["msg"] = "Successfully add to database"
-                cursor.execute('INSERT INTO Atrip_Places (website,phoneNumber,nameTH,provinceTH,descriptionTH) VALUES (%s, %s, %s, %s, %s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"]))
-                mysql.connection.commit()
             return jsonify(form)
-
         else:
             form["msg"] = "Error no PlaceName :d"
             return jsonify(form)
@@ -246,13 +252,18 @@ def makeTrip():
         content = request.get_json()
         print(content)
         if content['userID'] and content["tripName"] and content["placesInTrip"]:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("SELECT * from Atrip_Trips where nameTH = %s",[content['tripName']])
+            check = cursor.fetchone()
+            if (check):
+                form["msg"] = "This name already exists"
+                return jsonify(form)
             key = ""
             for i in range(0,len(content["placesInTrip"]),1):
                 key = key + str(content["placesInTrip"][i]["keyID"]) + ","
             key = key[0:len(key)-1]
             qkey = key.split(",")
             sqlform = "SELECT DISTINCT provinceTH FROM Atrip_Places WHERE keyID = " + " or keyID = ".join(qkey)
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(sqlform)
             account = cursor.fetchall()
             print(account)
@@ -327,4 +338,3 @@ def makeRoute():
 if __name__ == '__main__':
     gmaps = googlemaps.Client(key='AIzaSyCIHRdrSY885ctMMj_cvL-Ga69IktvnLs0')
     app.run(host="0.0.0.0", port=34673, debug=True)
-
