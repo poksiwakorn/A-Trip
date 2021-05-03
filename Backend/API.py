@@ -6,6 +6,10 @@ from datetime import timedelta
 import MySQLdb.cursors
 import re
 
+import googlemaps
+from findRoute import allResults,sortResult,makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace,makeList_Of_DurationBetweenPointToPoint_From_DictFromGooglemapsAPI,makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DurationBetweenPointToPoint
+
+
 app = Flask(__name__)
 app.secret_key = 'SoftDev'
 app.config['MYSQL_HOST'] = 'computerengineering.3bbddns.com'
@@ -158,16 +162,46 @@ def tripInfo(keyID):
         print(account)
     return jsonify(account)
 
+@app.route("/placeInfo/<keyID>", methods = ['GET'])
+@cross_origin()
+def placeInfo(keyID):
+    if request.method == 'GET':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM Atrip_Places WHERE keyID = %s',[keyID])
+        account = cursor.fetchall()
+        print(account)
+    return jsonify(account)
+
+
 @app.route("/getPlace", methods = ['GET', 'POST'])
 @cross_origin()
 def getPlace():
     if request.method == 'POST':
         content = request.get_json()
-        print(content)
+        print(content["place"])
+        print(len(content["place"]))
         if content["place"]:
             contentinput = content["place"].split(",")
             print(contentinput)
             form = "SELECT * FROM Atrip_Places WHERE keyID = " + " or keyID = ".join(contentinput)
+            print(form)
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute(form)
+            account = cursor.fetchall()
+            return jsonify(account)
+        else:
+            return jsonify(Testform)
+
+@app.route("/getTrip", methods = ['GET', 'POST'])
+@cross_origin()
+def getTrip():
+    if request.method == 'POST':
+        content = request.get_json()
+        print(content["trip"])
+        print(len(content["trip"]))
+        if content["trip"]:
+            contentinput = content["trip"].split(",")
+            form = "SELECT * FROM Atrip_Trips WHERE keyID = " + " or keyID = ".join(contentinput)
             print(form)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(form)
@@ -196,6 +230,8 @@ def addLocation():
                 mysql.connection.commit()
                 form["isSuccess"] = True
                 form["msg"] = "Successfully add to database"
+                cursor.execute('INSERT INTO Atrip_Places (website,phoneNumber,nameTH,provinceTH,descriptionTH) VALUES (%s, %s, %s, %s, %s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"]))
+                mysql.connection.commit()
             return jsonify(form)
 
         else:
@@ -262,6 +298,38 @@ def myTrip():
 
     return jsonify(data)
 
+@app.route("/makeRoute", methods = ['GET', 'POST'])
+@cross_origin()
+def makeRoute():
+    if request.method == 'POST':
+        #print("HelloWorld")
+        content = request.get_json()
+        #print(len(content["placesInTrip"]))
+        #print(content["placesInTrip"][0]["keyID"],end = " ")
+        #print(content["placesInTrip"][0]["coordinate"])
+
+        numPlace = len(content["placesInTrip"])
+        placeIDList = list()
+        coordinateList = list()
+        for i in range(numPlace):
+            placeIDList.append(content["placesInTrip"][i]["keyID"])
+            coordinateList.append(content["placesInTrip"][i]["coordinate"])
+        results = dict()
+        x = gmaps.distance_matrix(coordinateList,coordinateList,mode='driving')
+        results["results"] = sortResult(allResults(placeIDList,x))[0]
+        for i in results["results"]:
+            print(i)
+        '''
+        y = makeList_Of_DurationBetweenPointToPoint_From_DictFromGooglemapsAPI(x)
+        print(y)
+        z = makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace(placeIDList)
+        a = makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DurationBetweenPointToPoint(z,y)
+        print(a)
+        '''
+
+    return jsonify(results)
 
 if __name__ == '__main__':
-   app.run(host="0.0.0.0", port=34673, debug=True)
+    gmaps = googlemaps.Client(key='AIzaSyCIHRdrSY885ctMMj_cvL-Ga69IktvnLs0')
+    app.run(host="0.0.0.0", port=34673, debug=True)
+
