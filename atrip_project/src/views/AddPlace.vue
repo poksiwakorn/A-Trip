@@ -45,7 +45,7 @@
         </v-col>
         <v-col cols = "6" class="imageZone">
           <v-card class="imageCard">
-            <v-img :src="imageExample" class="imagePic"></v-img>
+            <img id="showImage" class="imagePic">
             <input type="file" @change="handleImage" ref="fileInput" style="display: none;">
             <v-btn color="primary" class="uploadButton" @click="$refs.fileInput.click()">อัพโหลดรูปภาพ</v-btn>
             <v-divider></v-divider>
@@ -117,7 +117,7 @@ export default {
           this.form.placeName = ""
           this.form.province = ""
           this.form.description = ""
-          // document.getElementById('showImage').src = "";
+          document.getElementById('showImage').src = "";
         }
       })
     },
@@ -139,7 +139,7 @@ export default {
         var result = reader.result;
         this.imageExample = result;
         console.log(this.imageExample);
-        // document.getElementById('showImage').src = result;
+        document.getElementById('showImage').src = result;
       };
       
     }

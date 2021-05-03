@@ -10,13 +10,18 @@ export default {
   data() {
     return {
       map: null,
-      marker: new google.maps.Marker(),
-      markerlocation: null,
+      markers: [],
+      WP: [
+        { location: "KMITL" },
+        { location: "กรุงเทพ" },
+        { location: "อ่างทอง" },
+        { location: { lat: 13.784158268087618, lng: 100.69431020698494 } },
+      ],
       coordinates: {
         getlat: 0,
         getlng: 0,
       },
-      userlocation: [
+      recenter: [
         {
           lat: 0,
           lng: 0,
@@ -28,16 +33,17 @@ export default {
     this.$getLocation({})
       .then((coordinates) => {
         this.coordinates = coordinates;
-        this.userlocation[0].lat = coordinates.lat;
-        this.userlocation[0].lng = coordinates.lng;
+        this.recenter[0].lat = coordinates.lat;
+        this.recenter[0].lng = coordinates.lng;
+        this.initMap();
       })
       .catch((error) => alert(error));
   },
   methods: {
     initMap() {
       this.map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: 13.405053591362147, lng: 101.00503381648156 },
-        zoom: 14,
+        center: { lat: this.recenter[0].lat, lng: this.recenter[0].lng },
+        zoom: 12,
         mapTypeID: google.maps.MapTypeId.ROADMAP,
         zoomControl: false,
         mapTypeControl: false,
@@ -47,41 +53,35 @@ export default {
         fullscreenControl: false,
         disableDefaultUi: false,
       });
-      // this.marker = new google.maps.Marker({
-      //   position: { lat: this.userlocation[0].lat, lng: this.userlocation[0].lat },
-      //   map: this.map,
-      //   draggable: true,
-      //   animation: google.maps.Animation.DROP,
-      // });
-      console.log(this.userlocation);
+
       // Click on the Map To Mark
-      google.maps.event.addListener(this.map, "click", (event) => {
-        this.addMarker(event.latLng, this.map);
-      });
     },
-    addMarker: function(location, map) {
+    addMarker: function(getlat, getlng) {
       // Add the marker at the clicked location, and add the next-available label
       // from the array of alphabetical characters.
-      this.marker.setMap(null);
-      console.log(this.marker.getPosition());
-      this.marker = new google.maps.Marker({
-        position: location,
+      var markLatLng = new google.maps.LatLng(getlat, getlng);
+      this.markers[markLatLng] = new google.maps.Marker({
+        position: markLatLng,
         map: this.map,
         draggable: true,
         animation: google.maps.Animation.DROP,
       });
     },
+    removeMarker(lat, long) {
+      try {
+        this.markers[new google.maps.LatLng(lat, long)].setMap(null);
+      } catch (e) {}
+    },
+    moveToLocation(lat, lng) {
+      const center = new google.maps.LatLng(lat, lng);
+      this.map.panTo(center);
+    },
   },
-  mounted() {
-    this.initMap();
-  },
-
-  // " Get Location User "
 };
 </script>
 <style scoped>
 #map {
-  width: 32vw; 
-  height:800px;
+  width: 32vw;
+  height: 800px;
 }
 </style>
