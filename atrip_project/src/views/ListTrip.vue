@@ -24,7 +24,6 @@
       <v-row>
         <div class="mapCard">
           <Listmap ref="Addmap" />
-          
         </div>
         <v-col cols="3" class="listCard">
           <v-row v-for="(place, i) in places" :key="i">
