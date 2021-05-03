@@ -23,6 +23,7 @@
         </v-row>   
       <v-row>
         <div class="mapCard">
+          <Listmap />
           <Map v-bind:loca="coordinates" v-bind:Mark="totalMark" />
         </div>
         <v-col cols="3" class="listCard">
@@ -165,11 +166,13 @@
 import TripBar from "../components/TripBar";
 import axios from "axios";
 import Map from "../components/Map";
+import Listmap from "../components/Listmap";
 export default {
   name: "ListTrip",
   components: {
     TripBar,
     Map,
+    Listmap,
   },
 
   data: () => ({
