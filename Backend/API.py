@@ -240,7 +240,6 @@ def addLocation():
                 form["isSuccess"] = True
                 form["msg"] = "Successfully add to database"
             return jsonify(form)
-
         else:
             form["msg"] = "Error no PlaceName :d"
             return jsonify(form)
