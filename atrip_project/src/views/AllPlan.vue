@@ -2,96 +2,99 @@
   <v-content>
     <TripBar />
     <div class="AllPlan">
-      <v-row class="ml-5 mt-1">
-        <v-card class="allTripCard">
-          <v-card-title class="tripTitle white--text">
-            ทริปที่น่าสนใจ
-            <v-spacer></v-spacer>
-            <v-autocomplete
-              v-model="provinceValue"
-              :items="provinceNames"
-              filled
-              rounded
-              label="จังหวัด"
-              color="#FF9100"
-              class="searchByProvince mx-1"
-            ></v-autocomplete>
-            <v-autocomplete
-              v-model="tripNameValue"
-              :items="tripNames"
-              filled
-              rounded
-              label="ชื่อทริป"
-              color="#FF9100"
-              class="searchByName mx-1"
-            ></v-autocomplete>
-          </v-card-title>
-          <v-divider></v-divider>
-          <v-virtual-scroll
-            :items="trips"
-            :item-height="500"
-            height="735"
-            class="my-5"
-          >
-            <template v-slot="trip">
-              <v-card class="tripCard">
-                <v-img src="../assets/temple1.jpg" height="200px"></v-img>
-                <v-card-title>
-                  {{ trip.item.nameTH }}
-                  <v-spacer></v-spacer>
-                  <v-chip-group class="ma-2">
-                    <v-chip
-                      v-for="province in trip.item.provinceTH_List.split(',')"
-                      :key="province"
-                      color="#FF9100"
-                      outlined
-                      >{{ province }}</v-chip>
-                  </v-chip-group>
-                </v-card-title>
-                <v-card-subtitle>{{ trip.item.Username }}</v-card-subtitle>
-                <v-divider class="mx-5"></v-divider>
-                <v-card-title class="black--text"
-                  >สถานที่ภายในทริป
-                  <v-card-subtitle class="mt-1"
-                    >{{ trip.item.numPlace }} สถานที่</v-card-subtitle
-                  ></v-card-title
-                >
-                <v-btn
+      <v-row>
+        <v-col cols="7" class="tripCol">
+          <v-row class="ml-5 mt-1">
+            <v-card class="allTripCard">
+              <v-card-title class="tripTitle white--text">
+                ทริปที่น่าสนใจ
+                <v-spacer></v-spacer>
+                <v-autocomplete
+                  v-model="provinceValue"
+                  :items="provinceNames"
+                  filled
+                  rounded
+                  label="จังหวัด"
                   color="#FF9100"
-                  outlined
-                  class="viewInfo-btn ma-2"
-                  style="font-size: 18px"
-                  @click="goTripInfo(trip.item.keyID)"
-                >
-                  ข้อมูลเพิ่มเติม
-                  <v-icon class="ml-2"
-                    >mdi-clipboard-text-search-outline</v-icon
+                  class="searchByProvince mx-1"
+                ></v-autocomplete>
+                <v-autocomplete
+                  v-model="tripNameValue"
+                  :items="tripNames"
+                  filled
+                  rounded
+                  label="ชื่อทริป"
+                  color="#FF9100"
+                  class="searchByName mx-1"
+                ></v-autocomplete>
+              </v-card-title>
+            </v-card>
+            <v-card class="backgroundCard">
+              <v-card-title></v-card-title>
+            </v-card>
+          </v-row>
+          <v-row v-for="(trip, i) in trips" :key="i">
+            <v-card
+              v-if="(trip.provinceTH_List.includes(provinceValue) || provinceValue == 'ทั้งหมด')
+                    && (trip.nameTH.includes(tripNameValue) || tripNameValue == 'ทั้งหมด')"
+              class="tripCard"
+            >
+              <v-img src="../assets/temple1.jpg" height="200px"></v-img>
+              <v-card-title>
+                {{ trip.nameTH }}
+                <v-spacer></v-spacer>
+                <v-chip-group class="ma-2">
+                  <v-chip
+                    v-for="province in trip.provinceTH_List.split(',')"
+                    :key="province"
+                    color="#FF9100"
+                    outlined
+                    >{{ province }}</v-chip
                   >
-                </v-btn>
-              </v-card>
-            </template>
-          </v-virtual-scroll>
-        </v-card>
+                </v-chip-group>
+              </v-card-title>
+              <v-card-subtitle>{{ trip.Username }}</v-card-subtitle>
+              <v-divider class="mx-5"></v-divider>
+              <v-card-title class="black--text"
+                >สถานที่ภายในทริป
+                <v-card-subtitle class="mt-1"
+                  >{{ trip.numPlace }} สถานที่</v-card-subtitle
+                ></v-card-title
+              >
+              <v-btn
+                color="#FF9100"
+                outlined
+                class="viewInfo-btn ma-2"
+                style="font-size: 18px"
+                @click="goTripInfo(trip.keyID)"
+              >
+                ข้อมูลเพิ่มเติม
+                <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
+              </v-btn>
+            </v-card>
+          </v-row>
+        </v-col>
         <!-- RIGHT -->
-        <v-card class="adsCard">
-          <v-img src="../assets/gallery1.jpg" height="200px"></v-img>
-          <v-card-title>
-            Musuem Of Contemporary Art (MOCA)
-            <v-spacer></v-spacer>
-            <v-chip
-              color="#FF9100"
-              outlined
-            >กรุงเทพมหานคร</v-chip>
-          </v-card-title>
-          <v-divider class="mx-4"></v-divider>
-          <v-card-text class="text--primary ma-2"
-            >รายละเอียดสถานที่</v-card-text
-          >
-          <v-card-text>
-            {{ trips[0] }}
-          </v-card-text>
-          <v-btn color="#FF9100" text class="viewPlace-btn ma-2">ข้อมูลเพิ่มเติม</v-btn>
-        </v-card>
+        <v-col cols="4">
+          <v-card class="adsCard">
+            <v-img src="../assets/gallery1.jpg" height="200px"></v-img>
+            <v-card-title>
+              Musuem Of Contemporary Art (MOCA)
+              <v-spacer></v-spacer>
+              <v-chip color="#FF9100" outlined>กรุงเทพมหานคร</v-chip>
+            </v-card-title>
+            <v-divider class="mx-4"></v-divider>
+            <v-card-text class="text--primary ma-2"
+              >รายละเอียดสถานที่</v-card-text
+            >
+            <v-card-text>
+              {{ trips[0] }}
+            </v-card-text>
+            <v-btn color="#FF9100" text class="viewPlace-btn ma-2"
+              >ข้อมูลเพิ่มเติม</v-btn
+            >
+          </v-card>
+        </v-col>
       </v-row>
     </div>
   </v-content>
@@ -152,10 +155,31 @@ export default {
   width: 300px;
 }
 
+.tripCol{
+  margin-top: 170px;
+}
+
 .allTripCard {
-  margin-top: 80px;
+  position: fixed;
+  margin-top: -110px;
   width: 55vw;
-  min-height: 865px;
+  min-height: 82px;
+  z-index: 1;
+  border-radius: 10px 50px 50px 0px;
+}
+
+.backgroundCard{
+  position: fixed;
+  margin-top: -70px;
+  height: 875px;
+  width: 55vw;
+}
+
+.tripCard {
+  width: 80%;
+  height: 440px;
+  left: 10%;
+  margin-bottom: 50px;
 }
 
 .tripTitle {
@@ -192,12 +216,6 @@ export default {
   height: 48px;
 }
 
-.tripCard {
-  width: 80%;
-  height: 440px;
-  left: 10%;
-}
-
 .inner-img {
   height: 200px;
 }
@@ -208,6 +226,7 @@ export default {
 }
 
 .adsCard {
+  position: fixed;
   margin-top: 80px;
   margin-left: 90px;
   width: 650px;
