@@ -153,6 +153,13 @@
             >
               X
             </v-btn>
+            <v-btn
+              class="white--text"
+              color="error"
+              @click="goPlaceInfo(overlayValue.keyID)"
+            >
+              Go
+            </v-btn>
           </v-card-title>
         </v-card>
       </v-overlay>
