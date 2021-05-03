@@ -45,7 +45,7 @@ export default {
       this.$router.push("/ApproveInfo/" + keyID);
     },
     async callPlaces(){
-      await axios.post("location",{query:""}).then((res)=>this.places = res.data);
+      await axios.get("approvelocation").then((res)=>this.places = res.data);
     }
   },
 
