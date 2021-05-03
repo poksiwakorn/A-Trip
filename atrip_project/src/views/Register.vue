@@ -102,19 +102,21 @@ export default {
     showPassword: false,
     usernameRule: [
         v => !!v || 'Username is required',
-        v => v.length <= 10 || 'Username must be less than 10 characters',
+        v => v.length <= 8 || 'Username must be at least 8 characters',
+        v => v.length >= 15 || 'Username must be at most 10 characters',
     ],
     passwordRule: [
         v => !!v || 'Password is required',
-        v => v.length <= 10 || 'Password must be less than 10 characters',
+        v => v.length < 8 || 'Password must be less than 8 characters',
+        v => v.length > 25 || 'Password must be at most 25 characters',
     ],
     firstnameRule: [
         v => !!v || 'Firstname is required',
-        v => v.length <= 10 || 'Firstname must be less than 10 characters',
+        v => v.length > 25 || 'Firstname must be at most 25 characters',
     ],
     lastnameRule: [
         v => !!v || 'Lastname is required',
-        v => v.length <= 10 || 'Lastname must be less than 10 characters',
+        v => v.length > 25 || 'Lastname must be at most 25 characters',
     ]
   }),
   computed: {

@@ -7,7 +7,7 @@
           <v-card class="mapCard pb-7">
             <v-card-title class="mx-4">แผนที่</v-card-title>
             <v-card class="mx-10 mb-7">
-              <v-img src = "../assets/map1.png" class="mapPic"></v-img>
+              <Approvemap />
             </v-card>
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เว็บไซต์</v-card-title>
@@ -77,12 +77,13 @@
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
 import axios from "axios";
-
+import Approvemap from "../components/Approvemap";
 export default {
   props: ["keyID"],
   name: "ApproveInfo",
   components: {
-    TripBar
+    TripBar,
+    Approvemap,
   },
   data: () => ({
     place: []

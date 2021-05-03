@@ -23,8 +23,8 @@
         </v-row>   
       <v-row>
         <div class="mapCard">
-          <Listmap />
-          <Map v-bind:loca="coordinates" v-bind:Mark="totalMark" />
+          <Listmap ref="Addmap" />
+          
         </div>
         <v-col cols="3" class="listCard">
           <v-row v-for="(place, i) in places" :key="i">
@@ -33,7 +33,7 @@
                           && (place.typeTH.includes(typeValue) || typeValue == 'ทั้งหมด')
                           && (place.provinceTH.includes(provinceValue) || provinceValue == 'ทั้งหมด')"
                           class="ma-3">
-              <v-img src = "../assets/temple1.jpg" class="placePic"></v-img>
+              <v-img :src="place.pictureURL" class="placePic"></v-img>
               <v-card-title>
                 {{ place.nameTH }}
                 <v-spacer></v-spacer>
@@ -42,7 +42,7 @@
                 }}</v-chip>
               </v-card-title>
               <v-card-subtitle>{{place.typeTH}}</v-card-subtitle>
-              <v-btn color="#FF9100" outlined class="ma-2" @click = "goPlaceInfo(place.keyID)" style="font-size: 20px;"
+              <v-btn color="#FF9100" outlined class="ma-2" @click = "showOverlay(place)" style="font-size: 20px;"
                 >ดูข้อมูล
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
               </v-btn>
@@ -51,7 +51,7 @@
                 outlined
                 class="ma-2"
                 style="font-size: 20px;"
-                @click="addPlace(place)"
+                @click="addPlace(place),$refs.Addmap. moveToLocation(place.latitude,place.longitude),$refs.Addmap.addMarker(place.latitude,place.longitude)" 
                 >เพิ่มเข้าทริป
                 <v-icon class="ml-2">mdi-plus-outline</v-icon>
               </v-btn>
@@ -60,7 +60,6 @@
         </v-col>
 
         <v-col cols="5" class="tripCard">
-          {{this.bestPath}}
           <v-card class="ma-3">
             <v-card-title class="yourTripTitle white--text"
               >ทริป</v-card-title
@@ -100,7 +99,7 @@
                       <v-col cols="4">
                         <v-card class="mb-5">
                           <v-img
-                            src="../assets/temple1.jpg"
+                            :src="place.item.pictureURL"
                             class="placeImage"
                           ></v-img>
                         </v-card>
@@ -117,7 +116,7 @@
                             <v-btn
                               icon
                               class="mt-3 mr-4"
-                              @click="canclePlace(place.index)"
+                              @click="canclePlace(place.index) ,$refs.Addmap.removeMarker(place.item.latitude,place.item.longitude)"
                               ><v-icon color="error">mdi-close</v-icon></v-btn
                             >
                           </v-row>
@@ -139,6 +138,25 @@
           </v-card>
         </v-col>
       </v-row>
+      <!-- Overlay -->
+      <v-overlay
+        :z-index=0
+        :value="overlay"
+      >
+        <v-card class="editCard">
+          <v-card-title class="black--text" style="font-size: 30px;">
+            {{overlayValue.nameTH}}
+            <v-spacer></v-spacer>
+            <v-btn
+              class="white--text"
+              color="error"
+              @click="overlay = false"
+            >
+              X
+            </v-btn>
+          </v-card-title>
+        </v-card>
+      </v-overlay>
     </div>
   </v-content>
 </template>
@@ -147,42 +165,36 @@
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
 import axios from "axios";
-import Map from "../components/Map";
 import Listmap from "../components/Listmap";
+
 export default {
   name: "ListTrip",
   components: {
     TripBar,
-    Map,
     Listmap,
   },
 
   data: () => ({
+    overlay: false,
     types: ["ทั้งหมด","จุดชมวิว","ดอย","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ"],
     typeValue: "ทั้งหมด",
     provinces: [],
     provinceNames: ["ทั้งหมด"],
     provinceValue: "ทั้งหมด",
-    totalMark: 0,
-  
-    coordinates: [],
     typeGroup: 0,
     tripName: "",
     placesInTrip: [],
     places: [],
     placesInTripTemp: [],
-    bestPath: []
+    bestPath: [],
+    overlayValue: []
   }),
   methods: {
     addPlace: function(item) {
-      this.placesInTrip.push(item);
-      this.coordinates.push({ lat: item.latitude, lng: item.longitude });
-      this.totalMark = this.coordinates.length;
+      this.placesInTrip.push(item); 
     },
     canclePlace: function(index) {
-      this.placesInTrip.splice(index, 1);
-      this.coordinates.splice(index, 1);
-      this.totalMark = this.coordinates.length;
+      this.placesInTrip.splice(index, 1); 
     },
     getItem: function(items, item) {
       for (var i = 0; i < items.length; i++) {
@@ -190,6 +202,10 @@ export default {
           return items[i];
         }
       }
+    },
+    showOverlay(place){
+      this.overlayValue = place;
+      this.overlay = !this.overlay;
     },
     goPlaceInfo(keyID){
       this.$router.push("/PlaceInfo/" + keyID);
@@ -217,6 +233,7 @@ export default {
         }
       }
       this.placesInTrip = this.placesInTripTemp;
+      this.placesInTripTemp = [];
     },
     keyNotUsed: function(keyID){
       var i;
@@ -230,6 +247,7 @@ export default {
     },
     async callPlaces(){
       await axios.post("location",{query:""}).then((res)=>this.places = res.data);
+      console.log(this.places);
     },
     async callProvinces(){
       await axios.get("province").then((res)=>this.provinces = res.data);
@@ -331,5 +349,11 @@ export default {
 .placeImage {
   width: 100%;
   height: 100px;
+}
+
+.editCard{
+  width: 55vw;
+  height: 70vh;
+  background-color: white;
 }
 </style>

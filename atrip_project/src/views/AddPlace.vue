@@ -7,15 +7,17 @@
           <v-card class="mapCard pb-7">
             <v-card-title class="mx-4">แผนที่</v-card-title>
             <v-card class="mx-10 mb-7">
-              <Addmap />
+              <Addmap @changeLat="placeLat = $event" @changeLng="placeLng = $event"/>
             </v-card>
+            {{placeLat}}
+            {{placeLng}}
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เว็บไซต์</v-card-title>
             <v-text-field v-model = "form.website" class="mx-9" placeholder="www.example.com" ></v-text-field>
             <v-divider class="mx-5"></v-divider>
             <v-card-title v-model = "form.phone" class="mx-4">เบอร์โทรศัพท์</v-card-title>
             <v-text-field class="mx-9" placeholder="xxxxxxxxxx"></v-text-field>
-            <v-divider class="mx-5"></v-divider>
+            <!-- <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เวลาทำการ</v-card-title>
             <v-row>
               <v-card-subtitle class="ml-15 mr-15 subtitle">วันจันทร์</v-card-subtitle>
@@ -38,12 +40,14 @@
               <v-chip class="ma-2 ml-12 mr-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
               <v-chip class="ma-2 mx-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
               <v-chip class="ma-2 mx-10" color="#FF9100" outlined>10:00 - 20.00</v-chip>
-            </v-row>
+            </v-row> -->
           </v-card>
         </v-col>
         <v-col cols = "6" class="imageZone">
           <v-card class="imageCard">
-            <v-img src = "../assets/passage1.jpg" class="imagePic"></v-img>
+            <img id="showImage" class="imagePic">
+            <input type="file" @change="handleImage" ref="fileInput" style="display: none;">
+            <v-btn color="primary" class="uploadButton" @click="$refs.fileInput.click()">อัพโหลดรูปภาพ</v-btn>
             <v-divider></v-divider>
             <v-card-title class="imageTitle">
               <v-text-field v-model = "form.placeName" label="ชื่อสถานที่" :rules="placeNameRule"></v-text-field>
@@ -53,7 +57,6 @@
                 :items="provinceNames"
                 label="จังหวัด"
               ></v-autocomplete>
-              <!-- <v-text-field v-model = "form.province" placeholder="Place's province" ></v-text-field> -->
             </v-card-title>
             <v-divider class="mx-2"></v-divider>
             <v-card-text class="imageText">
@@ -83,7 +86,11 @@ export default {
   },
 
   data: () => ({
+    image: require("../assets/passage1.jpg"),
+    imageExample: "",
     provinces: [],
+    placeLat: "asdad",
+    placeLng: "",
     provinceNames: [],
     placeNameRule: [
         v => !!v || 'จำเป็น',
@@ -93,13 +100,14 @@ export default {
       phone : "",
       placeName : "",
       province : "",
-      description : ""
-    }
+      description : "",
+    },
   }),
 
   methods : {
     async sendData(){
-      await axios.post("addLocation",this.form)
+      // console.log(this.marker.getPosition().lat())
+      await axios.post("addLocation",{"website" : this.form.website , "phone" : this.form.phone , "placeName" : this.form.placeName , "province" : this.form.province , "description" : this.form.description , "image" : document.getElementById('showImage').src, "lat" : this.marker.getPosition().lat()})
       .then((res) => 
       {
         alert(res.data.msg)
@@ -109,6 +117,7 @@ export default {
           this.form.placeName = ""
           this.form.province = ""
           this.form.description = ""
+          document.getElementById('showImage').src = "";
         }
       })
     },
@@ -119,6 +128,21 @@ export default {
         this.provinceNames.push(this.provinces[i].provinceTH);
       }
     },
+    handleImage(e){
+      var selectedImage = e.target.files[0];
+      this.createBase64Image(selectedImage);
+    },
+    async createBase64Image(fileObject){
+      var reader = new FileReader();
+      reader.readAsDataURL(fileObject);
+      reader.onload = async function(){
+        var result = reader.result;
+        this.imageExample = result;
+        console.log(this.imageExample);
+        document.getElementById('showImage').src = result;
+      };
+      
+    }
   },
   created: function(){
     this.callProvinces();
@@ -141,7 +165,7 @@ export default {
     margin-top: 100px;
     margin-left: 100px;
     margin-right: 50px;
-    min-height: 850px;
+    min-height: 600px;
   }
 
   .mapPic{
@@ -158,12 +182,21 @@ export default {
     margin-top: 100px;
     margin-left: 50px;
     margin-right: 100px;
-    height: 850px;
+    min-height: 850px;
   }
 
   .imagePic{
     width: 100%;
-    height: 380px;
+    height: 410px;
+    size: cover;
+  }
+
+  .uploadButton {
+    margin-left: 295px;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    /* color: #ff9100; */
+    font-size: 20px;
   }
 
   .imageTitle{

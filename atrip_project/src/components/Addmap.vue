@@ -37,6 +37,7 @@ export default {
   methods: {
     initMap() {
       this.map = new google.maps.Map(document.getElementById("map"), {
+       
         center: {
           lat: this.userlocation[0].lat,
           lng: this.userlocation[0].lng,
@@ -67,6 +68,8 @@ export default {
         draggable: true,
         animation: google.maps.Animation.DROP,
       });
+      this.$emit('changeLat',this.marker.getPosition().lat());
+      this.$emit('changeLng',this.marker.getPosition().lng());
     },
   },
 
