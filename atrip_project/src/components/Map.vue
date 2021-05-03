@@ -83,6 +83,6 @@ export default {
 
     
   },
-  props: ["loca", "Mark",],
+  //props: ["loca", "Mark",],
 };
 </script>
