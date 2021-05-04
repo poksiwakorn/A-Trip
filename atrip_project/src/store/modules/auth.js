@@ -9,7 +9,7 @@ const state = {
   Email: null,
   Tel: null,
   Tag: null,
-  Rating: null,
+  Like: null,
   Checkin: null,
   Favorite: null,
   Role: null,
@@ -27,7 +27,7 @@ const getters = {
   StateEmail: (state) => state.Email,
   StateTel: (state) => state.Tel,
   StateTag: (state) => state.Tag,
-  StateRating: (state) => state.Rating,
+  StateLike: (state) => state.Like,
   StateCheckin: (state) => state.Checkin,
   StateFavorite: (state) => state.Favorite,
   StateRole: (state) => state.Role,
@@ -49,7 +49,7 @@ const actions = {
     context.commit("setEmail",null)
     context.commit("setTel",null)
     context.commit("setTag",null)
-    context.commit("setRating",null)
+    context.commit("setLike",null)
     context.commit("setCheckin",null)
     context.commit("setFavorite",null)
     context.commit("setRole",null)
@@ -92,7 +92,7 @@ const actions = {
         context.commit("setEmail",response.data.Email)
         context.commit("setTel",response.data.Tel)
         context.commit("setTag",response.data.Tag)
-        context.commit("setRating",response.data.Rating)
+        context.commit("setLike",response.data.Like)
         context.commit("setCheckin",response.data.Checkin)
         context.commit("setFavorite",response.data.Favorite)
         context.commit("setRole",response.data.Role)
@@ -130,8 +130,8 @@ const mutations = {
   setTag(state,tag){
     state.Tag = tag
   },
-  setRating(state,rating){
-    state.Rating = rating
+  setLike(state,like){
+    state.Like = like
   },
   setCheckin(state,checkin){
     state.Checkin = checkin
