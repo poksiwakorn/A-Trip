@@ -181,7 +181,7 @@ export default {
   },
   data: () => ({
     overlay: false,
-    types: ["ทั้งหมด","จุดชมวิว","ดอย","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ"],
+    types: ["ทั้งหมด","จุดชมวิว","ดอย","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ", "อื่นๆ"],
     typeValue: "ทั้งหมด",
     provinces: [],
     provinceNames: ["ทั้งหมด"],
@@ -225,6 +225,7 @@ export default {
       this.$router.push("/PlaceInfo/" + keyID);
     },
     async makeTrip (){
+      console.log(this.placesInTrip)
       await axios.post("makeTrip",{"userID": this.$store.getters.StateID , "tripName": this.tripName, "placesInTrip": this.placesInTrip})
       .then((res)=>{
         alert(res.data.msg)
