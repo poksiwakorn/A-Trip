@@ -4,9 +4,8 @@ def makeList_Of_DistanceBetweenPointToPoint_From_DictFromGooglemapsAPI(dictFromG
         counters = 0
         for j in dictFromGooglemapsAPI["rows"][i]["elements"]:
             if i != counters:
-                dataOut.append(float(j["distance"]["text"].strip(" km")))
+                dataOut.append(float((j["distance"]["text"].strip(" km")).strip(",").replace(',', '')))
             counters += 1
-    #data = [26.3, 19.4, 25.2, 27.5, 19.6, 35.1, 45.7, 12.5, 13.7, 21.5, 18.7, 11.1]
     return dataOut
 
 def makeList_Of_DurationBetweenPointToPoint_From_DictFromGooglemapsAPI(dictFromGooglemapsAPI):
@@ -17,7 +16,6 @@ def makeList_Of_DurationBetweenPointToPoint_From_DictFromGooglemapsAPI(dictFromG
             if i != counters:
                 dataOut.append(j["duration"]["text"])
             counters += 1
-    #data = ['17 mins', '22 mins', '13 mins', '13 mins', '20 mins', '12 mins']
     return dataOut
 
 def makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace(listOfKeyOfSelectedPlace):
@@ -29,7 +27,6 @@ def makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSe
                 listOfKeyOfPointToKeyOfPoint.append(i)
                 listOfKeyOfPointToKeyOfPoint.append(j)
                 data.append(listOfKeyOfPointToKeyOfPoint)
-    #data = [['A', 'B'], ['A', 'C'], ['A', 'D'], ['B', 'A'], ['B', 'C'], ['B', 'D'], ['C', 'A'], ['C', 'B'], ['C', 'D'], ['D', 'A'], ['D', 'B'], ['D', 'C']]
     return data
 
 def makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DurationBetweenPointToPoint(ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint, DistanceBetweenPointToPoint, DurationBetweenPointToPoint):
@@ -40,7 +37,6 @@ def makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DurationBetwee
         temp.append(DistanceBetweenPointToPoint[i])
         temp.append(DurationBetweenPointToPoint[i])
         data.append(temp)
-    #data = [[[1, 2], '17 mins'], [[1, 4], '22 mins'], [[2, 1], '13 mins'], [[2, 4], '13 mins'], [[4, 1], '20 mins'], [[4, 2], '12 mins']]
     return data
 
 def makeList_Of_ListOf_AllListOfRoute_ListofDistance_ListofDuration_And_SumOfDistance(numberOfSelectedPlace, ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DistanceBetweenPointToPoint, path, distance, duration, data, currentPoint = None):

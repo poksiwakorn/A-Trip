@@ -168,7 +168,7 @@ def trip():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image FROM Atrip_Trips INNER JOIN Atrip_Users on Atrip_Trips.ownerID = Atrip_Users.ID where permission = "public" ORDER BY keyID')
+            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image FROM Atrip_Trips INNER JOIN Atrip_Users on Atrip_Trips.ownerID = Atrip_Users.ID where status = "สาธารณะ" ORDER BY keyID')
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["image"] = account[i]["image"].decode("utf-8")
@@ -185,15 +185,23 @@ def province():
         # print(account)
     return jsonify(account)
 
-@app.route("/tripInfo/<keyID>", methods = ['GET'])
+@app.route("/tripInfo/<keyID>", methods = ['GET','POST'])
 @cross_origin()
 def tripInfo(keyID):
     if request.method == 'GET':
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username FROM Atrip_Trips INNER JOIN Atrip_Users where (Atrip_Trips.ownerID = Atrip_Users.ID) and keyID = %s',[keyID])
+        cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,description,status FROM Atrip_Trips INNER JOIN Atrip_Users where (Atrip_Trips.ownerID = Atrip_Users.ID) and keyID = %s',[keyID])
         account = cursor.fetchall()
-        # print(account)
-    return jsonify(account)
+        return jsonify(account)
+    elif request.method == 'POST':
+        content = request.get_json()
+        print(content["description"])
+        print(content["status"])
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('Update Atrip_Trips set description = %s,status = %s where keyID = %s',(content["description"],content["status"],keyID))
+        mysql.connection.commit()
+        return jsonify({"msg" : "success"})
+
 
 @app.route("/placeInfo/<keyID>", methods = ['GET'])
 @cross_origin()
@@ -218,7 +226,10 @@ def getPlace():
         if content["place"]:
             contentinput = content["place"].split(",")
             # print(contentinput)
-            form = "SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where (Atrip_Places.ownerID = Atrip_Users.ID) and (keyID = " + " or keyID = ".join(contentinput) + ")"
+            form = "SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username,CASE keyID "#FROM Atrip_Places INNER JOIN Atrip_Users where (Atrip_Places.ownerID = Atrip_Users.ID) and (keyID = " + " or keyID = ".join(contentinput) + ")" + " order by case keyID"
+            for i in range(0,len(contentinput)-1,1):
+                form = form + " WHEN " + contentinput[i] + " THEN " + contentinput[i+1]
+            form = form + " WHEN " + contentinput[len(contentinput)-1] + " THEN " + "99999 END AS sortOrder FROM Atrip_Places INNER JOIN Atrip_Users where (Atrip_Places.ownerID = Atrip_Users.ID) and (keyID = " + " or keyID = ".join(contentinput) + ")" + " order by sortOrder"
             # print(form)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(form)
@@ -318,7 +329,7 @@ def myTrip():
         # print(content)
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image FROM Atrip_Trips INNER JOIN Atrip_Users where (Atrip_Trips.ownerID = Atrip_Users.ID) and ownerID = %s ORDER BY keyID',[content["id"]])
+            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image,status FROM Atrip_Trips INNER JOIN Atrip_Users where (Atrip_Trips.ownerID = Atrip_Users.ID) and ownerID = %s ORDER BY keyID',[content["id"]])
             data = list(cursor.fetchall())
             for i in range(0,len(data),1):
                 placeList = data[i]["placeList"].split(",")
@@ -334,6 +345,16 @@ def myTrip():
             # print(data)
 
     return jsonify(data)
+
+@app.route("/deleteTrip", methods = ['GET', 'POST'])
+@cross_origin()
+def deleteTrip():
+    if request.method == 'POST':
+        content = request.get_json()
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('Delete from Atrip_Trips where keyID = %s',[content["keyID"]])
+        mysql.connection.commit()
+    return jsonify({"msg" : "success"})
 
 @app.route("/makeRoute", methods = ['GET', 'POST'])
 @cross_origin()

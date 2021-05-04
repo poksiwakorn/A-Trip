@@ -9,8 +9,9 @@
             <v-card class="mx-10 mb-7">
               <Addmap @changeLat="placeLat = $event" @changeLng="placeLng = $event"/>
             </v-card>
-            {{placeLat}}
-            {{placeLng}}
+            <v-text-field v-model = "placeLat" class="mx-9" placeholder="Latitude"></v-text-field>
+            <v-spacer></v-spacer>
+            <v-text-field v-model = "placeLng" class="mx-9" placeholder="Longitude"></v-text-field>
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เว็บไซต์</v-card-title>
             <v-text-field v-model = "form.website" class="mx-9" placeholder="www.example.com" ></v-text-field>
@@ -163,13 +164,12 @@ export default {
 
 <style scoped>
   .AddPlace{
-    height: 110vh;
+    min-height: 115vh;
     background-image: linear-gradient(to top, #77cee3, #6bc4dd, #60bad7, #55afd1, #4ba5cb, #439ec7, #3b96c3, #338fbf, #2c88bc, #2681ba, #227ab6, #2073b3);
   }
 
   .mapZone{
     width: 100%;
-    height: calc(100vh + 12px);
   }
 
   .mapCard{
@@ -192,7 +192,6 @@ export default {
 
   .imageZone{
     width: 100%;
-    height: calc(100vh + 12px);
   }
 
   .imageCard{
