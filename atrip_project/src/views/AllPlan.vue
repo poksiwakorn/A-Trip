@@ -69,16 +69,17 @@
                 @click="goTripInfo(trip.keyID)"
               >
                 ข้อมูลเพิ่มเติม
-                <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
+                <v-icon class="ml-2">mdi-clipboard-text-search</v-icon>
               </v-btn>
               <v-btn
                 color="#FF9100"
                 outlined
                 class="saveTrip-btn ma-2"
                 style="font-size: 18px"
+                @click="saveTrip(trip.keyID)"
               >
                 เซฟทริป
-                <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
+                <v-icon class="ml-2">mdi-book-plus</v-icon>
               </v-btn>
             </v-card>
           </v-row>
@@ -132,6 +133,9 @@ export default {
     },
     goTripInfo(keyID) {
       this.$router.push("/TripInfo/" + keyID);
+    },
+    saveTrip(keyID) {
+      this.$router.push("/Account");
     },
     async callTrips() {
       await axios

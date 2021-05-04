@@ -202,8 +202,18 @@ export default {
   }),
 
   methods: {
-    editData(){
-      this.profileOverlay = false
+    async editData(){
+      try {
+        await this.$store.dispatch("editData",{"id" : this.$store.getters.StateID ,"nickName" : this.nickName,"firstName" : this.firstName ,"lastName" : this.lastName , "image" : document.getElementById('showImage').src});
+        console.log(this.$store.getters.StateFirstName)
+        console.log(this.$store.getters.StateNickname)
+        console.log(this.$store.getters.StateLastName)
+        console.log(this.$store.getters.StatePicture)
+        this.profileOverlay = false
+      }
+      catch(error){
+        console.log(error)
+      }
     },
     selectDelete(index,keyID){
       this.tripOverlay = !this.tripOverlay;
