@@ -168,9 +168,11 @@ def trip():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username FROM Atrip_Trips INNER JOIN Atrip_Users where (Atrip_Trips.ownerID = Atrip_Users.ID) and permission = "public" ORDER BY keyID')
+            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image FROM Atrip_Trips INNER JOIN Atrip_Users on Atrip_Trips.ownerID = Atrip_Users.ID where permission = "public" ORDER BY keyID')
             account = cursor.fetchall()
-            # print(account)
+            for i in range(0,len(account),1):
+                account[i]["image"] = account[i]["image"].decode("utf-8")
+
     return jsonify(account)
 
 @app.route("/province", methods = ['GET'])
@@ -216,13 +218,11 @@ def getPlace():
         if content["place"]:
             contentinput = content["place"].split(",")
             # print(contentinput)
-            form = "SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where (Atrip_Places.ownerID = Atrip_Users.ID) and (keyID = " + " or keyID = ".join(contentinput) + ")"
+            form = "SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where (Atrip_Places.ownerID = Atrip_Users.ID) and (keyID = " + " or keyID = ".join(contentinput) + ")"
             # print(form)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(form)
             account = cursor.fetchall()
-            for i in range(0,len(account),1):
-                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
             return jsonify(account)
         else:
             return jsonify(Testform)
@@ -297,7 +297,9 @@ def makeTrip():
             for i in range(len(account)):
                 sqlprovince = sqlprovince + account[i]["provinceTH"] + ","
             sqlprovince = sqlprovince[0:len(sqlprovince)-1]
-            cursor.execute('INSERT INTO Atrip_Trips (nameTH,placeList,provinceTH_List,ownerID,numPlace) VALUES (%s, %s, %s, %s,%s)', (content['tripName'],key,sqlprovince,content["userID"],len(qkey)))
+            cursor.execute("SELECT pictureURL from Atrip_Places where keyID = %s",[qkey[0]])
+            image = cursor.fetchone()
+            cursor.execute('INSERT INTO Atrip_Trips (nameTH,placeList,provinceTH_List,ownerID,numPlace,image) VALUES (%s, %s, %s, %s,%s, %s)', (content['tripName'],key,sqlprovince,content["userID"],len(qkey),image["pictureURL"]))
             mysql.connection.commit()
             form["isSuccess"] = True
             form["msg"] = "Successfully add to database"
@@ -314,7 +316,7 @@ def myTrip():
         # print(content)
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username FROM Atrip_Trips INNER JOIN Atrip_Users where (Atrip_Trips.ownerID = Atrip_Users.ID) and ownerID = %s ORDER BY keyID',[content["id"]])
+            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image FROM Atrip_Trips INNER JOIN Atrip_Users where (Atrip_Trips.ownerID = Atrip_Users.ID) and ownerID = %s ORDER BY keyID',[content["id"]])
             data = list(cursor.fetchall())
             for i in range(0,len(data),1):
                 placeList = data[i]["placeList"].split(",")
@@ -326,6 +328,7 @@ def myTrip():
                     placename = placename + j["nameTH"] + ","
                 placename = placename[0:len(placename)-1]
                 data[i]["placeList"] = placename
+                data[i]["image"] = data[i]["image"].decode("utf-8")
             # print(data)
 
     return jsonify(data)
