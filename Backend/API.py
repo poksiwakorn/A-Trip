@@ -13,7 +13,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 import googlemaps
-from findRoute import *
+from findRoute import allResults,sortResult
 
 app = Flask(__name__)
 app.secret_key = 'SoftDev'
