@@ -62,12 +62,8 @@ def register():
 
         else:
             # Account doesnt exists and the form data is valid, now insert new account into accounts table
-<<<<<<< HEAD
-            cursor.execute('INSERT INTO Atrip_Users (username,password,email,role,FirstName,LastName,Nickname,Date) VALUES (%s, %s, %s, %s, %s, %s, %s ,%s)', (username, password, email,"user",firstname,lastname,username,birthday))
-=======
             salt = bcrypt.gensalt()
             cursor.execute('INSERT INTO Atrip_Users (username,password,email,role,FirstName,LastName,Nickname,Date) VALUES (%s, %s, %s, %s, %s, %s, %s ,%s)', (username, bcrypt.hashpw(password.encode('utf8'), salt), email,"user",firstname,lastname,username,birthday))
->>>>>>> 9272f00df74da8a004d55b00efd72786b8263515
             mysql.connection.commit()
             form['result'] = True
             form['msg'] = 'You have successfully registered!'
