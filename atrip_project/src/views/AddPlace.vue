@@ -95,7 +95,7 @@ export default {
   data: () => ({
     image: require("../assets/passage1.jpg"),
     imageExample: "",
-    types: ["จุดชมวิว","ดอย","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ", "อื่นๆ"],
+    types: ["จุดชมวิว","ดอย","ตลาด","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ", "อื่นๆ"],
     provinces: [],
     placeLat: "",
     placeLng: "",
@@ -153,7 +153,6 @@ export default {
         // console.log(this.imageExample);
         document.getElementById('showImage').src = result;
       };
-      
     }
   },
   created: function(){
