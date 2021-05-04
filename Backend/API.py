@@ -185,15 +185,23 @@ def province():
         # print(account)
     return jsonify(account)
 
-@app.route("/tripInfo/<keyID>", methods = ['GET'])
+@app.route("/tripInfo/<keyID>", methods = ['GET','POST'])
 @cross_origin()
 def tripInfo(keyID):
     if request.method == 'GET':
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,description,status FROM Atrip_Trips INNER JOIN Atrip_Users where (Atrip_Trips.ownerID = Atrip_Users.ID) and keyID = %s',[keyID])
         account = cursor.fetchall()
-        # print(account)
-    return jsonify(account)
+        return jsonify(account)
+    elif request.method == 'POST':
+        content = request.get_json()
+        print(content["description"])
+        print(content["status"])
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('Update Atrip_Trips set description = %s,status = %s where keyID = %s',(content["description"],content["status"],keyID))
+        mysql.connection.commit()
+        return jsonify({"msg" : "success"})
+
 
 @app.route("/placeInfo/<keyID>", methods = ['GET'])
 @cross_origin()
