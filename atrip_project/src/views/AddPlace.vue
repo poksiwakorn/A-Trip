@@ -153,7 +153,6 @@ export default {
         // console.log(this.imageExample);
         document.getElementById('showImage').src = result;
       };
-      
     }
   },
   created: function(){
