@@ -38,7 +38,7 @@
                 <v-card class="oneTripCard mx-3" @click="toggle">
                   <v-img :src = "trip.image" height="200px">
                     <v-scale-transition>
-                      <v-btn v-if="active" text fab size="35px" class="deleteTrip-btn ma-2" @click="deleteTrip(i)">
+                      <v-btn v-if="active" text fab size="35px" class="deleteTrip-btn ma-2" @click="deleteTrip(i,trip.keyID)">
                         <v-icon color = "error" size="45">mdi-close-circle-outline</v-icon>
                       </v-btn>
                     </v-scale-transition>
@@ -128,8 +128,9 @@ export default {
   }),
 
   methods: {
-    deleteTrip: function(index){
+    deleteTrip: function(index,keyID){
       this.savedTrips.splice(index,1);
+      
     },
     goTripInfo(keyID){
       this.$router.push("/TripInfo/" + keyID);
