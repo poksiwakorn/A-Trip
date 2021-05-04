@@ -38,6 +38,7 @@ export default {
       })
       .catch((error) => alert(error));
   },
+  
   methods: {
     initMap() {
       this.map = new google.maps.Map(document.getElementById("map"), {
@@ -55,9 +56,8 @@ export default {
 
       // Click on the Map To Mark
     },
-    displayRoute(origin, service, display) {
+    displayRoute(origin) {
       var WPS =[]
-      display.setMap(null);
       for (let i = 0; i < origin.length; i++) {
         this.removeMarker(origin[i]);
       }

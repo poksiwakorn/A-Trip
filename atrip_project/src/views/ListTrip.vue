@@ -242,6 +242,7 @@ export default {
         alert(res.data.msg)
         })
       this.placesInTrip = []; 
+      this.$refs.Addmap.clearRoute()
     },
     makeFail: function(){
       alert("Add Fail");
@@ -267,13 +268,7 @@ export default {
         this.location.push({ lat: this.placesInTrip[i].latitude, lng: this.placesInTrip[i].longitude });
       }
       this.$refs.Addmap.clearRoute()
-      const directionsService = new google.maps.DirectionsService();
-      const directionsRenderer = new google.maps.DirectionsRenderer({
-          draggable: true,
-        });
-      console.log(this.placesInTrip.length)
-      console.log(this.location)
-      this.$refs.Addmap.displayRoute(this.location,directionsService,directionsRenderer)
+      this.$refs.Addmap.displayRoute(this.location)
     },
     keyNotUsed: function(keyID){
       var i;
