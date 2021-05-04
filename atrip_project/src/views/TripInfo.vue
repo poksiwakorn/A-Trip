@@ -5,11 +5,13 @@
       <v-row>
         <v-col cols="5" class="tripZone">
           <v-card class="tripCard">
-            <v-img :src="places[0].pictureURL" class="tripPic"></v-img>
+            <v-img :src="places[0].pictureURL" class="tripPic" v-if="showed"></v-img>
+            <Tripmap v-if="!showed" ref="Tripmap"/>
             <v-divider></v-divider>
-            <v-card-title class="tripTitle">
+            <v-card-title class="tripTitle" >
               {{ trip.nameTH }}
             </v-card-title>
+            
             <v-card-title class="tripSubTitle">
               {{trip.Username}}
               <v-spacer></v-spacer>
@@ -21,6 +23,7 @@
                     outlined
                     >{{province}}</v-chip
                   >
+                  <v-chip color="#67A272" outlined @click="Showmap(),showed=!showed" >แสดงแผนที่</v-chip>
                 </v-chip-group>
             </v-card-title>
             <v-divider class="mx-2" style="margin-top: -10px;"></v-divider>
@@ -96,12 +99,13 @@
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
 import axios from "axios";
-
+import Tripmap from "../components/Tripmap";
 export default {
   props: ["keyID"],
   name: "TripInfo",
   components: {
     TripBar,
+    Tripmap,
   },
 
   data: () => ({
@@ -110,7 +114,8 @@ export default {
     describe: "This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.",
     places: [],
     status: "",
-    allStatus: ["ส่วนตัว","สาธารณะ"]
+    allStatus: ["ส่วนตัว","สาธารณะ"],
+    showed:true,
   }),
 
   methods: {
@@ -119,6 +124,10 @@ export default {
     },
     goPlaceInfo(keyID){
       this.$router.push("/PlaceInfo/" + keyID);
+    },
+    Showmap(){
+      //alert("Show");
+      this.$refs.Tripmap.displayRoute()
     },
     async saveChangeTrip(){
       await axios.post("tripInfo/" + this.keyID,{"description" : this.description , "status" : this.status}).then((res) => {
@@ -260,6 +269,7 @@ export default {
 .typeText{
   margin-top: -20px;
 }
+
 
 .viewInfo-btn {
     position: absolute;
