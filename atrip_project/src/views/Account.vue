@@ -36,7 +36,7 @@
                 class="savedTripSlide"
               >
                 <v-card class="oneTripCard mx-3" @click="toggle">
-                  <v-img src = "../assets/temple1.jpg" height="200px">
+                  <v-img :src = "trip.image" height="200px">
                     <v-scale-transition>
                       <v-btn v-if="active" text fab size="35px" class="deleteTrip-btn ma-2" @click="deleteTrip(i)">
                         <v-icon color = "error" size="45">mdi-close-circle-outline</v-icon>
