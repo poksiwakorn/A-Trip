@@ -93,13 +93,18 @@
             </v-btn>
           </v-card-title>
           <v-divider></v-divider>
+          <v-card class="imageCard">
+            <img id="showImage" class="imagePic">
+            <input type="file" @change="handleImage" ref="fileInput" style="display: none;">    
+          </v-card>
+          <v-btn color="primary" class="uploadButton" @click="$refs.fileInput.click()">อัพโหลดรูปภาพ</v-btn>
           <v-form class="edit-form">
             <v-text-field
               v-model = "nickName"
               placeholder="ชื่อเล่น"
               regular
               class="mt-7 mb-3"
-              style="font-color: black; width: 600px; margin-left: 50px; color: black;"
+              style="font-color: black; width: 400px; margin-left: 40px; color: black;"
               prepend-icon="mdi-account"
               label="ชื่อเล่น"
             ></v-text-field>
@@ -108,7 +113,7 @@
               placeholder="ชื่อ"
               regular
               class="mt-7 mb-3"
-              style="font-color: black; width: 600px; margin-left: 50px; color: black;"
+              style="font-color: black; width: 400px; margin-left: 40px; color: black;"
               prepend-icon="mdi-account"
               label="ชื่อ"
             ></v-text-field>
@@ -117,21 +122,23 @@
               placeholder="นามสกุล"
               regular
               class="mt-7 mb-3"
-              style="font-color: black; width: 600px; margin-left: 50px; color: black;"
+              style="font-color: black; width: 400px; margin-left: 40px; color: black;"
               prepend-icon="mdi-account"
               label="นามสกุล"
             ></v-text-field>
             <v-row justify="center" style="margin-top: 10px; margin-bottom: 10px;">
               <v-btn
-                class="white--text"
+                class="ok-btn white--text"
                 color="green"
-                @click="profileOverlay = false"
+                height="50px"
+                @click="editData()"
               >
                 ยืนยัน
               </v-btn>
               <v-btn
-                class="white--text"
+                class="no-btn white--text"
                 color="error"
+                height="50px"
                 @click="profileOverlay = false"
               >
                 ยกเลิก
@@ -195,6 +202,9 @@ export default {
   }),
 
   methods: {
+    editData(){
+      this.profileOverlay = false
+    },
     selectDelete(index,keyID){
       this.tripOverlay = !this.tripOverlay;
       this.selectIndex = index;
@@ -211,6 +221,21 @@ export default {
     async callTrips(){
       await axios.post("myTrip",{"query":"","id" : this.$store.getters.StateID}).then((res)=>this.savedTrips = res.data);
     },
+    handleImage(e){
+      var selectedImage = e.target.files[0];
+      this.createBase64Image(selectedImage);
+    },
+    async createBase64Image(fileObject){
+      var reader = new FileReader();
+      reader.readAsDataURL(fileObject);
+      reader.onload = async function(){
+        var result = reader.result;
+        // console.log(result);
+        // this.imageExample = result;
+        // console.log(this.imageExample);
+        document.getElementById('showImage').src = result;
+      };
+    }
   },
   created: function(){
     this.callTrips()
@@ -323,11 +348,49 @@ export default {
     height: 70vh;
   }
 
+  .imageCard{
+    margin-top: 50px;
+    margin-left: 50px;
+    margin-right: 100px;
+    width: 400px;
+    min-height: 300px;
+  }
+
+  .imagePic{
+    width: 400px;
+    height: 410px;
+    size: cover;
+  }
+
+  .uploadButton {
+    margin-left: 150px;
+    margin-top: 50px;
+    margin-bottom: 10px;
+    /* color: #ff9100; */
+    font-size: 20px;
+  }
+
   .edit-form {
     position: absolute;
-    width: 800px;
-    top: 100px;
-    left: calc(50% - 400px);
+    width: 500px;
+    height: 410px;
+    top: 120px;
+    left: 500px;
     background-color: rgb(80, 131, 80);
+  }
+
+  .ok-btn{
+    margin-top: 40px; 
+    margin-left: 50px; 
+    margin-right: 50px; 
+    width: 150px;
+    font-size: 20px;
+  }
+
+  .no-btn{
+    margin-top: 40px; 
+    margin-right: 50px; 
+    width: 150px;
+    font-size: 20px;
   }
 </style>
