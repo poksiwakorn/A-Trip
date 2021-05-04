@@ -404,8 +404,9 @@ def makeRoute():
             print(results)
             return jsonify(results)
         if mode == "ปลายทางเดิม":
+            print("ปลายทางเดิม")
             for i in temp:
-                if i[0][0] == placeIDList[-1]:
+                if i[0][-1] == placeIDList[-1]:
                     break
                 count += 1
             results["results"] = temp[count]
