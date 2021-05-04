@@ -34,7 +34,7 @@
             <v-btn @click = "Login" align-center color="info" style="font-size: 20px;">ถัดไป</v-btn>
           </v-col>
           <v-col cols="12">
-            <!-- <router-link to="/about">Forget your password?</router-link> -->
+            <router-link to="/about">ลืมรหัสผ่านเหรอ กดไปดิงั้น</router-link>
           </v-col>
           <v-col cols="12">
             <router-link to="/Register">ยังไม่มีรหัสอีกเหรอ? กดตรงนี้สิ</router-link>
