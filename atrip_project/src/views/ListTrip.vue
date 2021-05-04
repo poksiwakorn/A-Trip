@@ -247,7 +247,7 @@ export default {
       alert("Add Fail");
     },
     async makeRoute (){
-      await axios.post("makeRoute",{"placesInTrip": this.placesInTrip,"command": ""}).then((res)=>this.bestPath = res.data['results1'][0]);
+      await axios.post("makeRoute",{"placesInTrip": this.placesInTrip,"command": ""}).then((res)=>this.bestPath = res.data['results'][0]);
       // Update Route //
       this.updateRoute();
     },
