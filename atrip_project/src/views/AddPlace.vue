@@ -9,8 +9,9 @@
             <v-card class="mx-10 mb-7">
               <Addmap @changeLat="placeLat = $event" @changeLng="placeLng = $event"/>
             </v-card>
-            {{placeLat}}
-            {{placeLng}}
+            <v-text-field v-model = "placeLat" class="mx-9" placeholder="Latitude"></v-text-field>
+            <v-spacer></v-spacer>
+            <v-text-field v-model = "placeLng" class="mx-9" placeholder="Longitude"></v-text-field>
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เว็บไซต์</v-card-title>
             <v-text-field v-model = "form.website" class="mx-9" placeholder="www.example.com" ></v-text-field>
