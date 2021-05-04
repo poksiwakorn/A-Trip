@@ -134,7 +134,11 @@ export default {
     goTripInfo(keyID) {
       this.$router.push("/TripInfo/" + keyID);
     },
-    saveTrip(keyID) {
+    async saveTrip(keyID) {
+      await axios.post("/saveTrip",{"key" : keyID,"id" : this.$store.getters.StateID}).then(res => {
+        alert(res.data.msg)
+      })
+      
       this.$router.push("/Account");
     },
     async callTrips() {

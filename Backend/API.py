@@ -13,7 +13,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 import googlemaps
-from findRoute import allResults,sortResult
+from findRoute import *
 
 app = Flask(__name__)
 app.secret_key = 'SoftDev'
@@ -203,6 +203,30 @@ def validate():
             mysql.connection.commit()
     return jsonify({"msg" : "success"})
 
+@app.route("/saveTrip", methods = ['GET', 'POST'])
+@cross_origin()
+def saveTrip():
+    if request.method == 'POST':
+        content = request.get_json()
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT Favorite from Atrip_Users where ID = %s",[content["id"]])
+        account = cursor.fetchone()
+        print(content)
+        print(account)
+        if (account["Favorite"]):
+            print("Enter")
+            favorite = account["Favorite"].split(",")
+            print(favorite)
+            if str(content['key']) in favorite:
+                return jsonify({"msg" : "Already has Data"})
+            account["Favorite"] = account["Favorite"] + "," + str(content['key'])
+            cursor.execute('Update Atrip_Users set Favorite = %s where ID = %s',(account["Favorite"],content["id"]))
+            mysql.connection.commit()
+            return jsonify({"msg" : "success"})
+        cursor.execute('Update Atrip_Users set Favorite = %s where ID = %s',(content['key'],content["id"]))
+        mysql.connection.commit()
+        return jsonify({"msg" : "success"})
+
 @app.route("/trip", methods = ['GET', 'POST'])
 @cross_origin()
 def trip():
@@ -269,10 +293,10 @@ def getPlace():
             contentinput = content["place"].split(",")
             # print(contentinput)
             form = "SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username,CASE keyID "#FROM Atrip_Places INNER JOIN Atrip_Users where (Atrip_Places.ownerID = Atrip_Users.ID) and (keyID = " + " or keyID = ".join(contentinput) + ")" + " order by case keyID"
-            for i in range(0,len(contentinput)-1,1):
-                form = form + " WHEN " + contentinput[i] + " THEN " + contentinput[i+1]
-            form = form + " WHEN " + contentinput[len(contentinput)-1] + " THEN " + "99999 END AS sortOrder FROM Atrip_Places INNER JOIN Atrip_Users where (Atrip_Places.ownerID = Atrip_Users.ID) and (keyID = " + " or keyID = ".join(contentinput) + ")" + " order by sortOrder"
-            # print(form)
+            for i in range(0,len(contentinput),1):
+                form = form + " WHEN " + contentinput[i] + " THEN " + str(i)
+            form = form + " END AS sortOrder FROM Atrip_Places INNER JOIN Atrip_Users where (Atrip_Places.ownerID = Atrip_Users.ID) and (keyID = " + " or keyID = ".join(contentinput) + ")" + " order by sortOrder"
+            print(form)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(form)
             account = cursor.fetchall()
@@ -371,7 +395,12 @@ def myTrip():
         # print(content)
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image,status FROM Atrip_Trips INNER JOIN Atrip_Users where (Atrip_Trips.ownerID = Atrip_Users.ID) and ownerID = %s ORDER BY keyID',[content["id"]])
+            cursor.execute("SELECT Favorite From Atrip_Users where id = %s",[content["id"]])
+            account = cursor.fetchone()
+            favorite = account["Favorite"].split(",")
+            form = "SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image,status FROM Atrip_Trips INNER JOIN Atrip_Users On (Atrip_Trips.ownerID = Atrip_Users.ID) where (ownerID = " + str(content["id"]) + " or keyID = " + " or keyID = ".join(favorite) + ") ORDER BY keyID"
+            print(form)
+            cursor.execute(form)
             data = list(cursor.fetchall())
             for i in range(0,len(data),1):
                 placeList = data[i]["placeList"].split(",")
@@ -404,53 +433,23 @@ def makeRoute():
     if request.method == 'POST':
         content = request.get_json()
         numPlace = len(content["placesInTrip"])
-        results = dict()
-        if numPlace < 3:
-            results["results"] = "เลือกอย่างน้อย 3 สถานที่"
-            #print(results)
-            return jsonify(results)
-        if numPlace > 7:
-            results["results"] = "เลือกอย่างไม่เกิน 7 สถานที่"
-            #print(results)
-            return jsonify(results)
         placeIDList = list()
         coordinateList = list()
-        mode = content["command"]
         for i in range(numPlace):
             placeIDList.append(content["placesInTrip"][i]["keyID"])
             coordinateList.append(content["placesInTrip"][i]["coordinate"])
+        results = dict()
         x = gmaps.distance_matrix(coordinateList,coordinateList,mode='driving')
-        temp = sortResult(allResults(placeIDList,x))        
+        temp = sortResult(allResults(placeIDList,x))
+        results["results"] = temp[0]
         count = 0
-        if mode == "สั้นที่สุด":
-            #print("สั้นที่สุด")
-            results["results"] = temp[0]
-            #print(results)
-            return jsonify(results)
-        if mode == "จุดเริ่มต้นเดิม":
-            #print("จุดเริ่มต้นเดิม")
-            for i in temp:
-                if i[0][0] == placeIDList[0]:
-                    break
-                count += 1
-            results["results"] = temp[count]
-            #print(results)
-            return jsonify(results)
-        if mode == "ปลายทางเดิม":
-            #print("ปลายทางเดิม")
-            for i in temp:
-                if i[0][-1] == placeIDList[-1]:
-                    break
-                count += 1
-            results["results"] = temp[count]
-            #print(results)
-            return jsonify(results)
         for i in temp:
-            if i[0][0] == placeIDList[0] and i[0][-1] == placeIDList[-1]:
+            if i[0][0] == placeIDList[0]:
                 break
             count += 1
-        results["results"] = temp[count]
-    #print(results)
+        results["results1"] = temp[count]
+        print(results)
+
     return jsonify(results)
 
 
