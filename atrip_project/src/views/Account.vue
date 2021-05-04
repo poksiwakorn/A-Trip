@@ -38,7 +38,7 @@
                 <v-card class="oneTripCard mx-3" @click="toggle">
                   <v-img :src = "trip.image" height="200px">
                     <v-scale-transition>
-                      <v-btn v-if="active" text fab size="35px" class="deleteTrip-btn ma-2" @click="tripOverlay = !tripOverlay">
+                      <v-btn v-if="active" text fab size="35px" class="deleteTrip-btn ma-2" @click="selectDelete(i,trip.keyID)">
                         <v-icon color = "error" size="45">mdi-close-circle-outline</v-icon>
                       </v-btn>
                     </v-scale-transition>
@@ -118,7 +118,7 @@
             <v-btn
               class="white--text"
               color="green"
-              @click="tripOverlay = false"
+              @click="deleteTrip()"
             >
               ยืนยัน
             </v-btn>
@@ -152,13 +152,21 @@ export default {
     tripName: "",
     profileOverlay: false,
     tripOverlay: false,
-    nickname: "myNickName"
+    nickname: "myNickName",
+    selectIndex: "",
+    selectID: ""
   }),
 
   methods: {
-    deleteTrip: async function(index,keyID){
-      await axios.post("/deleteTrip",{"keyID" : keyID}).then((res) => alert(res.data.msg))
-      this.savedTrips.splice(index,1);
+    selectDelete(index,keyID){
+      this.tripOverlay = !this.tripOverlay;
+      this.selectIndex = index;
+      this.selectID = keyID;
+    },
+    deleteTrip: async function(){
+      this.savedTrips.splice(this.selectIndex,1);
+      await axios.post("/deleteTrip",{"keyID" : this.selectID}).then((res) => alert(res.data.msg))
+      this.tripOverlay = false;
     },
     goTripInfo(keyID){
       this.$router.push("/TripInfo/" + keyID);
