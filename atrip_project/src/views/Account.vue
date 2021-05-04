@@ -328,8 +328,8 @@ export default {
 
   .subTitle{
     font-size: 17px;
-    font-weight: 400;
-    color: grey;
+    font-weight: 450;
+    color: rgba(255, 153, 0, 0.822);
     margin-top: -25px;
   }
 

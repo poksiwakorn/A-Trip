@@ -40,7 +40,7 @@
               class="tripCard"
             >
               <v-img :src="trip.image" height="200px"></v-img>
-              <v-card-title>
+              <v-card-title style="font-size: 25px;">
                 {{ trip.nameTH }}
                 <v-spacer></v-spacer>
                 <v-chip-group class="ma-2">
@@ -53,7 +53,9 @@
                   >
                 </v-chip-group>
               </v-card-title>
-              <v-card-subtitle>{{ trip.Username }}</v-card-subtitle>
+              <v-card-subtitle style="font-size: 17px; font-weight: 450; color: rgba(255, 153, 0, 0.822);">
+                {{ trip.Username }}
+              </v-card-subtitle>
               <v-divider class="mx-5"></v-divider>
               <v-card-title class="black--text"
                 >สถานที่ภายในทริป
@@ -80,6 +82,27 @@
               >
                 เซฟทริป
                 <v-icon class="ml-2">mdi-book-plus</v-icon>
+              </v-btn>
+              <v-btn
+                v-if="!liked"
+                color="#FF9100"
+                outlined
+                class="like-btn ma-2"
+                style="font-size: 18px"
+                @click="liked = !liked"
+              >
+                ถูกใจ
+                <v-icon class="ml-2">mdi-thumb-up</v-icon>
+              </v-btn>
+              <v-btn
+                v-else
+                color="#FF9100"
+                class="like-btn ma-2 white--text"
+                style="font-size: 18px"
+                @click="liked = !liked"
+              >
+                ถูกใจ
+                <v-icon class="ml-2">mdi-thumb-up-outline</v-icon>
               </v-btn>
             </v-card>
           </v-row>
@@ -126,6 +149,7 @@ export default {
     provinceValue: "ทั้งหมด",
     tripNames: ["ทั้งหมด"],
     tripNameValue: "ทั้งหมด",
+    liked: false
   }),
   methods: {
     count: function (item) {
@@ -248,6 +272,12 @@ export default {
   bottom: 0px;
 }
 
+.like-btn{
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+}
+
 .adsCard {
   position: fixed;
   margin-top: 80px;
@@ -260,4 +290,5 @@ export default {
   position: absolute;
   bottom: 5px;
 }
+
 </style>
