@@ -38,7 +38,7 @@ export default {
       })
       .catch((error) => alert(error));
   },
-  
+
   methods: {
     initMap() {
       this.map = new google.maps.Map(document.getElementById("map"), {
@@ -92,20 +92,6 @@ export default {
         this.directionsRenderer = null;
       }
     },
-    addMarker: function(getlat, getlng) {
-      var markLatLng = new google.maps.LatLng(getlat, getlng);
-      this.markers[markLatLng] = new google.maps.Marker({
-        position: markLatLng,
-        map: this.map,
-        draggable: false,
-        animation: google.maps.Animation.DROP,
-      });
-    },
-    removeMarker(lat, long) {
-      try {
-        this.markers[new google.maps.LatLng(lat, long)].setMap(null);
-      } catch (e) {}
-    },
     moveToLocation(lat, lng) {
       const center = new google.maps.LatLng(lat, lng);
       this.map.panTo(center);
@@ -115,7 +101,7 @@ export default {
 </script>
 <style scoped>
 #map {
-  width: 32vw;
-  height: 800px;
+ width: 100%;
+  height: 400px;
 }
 </style>
