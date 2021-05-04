@@ -98,6 +98,7 @@
 
 <script>
 // @ is an alias to /src
+import axios from "axios";
 
 export default {
   name: "SignIn",
@@ -109,6 +110,7 @@ export default {
         password : ""
       },
       birthday: "",
+      email: "",
       showPassword: false,
       forgetOverlay: false,
       usernameRule: [
@@ -127,8 +129,10 @@ export default {
     }
   },
   methods:{
-    forgetSend(){
-      
+    async forgetSend(){
+      await axios.post("forgotpassword",{"email" : this.email , "birthday" : this.birthday}).then((res) => {
+        alert(res.data.msg)
+      })
       this.forgetOverlay = false;
     },
     async Login(){
