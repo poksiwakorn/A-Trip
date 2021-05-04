@@ -11,7 +11,7 @@
               </v-avatar>
             </div>
             <v-col class="profileName my-10">
-              {{this.$store.getters.StateRole}}
+              {{this.$store.getters.StateNickname}}
             </v-col>
             <v-btn class="editProfile-btn white--text" 
                     width="40%" height="50px" 
@@ -93,16 +93,51 @@
             </v-btn>
           </v-card-title>
           <v-divider></v-divider>
-          <v-row>
+          <v-form class="edit-form">
             <v-text-field
-              v-model = "nickname"
+              v-model = "nickName"
               placeholder="ชื่อเล่น"
               regular
               class="mt-7 mb-3"
-              style="font-color: black; width: 200px; margin-left: 50px; color: black;"
-              width="200px"
+              style="font-color: black; width: 600px; margin-left: 50px; color: black;"
+              prepend-icon="mdi-account"
+              label="ชื่อเล่น"
             ></v-text-field>
-          </v-row>
+            <v-text-field
+              v-model = "firstName"
+              placeholder="ชื่อ"
+              regular
+              class="mt-7 mb-3"
+              style="font-color: black; width: 600px; margin-left: 50px; color: black;"
+              prepend-icon="mdi-account"
+              label="ชื่อ"
+            ></v-text-field>
+            <v-text-field
+              v-model = "lastName"
+              placeholder="นามสกุล"
+              regular
+              class="mt-7 mb-3"
+              style="font-color: black; width: 600px; margin-left: 50px; color: black;"
+              prepend-icon="mdi-account"
+              label="นามสกุล"
+            ></v-text-field>
+            <v-row justify="center" style="margin-top: 10px; margin-bottom: 10px;">
+              <v-btn
+                class="white--text"
+                color="green"
+                @click="profileOverlay = false"
+              >
+                ยืนยัน
+              </v-btn>
+              <v-btn
+                class="white--text"
+                color="error"
+                @click="profileOverlay = false"
+              >
+                ยกเลิก
+              </v-btn>
+            </v-row>
+          </v-form>
         </v-card>
       </v-overlay>
 
@@ -152,7 +187,9 @@ export default {
     tripName: "",
     profileOverlay: false,
     tripOverlay: false,
-    nickname: "myNickName",
+    nickName: "myNickName",
+    firstName: "myFirstName",
+    lastName: "myLastName",
     selectIndex: "",
     selectID: ""
   }),
@@ -177,6 +214,9 @@ export default {
   },
   created: function(){
     this.callTrips()
+    this.nickName = this.$store.getters.StateNickname;
+    this.firstName = this.$store.getters.StateFirstName;
+    this.lastName = this.$store.getters.StateLastName;
   }
 };
 </script>
@@ -281,6 +321,13 @@ export default {
   .editCard{
     width: 55vw;
     height: 70vh;
-    /* background-color: white; */
+  }
+
+  .edit-form {
+    position: absolute;
+    width: 800px;
+    top: 100px;
+    left: calc(50% - 400px);
+    background-color: rgb(80, 131, 80);
   }
 </style>
