@@ -35,12 +35,14 @@
               <v-img :src="place.pictureURL" class="placePic"></v-img>
               <v-card-title>
                 {{ place.nameTH }}
+              </v-card-title>
+              <v-card-title class="subTitle">
+                {{place.typeTH}}
                 <v-spacer></v-spacer>
                 <v-chip class="ma-2" color="#FF9100" outlined>{{
                   place.provinceTH
                 }}</v-chip>
               </v-card-title>
-              <v-card-subtitle>{{place.typeTH}}</v-card-subtitle>
               <v-btn color="#FF9100" outlined class="ma-2" @click = "showOverlay(place)" style="font-size: 20px;"
                 >ดูข้อมูล
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
@@ -118,7 +120,7 @@
                             <v-card-title
                               class="ml-2"
                               style="font-weight: 200; font-size: 14px"
-                              >{{ place.item.nameTH }}</v-card-title
+                              >{{notLong(place.item.nameTH)}}</v-card-title
                             >
                             <v-spacer></v-spacer>
                             <v-btn
@@ -220,6 +222,20 @@ export default {
     canclePlace: function(index) {
       this.placesInTrip.splice(index, 1);
       //this.coordinates.splice(index, 1); 
+    },
+    notLong: function(tripName) {
+      var reserve = ['ิ','ี','ึ','ื','ุ','ู','ั','่','้','๊','๋','็','์'];
+      var i;
+      var count = 0;
+      for(i=0;i<tripName.length;i++){
+        if(!reserve.includes(tripName[i])){
+          count += 1;
+        }
+      }
+      if(count > 25){
+        tripName = tripName.slice(0,22+tripName.length-count) + "...";
+      }
+      return tripName;
     },
     getItem: function(items, item) {
       for (var i = 0; i < items.length; i++) {
@@ -338,6 +354,12 @@ export default {
 .placePic {
   width: 800px;
   height: 280px;
+}
+
+.subTitle{
+  font-size: 20px;
+  font-weight: 450;
+  color: grey;
 }
 
 .tripCard {
