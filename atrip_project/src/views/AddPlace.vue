@@ -164,13 +164,12 @@ export default {
 
 <style scoped>
   .AddPlace{
-    height: 110vh;
+    min-height: 115vh;
     background-image: linear-gradient(to top, #77cee3, #6bc4dd, #60bad7, #55afd1, #4ba5cb, #439ec7, #3b96c3, #338fbf, #2c88bc, #2681ba, #227ab6, #2073b3);
   }
 
   .mapZone{
     width: 100%;
-    height: calc(100vh + 12px);
   }
 
   .mapCard{
@@ -193,7 +192,6 @@ export default {
 
   .imageZone{
     width: 100%;
-    height: calc(100vh + 12px);
   }
 
   .imageCard{

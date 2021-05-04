@@ -16,7 +16,7 @@
             <v-btn class="editProfile-btn white--text" 
                     width="40%" height="50px" 
                     style="font-size: 27px;" color="#FF9100"
-                    @click="overlay = !overlay">
+                    @click="profileOverlay = !profileOverlay">
               แก้ไขโปรไฟล์
               <v-icon class="ml-3" size = "30px">mdi-account-edit-outline</v-icon>
             </v-btn>
@@ -46,10 +46,10 @@
                     <v-card-title>
                       {{trip.nameTH}}
                     </v-card-title>                    
-                    <v-card-title>
+                    <v-card-title class="subTitle">
                       {{trip.Username}}
                       <v-spacer></v-spacer>
-                      <v-chip class="ma-2" color="#FF9100" outlined>
+                      <v-chip class="mx-2" color="#FF9100" outlined>
                         {{trip.status}}
                       </v-chip>
                     </v-card-title>
@@ -78,7 +78,7 @@
       </v-row>
       <v-overlay
         :z-index=0
-        :value="overlay"
+        :value="profileOverlay"
       >
         <v-card class="editCard">
           <v-card-title class="white--text" style="font-size: 30px;">
@@ -87,7 +87,7 @@
             <v-btn
               class="white--text"
               color="error"
-              @click="overlay = false"
+              @click="profileOverlay = false"
             >
               X
             </v-btn>
@@ -123,7 +123,7 @@ export default {
   data: () => ({
     savedTrips: [],
     tripName: "",
-    overlay: false,
+    profileOverlay: false,
     nickname: "myNickName"
   }),
 
@@ -213,6 +213,13 @@ export default {
     width: 370px;
     height: 650px;
     border-radius: 30px;
+  }
+
+  .subTitle{
+    font-size: 17px;
+    font-weight: 400;
+    color: grey;
+    margin-top: -25px;
   }
 
   .deleteTrip-btn{

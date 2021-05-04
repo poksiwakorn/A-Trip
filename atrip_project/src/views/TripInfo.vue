@@ -30,7 +30,7 @@
                 <v-textarea v-if="this.$store.getters.StateUsername == this.trip.Username"
                             v-model = "description" filled label="ข้อมูลทริปเพิ่มเติม" height="250px" class="mr-2"></v-textarea>
                 <v-card-text v-else class="tripText">
-                    {{ describe }}
+                    {{description}}
                 </v-card-text>
                 <v-btn v-if="this.$store.getters.StateUsername == this.trip.Username" 
                     color="#FF9100" outlined class="saveTrip-btn ma-2" @click="saveChangeTrip">
