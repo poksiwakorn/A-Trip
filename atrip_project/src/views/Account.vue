@@ -11,12 +11,12 @@
               </v-avatar>
             </div>
             <v-col class="profileName my-10">
-              {{this.$store.getters.StateUsername}}
+              {{this.$store.getters.StateNickname}}
             </v-col>
             <v-btn class="editProfile-btn white--text" 
                     width="40%" height="50px" 
                     style="font-size: 27px;" color="#FF9100"
-                    @click="overlay = !overlay">
+                    @click="profileOverlay = !profileOverlay">
               แก้ไขโปรไฟล์
               <v-icon class="ml-3" size = "30px">mdi-account-edit-outline</v-icon>
             </v-btn>
@@ -36,9 +36,9 @@
                 class="savedTripSlide"
               >
                 <v-card class="oneTripCard mx-3" @click="toggle">
-                  <v-img src = "../assets/temple1.jpg" height="200px">
+                  <v-img :src = "trip.image" height="200px">
                     <v-scale-transition>
-                      <v-btn v-if="active" text fab size="35px" class="deleteTrip-btn ma-2" @click="deleteTrip(i)">
+                      <v-btn v-if="active" text fab size="35px" class="deleteTrip-btn ma-2" @click="selectDelete(i,trip.keyID)">
                         <v-icon color = "error" size="45">mdi-close-circle-outline</v-icon>
                       </v-btn>
                     </v-scale-transition>
@@ -46,7 +46,13 @@
                     <v-card-title>
                       {{trip.nameTH}}
                     </v-card-title>                    
-                    <v-card-subtitle>{{trip.Username}}</v-card-subtitle>
+                    <v-card-title class="subTitle">
+                      {{trip.Username}}
+                      <v-spacer></v-spacer>
+                      <v-chip class="mx-2" color="#FF9100" outlined>
+                        {{trip.status}}
+                      </v-chip>
+                    </v-card-title>
                     <v-divider class="mx-5"></v-divider>
                     <v-card-title class="placeTitle black--text">สถานที่ภายในทริป<v-card-subtitle class="mt-1">{{trip.numPlace}} สถานที่</v-card-subtitle></v-card-title>
                     <v-row
@@ -72,7 +78,7 @@
       </v-row>
       <v-overlay
         :z-index=0
-        :value="overlay"
+        :value="profileOverlay"
       >
         <v-card class="editCard">
           <v-card-title class="white--text" style="font-size: 30px;">
@@ -81,21 +87,90 @@
             <v-btn
               class="white--text"
               color="error"
-              @click="overlay = false"
+              @click="profileOverlay = false"
             >
               X
             </v-btn>
           </v-card-title>
           <v-divider></v-divider>
-          <v-row>
+          <v-card class="imageCard">
+            <img id="showImage" class="imagePic">
+            <input type="file" @change="handleImage" ref="fileInput" style="display: none;">    
+          </v-card>
+          <v-btn color="primary" class="uploadButton" @click="$refs.fileInput.click()">อัพโหลดรูปภาพ</v-btn>
+          <v-form class="edit-form">
             <v-text-field
-              v-model = "nickname"
+              v-model = "nickName"
               placeholder="ชื่อเล่น"
               regular
               class="mt-7 mb-3"
-              style="font-color: black; width: 200px; margin-left: 50px; color: black;"
-              width="200px"
+              style="font-color: black; width: 400px; margin-left: 40px; color: black;"
+              prepend-icon="mdi-account"
+              label="ชื่อเล่น"
             ></v-text-field>
+            <v-text-field
+              v-model = "firstName"
+              placeholder="ชื่อ"
+              regular
+              class="mt-7 mb-3"
+              style="font-color: black; width: 400px; margin-left: 40px; color: black;"
+              prepend-icon="mdi-account"
+              label="ชื่อ"
+            ></v-text-field>
+            <v-text-field
+              v-model = "lastName"
+              placeholder="นามสกุล"
+              regular
+              class="mt-7 mb-3"
+              style="font-color: black; width: 400px; margin-left: 40px; color: black;"
+              prepend-icon="mdi-account"
+              label="นามสกุล"
+            ></v-text-field>
+            <v-row justify="center" style="margin-top: 10px; margin-bottom: 10px;">
+              <v-btn
+                class="ok-btn white--text"
+                color="green"
+                height="50px"
+                @click="editData()"
+              >
+                ยืนยัน
+              </v-btn>
+              <v-btn
+                class="no-btn white--text"
+                color="error"
+                height="50px"
+                @click="profileOverlay = false"
+              >
+                ยกเลิก
+              </v-btn>
+            </v-row>
+          </v-form>
+        </v-card>
+      </v-overlay>
+
+      <v-overlay
+        :z-index=0
+        :value="tripOverlay"
+      >
+        <v-card>
+          <v-card-title class="white--text" style="font-size: 30px;">
+            ต้องการลบทริป ใช่หรือไม่
+          </v-card-title>
+          <v-row justify="center" style="margin-top: 10px; margin-bottom: 10px;">
+            <v-btn
+              class="white--text"
+              color="green"
+              @click="deleteTrip()"
+            >
+              ยืนยัน
+            </v-btn>
+            <v-btn
+              class="white--text"
+              color="error"
+              @click="tripOverlay = false"
+            >
+              ยกเลิก
+            </v-btn>
           </v-row>
         </v-card>
       </v-overlay>
@@ -117,24 +192,56 @@ export default {
   data: () => ({
     savedTrips: [],
     tripName: "",
-    overlay: false,
-    nickname: "myNickName"
+    profileOverlay: false,
+    tripOverlay: false,
+    nickName: "myNickName",
+    firstName: "myFirstName",
+    lastName: "myLastName",
+    selectIndex: "",
+    selectID: ""
   }),
 
   methods: {
-    deleteTrip: function(index){
-      this.savedTrips.splice(index,1);
+    editData(){
+      this.profileOverlay = false
+    },
+    selectDelete(index,keyID){
+      this.tripOverlay = !this.tripOverlay;
+      this.selectIndex = index;
+      this.selectID = keyID;
+    },
+    deleteTrip: async function(){
+      this.savedTrips.splice(this.selectIndex,1);
+      await axios.post("/deleteTrip",{"keyID" : this.selectID}).then((res) => alert(res.data.msg))
+      this.tripOverlay = false;
     },
     goTripInfo(keyID){
       this.$router.push("/TripInfo/" + keyID);
     },
     async callTrips(){
       await axios.post("myTrip",{"query":"","id" : this.$store.getters.StateID}).then((res)=>this.savedTrips = res.data);
-      console.log(this.savedTrips)
     },
+    handleImage(e){
+      var selectedImage = e.target.files[0];
+      this.createBase64Image(selectedImage);
+    },
+    async createBase64Image(fileObject){
+      var reader = new FileReader();
+      reader.readAsDataURL(fileObject);
+      reader.onload = async function(){
+        var result = reader.result;
+        // console.log(result);
+        // this.imageExample = result;
+        // console.log(this.imageExample);
+        document.getElementById('showImage').src = result;
+      };
+    }
   },
   created: function(){
     this.callTrips()
+    this.nickName = this.$store.getters.StateNickname;
+    this.firstName = this.$store.getters.StateFirstName;
+    this.lastName = this.$store.getters.StateLastName;
   }
 };
 </script>
@@ -209,6 +316,13 @@ export default {
     border-radius: 30px;
   }
 
+  .subTitle{
+    font-size: 17px;
+    font-weight: 400;
+    color: grey;
+    margin-top: -25px;
+  }
+
   .deleteTrip-btn{
     position: absolute;
     right: 0px;
@@ -232,6 +346,51 @@ export default {
   .editCard{
     width: 55vw;
     height: 70vh;
-    /* background-color: white; */
+  }
+
+  .imageCard{
+    margin-top: 50px;
+    margin-left: 50px;
+    margin-right: 100px;
+    width: 400px;
+    min-height: 300px;
+  }
+
+  .imagePic{
+    width: 400px;
+    height: 410px;
+    size: cover;
+  }
+
+  .uploadButton {
+    margin-left: 150px;
+    margin-top: 50px;
+    margin-bottom: 10px;
+    /* color: #ff9100; */
+    font-size: 20px;
+  }
+
+  .edit-form {
+    position: absolute;
+    width: 500px;
+    height: 410px;
+    top: 120px;
+    left: 500px;
+    background-color: rgb(80, 131, 80);
+  }
+
+  .ok-btn{
+    margin-top: 40px; 
+    margin-left: 50px; 
+    margin-right: 50px; 
+    width: 150px;
+    font-size: 20px;
+  }
+
+  .no-btn{
+    margin-top: 40px; 
+    margin-right: 50px; 
+    width: 150px;
+    font-size: 20px;
   }
 </style>

@@ -39,7 +39,7 @@
                     && (trip.nameTH.includes(tripNameValue) || tripNameValue == 'ทั้งหมด')"
               class="tripCard"
             >
-              <v-img src="../assets/temple1.jpg" height="200px"></v-img>
+              <v-img :src="trip.image" height="200px"></v-img>
               <v-card-title>
                 {{ trip.nameTH }}
                 <v-spacer></v-spacer>
@@ -71,6 +71,15 @@
                 ข้อมูลเพิ่มเติม
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
               </v-btn>
+              <v-btn
+                color="#FF9100"
+                outlined
+                class="saveTrip-btn ma-2"
+                style="font-size: 18px"
+              >
+                เซฟทริป
+                <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
+              </v-btn>
             </v-card>
           </v-row>
         </v-col>
@@ -88,7 +97,7 @@
               >รายละเอียดสถานที่</v-card-text
             >
             <v-card-text>
-              {{ trips[0] }}
+              <!-- {{ trips[0] }} -->
             </v-card-text>
             <v-btn color="#FF9100" text class="viewPlace-btn ma-2"
               >ข้อมูลเพิ่มเติม</v-btn
@@ -222,6 +231,12 @@ export default {
 
 .viewInfo-btn {
   position: absolute;
+  bottom: 0px;
+}
+
+.saveTrip-btn {
+  position: absolute;
+  left: 200px;
   bottom: 0px;
 }
 
