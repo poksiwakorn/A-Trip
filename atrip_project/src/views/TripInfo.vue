@@ -5,7 +5,7 @@
       <v-row>
         <v-col cols="5" class="tripZone">
           <v-card class="tripCard">
-            <v-img src="../assets/passage1.jpg" class="tripPic"></v-img>
+            <v-img :src="places[0].pictureURL" class="tripPic"></v-img>
             <v-divider></v-divider>
             <v-card-title class="tripTitle">
               {{ trip.nameTH }}
@@ -51,7 +51,7 @@
                   <v-col cols="4">
                     <v-card class="mb-5">
                       <v-img
-                        src="../assets/temple1.jpg"
+                        :src="place.item.pictureURL"
                         class="placeImage"
                       ></v-img>
                     </v-card>

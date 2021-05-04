@@ -241,6 +241,7 @@ export default {
       }
       this.placesInTrip = this.placesInTripTemp;
       this.placesInTripTemp = [];
+      alert("Update Route");
     },
     keyNotUsed: function(keyID){
       var i;
