@@ -60,21 +60,34 @@
               X
             </v-btn>
           </v-card-title>
-          <v-divider></v-divider>
-          <v-row>
-            <v-text-field
-              v-model = "email"
-              label="อีเมล"
-              placeholder="example@hotmail.com"
-              regular
-              class="emailInput mt-7 mb-3"
-            ></v-text-field>
-          </v-row>
+          <v-text-field
+            v-model = "email"
+            label="อีเมล"
+            placeholder="example@hotmail.com"
+            regular
+            class="emailInput mt-7 mb-3"
+          ></v-text-field>
+          <v-menu v-model="dateMenu" absolute >
+            <template v-slot:activator = "{on,attrs}">
+              <v-text-field
+                v-model="birthdayText"
+                label="วัน-เดือน-ปี เกิด"
+                placeholder="yy/mm/dd"
+                regular
+                class="birthdayInput mt-7 mb-3"
+                prepend-icon="mdi-calendar-range"
+                slot = "activator"
+                v-bind="attrs"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker v-model="birthday"></v-date-picker>
+          </v-menu>
           <v-row justify="center" style="margin-top: 10px; margin-bottom: 10px;">
-            <v-btn class="white--text" color="green" style="margin-right: 30px;" @click="deleteTrip()">
+            <v-btn class="ok-btn white--text" color="green" height="50px" @click="deleteTrip()">
               ยืนยัน
             </v-btn>
-            <v-btn class="white--text" color="error" @click="tripOverlay = false">
+            <v-btn class="no-btn white--text" color="error" height="50px" @click="tripOverlay = false">
               ยกเลิก
             </v-btn>
           </v-row>
@@ -95,6 +108,7 @@ export default {
         username: "",
         password : ""
       },
+      birthday: "",
       showPassword: false,
       forgetOverlay: false,
       usernameRule: [
@@ -105,6 +119,11 @@ export default {
           v => !!v || 'Password is required',
           v => v.length <= 10 || 'Password must be less than 10 characters',
       ]
+    }
+  },
+  computed: {
+    birthdayText(){
+      return this.birthday;
     }
   },
   methods:{
@@ -156,12 +175,32 @@ export default {
 
   .forgetCard{
     width: 30vw;
-    height: 70vh;
+    min-height: 40vh;
   }
 
   .emailInput{
     margin-left: 50px; 
     margin-right: 50px; 
+  }
+
+  .birthdayInput{
+    margin-left: 50px; 
+    margin-right: 50px; 
+  }
+
+  .ok-btn{
+    margin-top: 40px; 
+    margin-left: 50px; 
+    margin-right: 50px; 
+    width: 200px;
+    font-size: 20px;
+  }
+
+  .no-btn{
+    margin-top: 40px; 
+    margin-right: 50px; 
+    width: 200px;
+    font-size: 20px;
   }
 </style>
 
