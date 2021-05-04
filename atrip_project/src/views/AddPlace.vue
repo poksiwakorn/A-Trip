@@ -147,6 +147,7 @@ export default {
       reader.readAsDataURL(fileObject);
       reader.onload = async function(){
         var result = reader.result;
+        // console.log(result);
         // this.imageExample = result;
         // console.log(this.imageExample);
         document.getElementById('showImage').src = result;

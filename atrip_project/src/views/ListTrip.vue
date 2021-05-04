@@ -221,6 +221,7 @@ export default {
       .then((res)=>{
         alert(res.data.msg)
         })
+      this.placesInTrip = []; 
     },
     makeFail: function(){
       alert("Add Fail");
@@ -240,6 +241,7 @@ export default {
       }
       this.placesInTrip = this.placesInTripTemp;
       this.placesInTripTemp = [];
+      alert("Update Route");
     },
     keyNotUsed: function(keyID){
       var i;
