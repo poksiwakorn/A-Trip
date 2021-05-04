@@ -23,7 +23,7 @@
             <v-btn class="changePassword-btn white--text" 
                     width="37%" height="50px" 
                     style="font-size: 27px;" color="error"
-                    @click="profileOverlay = !profileOverlay">
+                    @click="passwordOverlay = !passwordOverlay">
               เปลี่ยนรหัสผ่าน
               <v-icon class="ml-3" size = "30px">mdi-account-edit-outline</v-icon>
             </v-btn>
@@ -83,6 +83,8 @@
           </v-sheet>
         </v-col>
       </v-row>
+
+      <!-- Edit Profile -->
       <v-overlay
         :z-index=0
         :value="profileOverlay"
@@ -112,7 +114,7 @@
               regular
               class="mt-7 mb-3"
               style="font-color: black; width: 400px; margin-left: 40px; color: black;"
-              prepend-icon="mdi-account"
+              prepend-icon="mdi-rename-box"
               label="ชื่อเล่น"
             ></v-text-field>
             <v-text-field
@@ -121,7 +123,7 @@
               regular
               class="mt-7 mb-3"
               style="font-color: black; width: 400px; margin-left: 40px; color: black;"
-              prepend-icon="mdi-account"
+              prepend-icon="mdi-rename-box"
               label="ชื่อ"
             ></v-text-field>
             <v-text-field
@@ -130,7 +132,7 @@
               regular
               class="mt-7 mb-3"
               style="font-color: black; width: 400px; margin-left: 40px; color: black;"
-              prepend-icon="mdi-account"
+              prepend-icon="mdi-rename-box"
               label="นามสกุล"
             ></v-text-field>
             <v-row justify="center" style="margin-top: 10px; margin-bottom: 10px;">
@@ -155,6 +157,7 @@
         </v-card>
       </v-overlay>
 
+      <!-- Delete Trip -->
       <v-overlay
         :z-index=0
         :value="tripOverlay"
@@ -183,6 +186,56 @@
           </v-row>
         </v-card>
       </v-overlay>
+
+      <!-- Edit Password Trip -->
+      <v-overlay
+        :z-index=0
+        :value="passwordOverlay"
+      >
+        <v-card class="passwordCard">
+          <v-card-title class="white--text" style="font-size: 30px; margin-left: 20px;">
+            แก้ไขรหัสผ่าน
+          </v-card-title>
+          <v-form class="password-form">
+            <v-text-field
+              v-model = "oldPassword"
+              placeholder="รหัสผ่านเก่า"
+              regular
+              class="mt-5 mb-3"
+              style="font-color: black; width: 400px; margin-left: 40px; color: black;"
+              prepend-icon="mdi-lock-off"
+              label="รหัสผ่านเก่า"
+            ></v-text-field>
+            <v-text-field
+              v-model = "newPassword"
+              placeholder="รหัสผ่านใหม่"
+              regular
+              class="mt-7 mb-3"
+              style="font-color: black; width: 400px; margin-left: 40px; color: black;"
+              prepend-icon="mdi-lock"
+              label="รหัสผ่านใหม่"
+            ></v-text-field>
+            <v-row justify="center" style="margin-top: 10px; margin-bottom: 10px;">
+              <v-btn
+                class="ok-btn white--text"
+                color="green"
+                height="50px"
+                @click="changePassword()"
+              >
+                ยืนยัน
+              </v-btn>
+              <v-btn
+                class="no-btn white--text"
+                color="error"
+                height="50px"
+                @click="passwordOverlay = false"
+              >
+                ยกเลิก
+              </v-btn>
+            </v-row>
+          </v-form>
+        </v-card>
+      </v-overlay>
     </div>
   </v-content>
 </template>
@@ -203,11 +256,14 @@ export default {
     tripName: "",
     profileOverlay: false,
     tripOverlay: false,
+    passwordOverlay: false,
     nickName: "myNickName",
     firstName: "myFirstName",
     lastName: "myLastName",
     selectIndex: "",
-    selectID: ""
+    selectID: "",
+    oldPassword: "",
+    newPassword: ""
   }),
 
   methods: {
@@ -236,6 +292,9 @@ export default {
     },
     goTripInfo(keyID){
       this.$router.push("/TripInfo/" + keyID);
+    },
+    changePassword(){
+      this.passwordOverlay = false;
     },
     async callTrips(){
       await axios.post("myTrip",{"query":"","id" : this.$store.getters.StateID}).then((res)=>this.savedTrips = res.data);
@@ -315,6 +374,11 @@ export default {
   .deleteCard{
     width: 30vw;
     height: 30vh;
+  }
+
+  .passwordCard{
+    width: 30vw;
+    height: 420px;
   }
 
   .tripZone{
@@ -407,6 +471,14 @@ export default {
     height: 410px;
     top: 120px;
     left: 500px;
+    background-color: rgb(80, 131, 80);
+  }
+
+  .password-form {
+    width: 500px;
+    height: 300px;
+    top: 120px;
+    margin-left: 38px;
     background-color: rgb(80, 131, 80);
   }
 
