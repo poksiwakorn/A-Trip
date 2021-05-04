@@ -61,8 +61,7 @@
             </v-card-title>
             <v-divider class="mx-2"></v-divider>
             <v-card-text class="imageText">
-              This is the text that should describe the hide-detail
-              of this place but I don't know how to do it so I finally text this.
+              {{this.place.descriptionTH}}
             </v-card-text>
           </v-card>
         </v-col>
@@ -166,7 +165,7 @@ export default {
   .imageCard{
     margin-left: 20px;
     margin-top: 83px;
-    height: 800px;
+    min-height: 800px;
   }
 
   .imagePic{
