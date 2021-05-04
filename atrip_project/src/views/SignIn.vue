@@ -33,14 +33,53 @@
           <v-col cols="12">
             <v-btn @click = "Login" align-center color="info" style="font-size: 20px;">ถัดไป</v-btn>
           </v-col>
-          <v-col cols="12">
-            <router-link to="/about">ลืมรหัสผ่านเหรอ กดไปดิงั้น</router-link>
-          </v-col>
-          <v-col cols="12">
-            <router-link to="/Register">ยังไม่มีรหัสอีกเหรอ? กดตรงนี้สิ</router-link>
-          </v-col>
+          <v-row class="optionZone">
+            <v-btn text @click="forgetOverlay = !forgetOverlay" color="primary" class="option-btn">
+              ลืมรหัสผ่านเหรอ กดไปดิงั้น
+            </v-btn>
+            <v-btn text link to="/Register" color="primary" class="option-btn">
+              ยังไม่มีรหัสอีกเหรอ? กดตรงนี้สิ
+            </v-btn>
+          </v-row>
         </v-row>
       </v-form>
+
+      <v-overlay
+        :z-index=0
+        :value="forgetOverlay"
+      >
+        <v-card class="forgetCard">
+          <v-card-title class="white--text" style="font-size: 30px;">
+            ลืมรหัสผ่าน
+            <v-spacer></v-spacer>
+            <v-btn
+              class="white--text"
+              color="error"
+              @click="forgetOverlay = false"
+            >
+              X
+            </v-btn>
+          </v-card-title>
+          <v-divider></v-divider>
+          <v-row>
+            <v-text-field
+              v-model = "email"
+              label="อีเมล"
+              placeholder="example@hotmail.com"
+              regular
+              class="emailInput mt-7 mb-3"
+            ></v-text-field>
+          </v-row>
+          <v-row justify="center" style="margin-top: 10px; margin-bottom: 10px;">
+            <v-btn class="white--text" color="green" style="margin-right: 30px;" @click="deleteTrip()">
+              ยืนยัน
+            </v-btn>
+            <v-btn class="white--text" color="error" @click="tripOverlay = false">
+              ยกเลิก
+            </v-btn>
+          </v-row>
+        </v-card>
+      </v-overlay>
   </div>
 </template>
 
@@ -57,6 +96,7 @@ export default {
         password : ""
       },
       showPassword: false,
+      forgetOverlay: false,
       usernameRule: [
           v => !!v || 'Username is required',
           v => v.length <= 10 || 'Username must be less than 10 characters',
@@ -101,6 +141,27 @@ export default {
     width: 400px;
     left: 11vw;
     top: 45vh;
+  }
+
+  .optionZone{
+    margin-left: -5px;
+    margin-top: 20px;
+    /* background-color: blueviolet; */
+  }
+
+  .option-btn{
+    margin-top: 30px;
+    font-size: 20px;
+  }
+
+  .forgetCard{
+    width: 30vw;
+    height: 70vh;
+  }
+
+  .emailInput{
+    margin-left: 50px; 
+    margin-right: 50px; 
   }
 </style>
 
