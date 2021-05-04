@@ -350,7 +350,7 @@ def makeRoute():
         x = gmaps.distance_matrix(coordinateList,coordinateList,mode='driving')
         results["results"] = sortResult(allResults(placeIDList,x))[0]
         for i in results["results"]:
-            # print(i)
+            print(i)
         '''
         y = makeList_Of_DurationBetweenPointToPoint_From_DictFromGooglemapsAPI(x)
         print(y)
