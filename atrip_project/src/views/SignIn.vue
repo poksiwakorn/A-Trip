@@ -114,12 +114,14 @@ export default {
       showPassword: false,
       forgetOverlay: false,
       usernameRule: [
-          v => !!v || 'Username is required',
-          v => v.length <= 10 || 'Username must be less than 10 characters',
+        v => !!v || 'Username is required',
+        v => v.length > 7 || 'Username must be at least 8 characters',
+        v => v.length < 16 || 'Username must be at most 15 characters',
       ],
       passwordRule: [
-          v => !!v || 'Password is required',
-          v => v.length <= 10 || 'Password must be less than 10 characters',
+        v => !!v || 'Password is required',
+        v => v.length > 7 || 'Password must be at least 8 characters',
+        v => v.length < 26 || 'Password must be at most 25 characters',
       ]
     }
   },
@@ -131,9 +133,12 @@ export default {
   methods:{
     async forgetSend(){
       await axios.post("forgotpassword",{"email" : this.email , "birthday" : this.birthday}).then((res) => {
-        alert(res.data.msg)
+        if (res.data.msg){
+          this.email = ""
+          this.birthday = ""
+          this.forgetOverlay = false;
+        }
       })
-      this.forgetOverlay = false;
     },
     async Login(){
       try {
