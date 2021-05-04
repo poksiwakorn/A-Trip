@@ -35,12 +35,14 @@
               <v-img :src="place.pictureURL" class="placePic"></v-img>
               <v-card-title>
                 {{ place.nameTH }}
+              </v-card-title>
+              <v-card-title class="subTitle">
+                {{place.typeTH}}
                 <v-spacer></v-spacer>
                 <v-chip class="ma-2" color="#FF9100" outlined>{{
                   place.provinceTH
                 }}</v-chip>
               </v-card-title>
-              <v-card-subtitle>{{place.typeTH}}</v-card-subtitle>
               <v-btn color="#FF9100" outlined class="ma-2" @click = "showOverlay(place)" style="font-size: 20px;"
                 >ดูข้อมูล
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
@@ -118,7 +120,7 @@
                             <v-card-title
                               class="ml-2"
                               style="font-weight: 200; font-size: 14px"
-                              >{{ place.item.nameTH }}</v-card-title
+                              >{{notLong(place.item.nameTH)}}</v-card-title
                             >
                             <v-spacer></v-spacer>
                             <v-btn
@@ -182,13 +184,17 @@ import TripBar from "../components/TripBar";
 import axios from "axios";
 import Listmap from "../components/Listmap";
 
+
+
 export default {
   name: "ListTrip",
   components: {
     TripBar,
     Listmap,
   },
+
   data: () => ({
+    scrolledToBottom: false,
     overlay: false,
     types: ["ทั้งหมด","จุดชมวิว","ดอย","ตลาด","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ", "อื่นๆ"],
     typeValue: "ทั้งหมด",
@@ -210,6 +216,16 @@ export default {
     modes: ["สั้นที่สุด", "จุดเริ่มต้นเดิม","ปลายทางเดิม","เริ่มต้น ปลายทางเดิม"]
   }),
   methods: {
+    scroll () {
+  window.onscroll = () => {
+    if ((Math.ceil(window.pageYOffset/475) + 2)%10 == 0) {
+        //console.log(((Math.ceil(window.pageYOffset/475) + 2)));
+        this.callPlaces();
+        console.log(((Math.ceil(window.pageYOffset/475) + 2)/10+1)*10)
+    }
+ }
+},
+
     addPlace: function(item) {
       this.placesInTrip.push(item); 
       // this.coordinates.push({ lat: item.latitude, lng: item.longitude });
@@ -220,6 +236,20 @@ export default {
     canclePlace: function(index) {
       this.placesInTrip.splice(index, 1);
       //this.coordinates.splice(index, 1); 
+    },
+    notLong: function(placeName) {
+      var reserve = ['ิ','ี','ึ','ื','ุ','ู','ั','่','้','๊','๋','็','์'];
+      var i;
+      var count = 0;
+      for(i=0;i<placeName.length;i++){
+        if(!reserve.includes(placeName[i])){
+          count += 1;
+        }
+      }
+      if(count > 25){
+        placeName = placeName.slice(0,22+placeName.length-count) + "...";
+      }
+      return placeName;
     },
     getItem: function(items, item) {
       for (var i = 0; i < items.length; i++) {
@@ -241,13 +271,15 @@ export default {
       .then((res)=>{
         alert(res.data.msg)
         })
+      this.tripName = "";
       this.placesInTrip = []; 
+      this.$refs.Addmap.clearRoute()
     },
     makeFail: function(){
       alert("Add Fail");
     },
     async makeRoute (){
-      await axios.post("makeRoute",{"placesInTrip": this.placesInTrip,"command": ""}).then((res)=>this.bestPath = res.data['results1'][0]);
+      await axios.post("makeRoute",{"placesInTrip": this.placesInTrip,"command": this.mode}).then((res)=>this.bestPath = res.data['results'][0]);
       // Update Route //
       this.updateRoute();
     },
@@ -267,13 +299,7 @@ export default {
         this.location.push({ lat: this.placesInTrip[i].latitude, lng: this.placesInTrip[i].longitude });
       }
       this.$refs.Addmap.clearRoute()
-      const directionsService = new google.maps.DirectionsService();
-      const directionsRenderer = new google.maps.DirectionsRenderer({
-          draggable: true,
-        });
-      console.log(this.placesInTrip.length)
-      console.log(this.location)
-      this.$refs.Addmap.displayRoute(this.location,directionsService,directionsRenderer)
+      this.$refs.Addmap.displayRoute(this.location)
     },
     keyNotUsed: function(keyID){
       var i;
@@ -286,8 +312,11 @@ export default {
       return true;
     },
     async callPlaces(){
-      await axios.post("location",{query:""}).then((res)=>this.places = res.data);
+      await axios.post("location",{query:"","current": ((Math.ceil(window.pageYOffset/475) + 2)/10+1)*10}).then((res)=>this.places = res.data);
       console.log(this.places);
+    },
+    async callPlaces2(){
+      await axios.post("location",{query:"","current": ((Math.ceil(window.pageYOffset/475) + 2)/10+1)*10}).then((res)=>{console.log(res.data);});
     },
     async callProvinces(){
       await axios.get("province").then((res)=>this.provinces = res.data);
@@ -300,6 +329,7 @@ export default {
   created: function() {
     this.callPlaces();
     this.callProvinces();
+    this.scroll();
   },
 };
 </script>
@@ -338,6 +368,12 @@ export default {
 .placePic {
   width: 800px;
   height: 280px;
+}
+
+.subTitle{
+  font-size: 20px;
+  font-weight: 450;
+  color: grey;
 }
 
 .tripCard {

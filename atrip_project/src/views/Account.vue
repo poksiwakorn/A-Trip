@@ -7,17 +7,24 @@
           <v-card class="profileCard">
             <div>
               <v-avatar color="primary" width="350" height="350" class="profileAvatar">
-                <v-img src= "../assets/passage1.jpg" fab></v-img>
+                <v-img :src= "this.$store.getters.StatePicture" fab></v-img>
               </v-avatar>
             </div>
             <v-col class="profileName my-10">
               {{this.$store.getters.StateNickname}}
             </v-col>
             <v-btn class="editProfile-btn white--text" 
-                    width="40%" height="50px" 
-                    style="font-size: 27px;" color="#FF9100"
+                    width="37%" height="50px" 
+                    style="font-size: 27px;" color="green"
                     @click="profileOverlay = !profileOverlay">
               แก้ไขโปรไฟล์
+              <v-icon class="ml-3" size = "30px">mdi-account-edit-outline</v-icon>
+            </v-btn>
+            <v-btn class="changePassword-btn white--text" 
+                    width="37%" height="50px" 
+                    style="font-size: 27px;" color="error"
+                    @click="profileOverlay = !profileOverlay">
+              เปลี่ยนรหัสผ่าน
               <v-icon class="ml-3" size = "30px">mdi-account-edit-outline</v-icon>
             </v-btn>
           </v-card>
@@ -152,21 +159,23 @@
         :z-index=0
         :value="tripOverlay"
       >
-        <v-card>
+        <v-card class="deleteCard">
           <v-card-title class="white--text" style="font-size: 30px;">
             ต้องการลบทริป ใช่หรือไม่
           </v-card-title>
           <v-row justify="center" style="margin-top: 10px; margin-bottom: 10px;">
             <v-btn
-              class="white--text"
+              class="okDelete-btn white--text"
               color="green"
+              height="50px"
               @click="deleteTrip()"
             >
               ยืนยัน
             </v-btn>
             <v-btn
-              class="white--text"
+              class="noDelete-btn white--text"
               color="error"
+              height="50px"
               @click="tripOverlay = false"
             >
               ยกเลิก
@@ -202,8 +211,18 @@ export default {
   }),
 
   methods: {
-    editData(){
-      this.profileOverlay = false
+    async editData(){
+      try {
+        await this.$store.dispatch("editData",{"id" : this.$store.getters.StateID ,"nickName" : this.nickName,"firstName" : this.firstName ,"lastName" : this.lastName , "image" : document.getElementById('showImage').src});
+        console.log(this.$store.getters.StateFirstName)
+        console.log(this.$store.getters.StateNickname)
+        console.log(this.$store.getters.StateLastName)
+        console.log(this.$store.getters.StatePicture)
+        this.profileOverlay = false
+      }
+      catch(error){
+        console.log(error)
+      }
     },
     selectDelete(index,keyID){
       this.tripOverlay = !this.tripOverlay;
@@ -212,7 +231,7 @@ export default {
     },
     deleteTrip: async function(){
       this.savedTrips.splice(this.selectIndex,1);
-      await axios.post("/deleteTrip",{"keyID" : this.selectID}).then((res) => alert(res.data.msg))
+      await axios.post("/deleteTrip",{"keyID" : this.selectID , "id" : this.$store.getters.StateID}).then((res) => alert(res.data.msg))
       this.tripOverlay = false;
     },
     goTripInfo(keyID){
@@ -276,9 +295,26 @@ export default {
 
   .editProfile-btn{
     position: absolute;
-    left: 30%;
+    left: 8%;
     bottom: 50px;
     font-size: 25px;
+  }
+
+  .changePassword-btn{
+    position: absolute;
+    left: 55%;
+    bottom: 50px;
+    font-size: 25px;
+  }
+
+  .editCard{
+    width: 55vw;
+    height: 70vh;
+  }
+
+  .deleteCard{
+    width: 30vw;
+    height: 30vh;
   }
 
   .tripZone{
@@ -318,8 +354,8 @@ export default {
 
   .subTitle{
     font-size: 17px;
-    font-weight: 400;
-    color: grey;
+    font-weight: 450;
+    color: rgba(255, 153, 0, 0.822);
     margin-top: -25px;
   }
 
@@ -341,11 +377,6 @@ export default {
     position: absolute;
     right: 30px;
     bottom: 80px;
-  }
-
-  .editCard{
-    width: 55vw;
-    height: 70vh;
   }
 
   .imageCard{
@@ -390,6 +421,22 @@ export default {
   .no-btn{
     margin-top: 40px; 
     margin-right: 50px; 
+    width: 150px;
+    font-size: 20px;
+  }
+
+  .okDelete-btn{
+    position: absolute;
+    bottom: 40px; 
+    left: 40px; 
+    width: 150px;
+    font-size: 20px;
+  }
+
+  .noDelete-btn{
+    position: absolute;
+    bottom: 40px; 
+    right: 40px; 
     width: 150px;
     font-size: 20px;
   }
