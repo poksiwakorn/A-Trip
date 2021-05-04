@@ -122,9 +122,11 @@ export default {
     goPlaceInfo(keyID){
       this.$router.push("/PlaceInfo/" + keyID);
     },
-    saveChangeTrip(){
-      alert("Save Change in Trip")
-      this.$router.push("/Account");
+    async saveChangeTrip(){
+      await axios.post("tripInfo/" + this.keyID,{"description" : this.description , "status" : this.status}).then((res) => {
+        alert(res.data.msg)
+        this.$router.push("/Account");
+      })
     },
     async getInfo(){
       await axios.get("tripInfo/" + this.keyID).then((res)=>this.trip = res.data[0]);
