@@ -218,8 +218,11 @@ def getPlace():
         if content["place"]:
             contentinput = content["place"].split(",")
             # print(contentinput)
-            form = "SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where (Atrip_Places.ownerID = Atrip_Users.ID) and (keyID = " + " or keyID = ".join(contentinput) + ")"
-            # print(form)
+            form = "SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username,CASE keyID "#FROM Atrip_Places INNER JOIN Atrip_Users where (Atrip_Places.ownerID = Atrip_Users.ID) and (keyID = " + " or keyID = ".join(contentinput) + ")" + " order by case keyID"
+            for i in range(0,len(contentinput)-1,1):
+                form = form + " WHEN " + contentinput[i] + " THEN " + contentinput[i+1]
+            form = form + " WHEN " + contentinput[len(contentinput)-1] + " THEN " + "999 END AS sortOrder FROM Atrip_Places INNER JOIN Atrip_Users where (Atrip_Places.ownerID = Atrip_Users.ID) and (keyID = " + " or keyID = ".join(contentinput) + ")" + " order by sortOrder"
+            print(form)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(form)
             account = cursor.fetchall()
