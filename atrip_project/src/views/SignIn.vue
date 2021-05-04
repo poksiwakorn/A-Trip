@@ -33,14 +33,66 @@
           <v-col cols="12">
             <v-btn @click = "Login" align-center color="info" style="font-size: 20px;">ถัดไป</v-btn>
           </v-col>
-          <v-col cols="12">
-            <router-link to="/about">ลืมรหัสผ่านเหรอ กดไปดิงั้น</router-link>
-          </v-col>
-          <v-col cols="12">
-            <router-link to="/Register">ยังไม่มีรหัสอีกเหรอ? กดตรงนี้สิ</router-link>
-          </v-col>
+          <v-row class="optionZone">
+            <v-btn text @click="forgetOverlay = !forgetOverlay" color="primary" class="option-btn">
+              ลืมรหัสผ่านเหรอ กดไปดิงั้น
+            </v-btn>
+            <v-btn text link to="/Register" color="primary" class="option-btn">
+              ยังไม่มีรหัสอีกเหรอ? กดตรงนี้สิ
+            </v-btn>
+          </v-row>
         </v-row>
       </v-form>
+
+      <v-overlay
+        :z-index=0
+        :value="forgetOverlay"
+      >
+        <v-card class="forgetCard">
+          <v-card-title class="white--text" style="font-size: 30px;">
+            ลืมรหัสผ่าน
+            <v-spacer></v-spacer>
+            <v-btn
+              class="white--text"
+              color="error"
+              @click="forgetOverlay = false"
+            >
+              X
+            </v-btn>
+          </v-card-title>
+          <v-text-field
+            v-model = "email"
+            label="อีเมล"
+            placeholder="example@hotmail.com"
+            regular
+            class="emailInput mt-7 mb-3"
+          ></v-text-field>
+          <v-menu v-model="dateMenu" absolute >
+            <template v-slot:activator = "{on,attrs}">
+              <v-text-field
+                v-model="birthdayText"
+                label="วัน-เดือน-ปี เกิด"
+                placeholder="yy/mm/dd"
+                regular
+                class="birthdayInput mt-7 mb-3"
+                prepend-icon="mdi-calendar-range"
+                slot = "activator"
+                v-bind="attrs"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker v-model="birthday"></v-date-picker>
+          </v-menu>
+          <v-row justify="center" style="margin-top: 10px; margin-bottom: 10px;">
+            <v-btn class="ok-btn white--text" color="green" height="50px" @click="deleteTrip()">
+              ยืนยัน
+            </v-btn>
+            <v-btn class="no-btn white--text" color="error" height="50px" @click="tripOverlay = false">
+              ยกเลิก
+            </v-btn>
+          </v-row>
+        </v-card>
+      </v-overlay>
   </div>
 </template>
 
@@ -56,7 +108,9 @@ export default {
         username: "",
         password : ""
       },
+      birthday: "",
       showPassword: false,
+      forgetOverlay: false,
       usernameRule: [
           v => !!v || 'Username is required',
           v => v.length <= 10 || 'Username must be less than 10 characters',
@@ -65,6 +119,11 @@ export default {
           v => !!v || 'Password is required',
           v => v.length <= 10 || 'Password must be less than 10 characters',
       ]
+    }
+  },
+  computed: {
+    birthdayText(){
+      return this.birthday;
     }
   },
   methods:{
@@ -101,6 +160,47 @@ export default {
     width: 400px;
     left: 11vw;
     top: 45vh;
+  }
+
+  .optionZone{
+    margin-left: -5px;
+    margin-top: 20px;
+    /* background-color: blueviolet; */
+  }
+
+  .option-btn{
+    margin-top: 30px;
+    font-size: 20px;
+  }
+
+  .forgetCard{
+    width: 30vw;
+    min-height: 40vh;
+  }
+
+  .emailInput{
+    margin-left: 50px; 
+    margin-right: 50px; 
+  }
+
+  .birthdayInput{
+    margin-left: 50px; 
+    margin-right: 50px; 
+  }
+
+  .ok-btn{
+    margin-top: 40px; 
+    margin-left: 50px; 
+    margin-right: 50px; 
+    width: 200px;
+    font-size: 20px;
+  }
+
+  .no-btn{
+    margin-top: 40px; 
+    margin-right: 50px; 
+    width: 200px;
+    font-size: 20px;
   }
 </style>
 
