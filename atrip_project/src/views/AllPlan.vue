@@ -89,7 +89,7 @@
                 outlined
                 class="like-btn ma-2"
                 style="font-size: 18px"
-                @click="liked = !liked"
+                @click="likeTrip(trip.keyID)"
               >
                 ถูกใจ
                 <v-icon class="ml-2">mdi-thumb-up</v-icon>
@@ -99,7 +99,7 @@
                 color="#FF9100"
                 class="like-btn ma-2 white--text"
                 style="font-size: 18px"
-                @click="liked = !liked"
+                @click="likeTrip(trip.keyID)"
               >
                 ถูกใจ
                 <v-icon class="ml-2">mdi-thumb-up-outline</v-icon>
@@ -163,6 +163,9 @@ export default {
         alert(res.data.msg)
       })
       this.$router.push("/Account");
+    },
+    likeTrip(keyID) {
+      
     },
     async callTrips() {
       await axios
