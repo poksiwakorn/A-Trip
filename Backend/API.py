@@ -146,7 +146,7 @@ def approvelocation():
         account = cursor.fetchall()
         for i in range(0,len(account),1):
             account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
-        # print(account[i])
+
         return jsonify(account)
     return jsonify({"msg" : "Error"})
 
