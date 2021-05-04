@@ -5,7 +5,7 @@
       <v-row>
         <v-col cols="5" class="tripZone">
           <v-card class="tripCard">
-            <v-img src="../assets/passage1.jpg" class="tripPic"></v-img>
+            <v-img :src="places[0].pictureURL" class="tripPic"></v-img>
             <v-divider></v-divider>
             <v-card-title class="tripTitle">
               {{ trip.nameTH }}
@@ -23,22 +23,32 @@
               </v-row>
             </v-card-title>
             <v-card-subtitle class="tripSubTitle mt-1 ml-1">
-              {{ trip.ownerID }}
+              {{trip.Username}}
             </v-card-subtitle>
-            <v-divider class="mx-2"></v-divider>
+            <v-divider class="mx-2" style="margin-top: -10px;"></v-divider>
             <v-col class="pb-15">
-                <v-card-text class="tripText">
-                    {{ describe }}
+                <v-textarea v-if="this.$store.getters.StateUsername == this.trip.Username"
+                            v-model = "description" filled label="ข้อมูลทริปเพิ่มเติม" height="250px" class="mr-2"></v-textarea>
+                <v-card-text v-else class="tripText">
+                    {{description}}
                 </v-card-text>
-                <v-btn color="#FF9100" outlined class="saveTrip-btn ma-2" link to = "/Account">
-                    save trip
+                <v-btn v-if="this.$store.getters.StateUsername == this.trip.Username" 
+                    color="#FF9100" outlined class="saveTrip-btn ma-2" @click="saveChangeTrip">
+                    บันทึก
                     <v-icon class="ml-2">mdi-content-save</v-icon>
                 </v-btn>
+                <v-select
+                  v-if="this.$store.getters.StateUsername == this.trip.Username"
+                  v-model="status"
+                  :items="allStatus"
+                  label="สถานะ"
+                  class="chooseStatus ma-2"
+                ></v-select>
             </v-col>
           </v-card>
         </v-col>
         <v-col cols="7" class="placeZone">
-          <v-card class="placeCard mr-10">Place List</v-card>
+          <v-card class="placeCard mr-10">รายชื่อสถานที่</v-card>
           <v-card class="scrollCard">
             <v-virtual-scroll :items="places" :item-height="250" height="690">
               <template v-slot="place">
@@ -51,23 +61,25 @@
                   <v-col cols="4">
                     <v-card class="mb-5">
                       <v-img
-                        src="../assets/temple1.jpg"
+                        :src="place.item.pictureURL"
                         class="placeImage"
                       ></v-img>
                     </v-card>
                   </v-col>
                   <v-col>
                     <v-card class="placeInfoCard">
-                      <v-card-title class="ml-2" style="font-weight: 400; font-size: 20px;"
-                        >{{ place.item.nameTH }}
+                      <v-card-title class="ml-2" style="font-weight: 400; font-size: 20px;">
+                        {{ place.item.nameTH }}
+                      </v-card-title>
+                      <v-card-title class="typeText ml-2 grey--text" style="font-size: 18px;">
+                        {{place.item.typeTH}}
                         <v-spacer></v-spacer>
                         <v-chip class="mx-2" color="#FF9100" outlined>{{
                           place.item.provinceTH
                         }}</v-chip>
                       </v-card-title>
-                      <v-card-subtitle class="ml-2">{{place.item.owner}}</v-card-subtitle>
-                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" link to = "/PlaceInfo">
-                        view info 
+                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" style="font-size: 18px;" @click="goPlaceInfo(place.item.keyID)">
+                        ข้อมูลเพิ่มเติม
                         <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
                       </v-btn>
                     </v-card>
@@ -96,17 +108,32 @@ export default {
 
   data: () => ({
     trip: [],
+    description: "",
     describe: "This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.",
     places: [],
+    status: "",
+    allStatus: ["ส่วนตัว","สาธารณะ"]
   }),
 
   methods: {
     count: function (item) {
       return item.length;
     },
+    goPlaceInfo(keyID){
+      this.$router.push("/PlaceInfo/" + keyID);
+    },
+    async saveChangeTrip(){
+      await axios.post("tripInfo/" + this.keyID,{"description" : this.description , "status" : this.status}).then((res) => {
+        alert(res.data.msg)
+        this.$router.push("/Account");
+      })
+    },
     async getInfo(){
       await axios.get("tripInfo/" + this.keyID).then((res)=>this.trip = res.data[0]);
-      await axios.post("getPlace",{place : this.trip.placeList_List}).then((res) => this.places = res.data);
+      await axios.post("getPlace",{place : this.trip.placeList}).then((res) => this.places = res.data);
+      console.log(this.trip)
+      this.status = this.trip.status;
+      this.description = this.trip.description;
     }
   },
   created: function(){
@@ -117,7 +144,8 @@ export default {
 
 <style scoped>
 .TripInfo {
-    position: relative;
+  position: relative;
+  min-height: 105vh;
   background-image: linear-gradient(
     to top,
     #77cee3,
@@ -137,7 +165,6 @@ export default {
 
 .tripZone {
   width: 100%;
-  height: calc(100vh + 12px);
 }
 
 .tripCard {
@@ -152,6 +179,7 @@ export default {
 }
 
 .tripTitle {
+  margin-top: 10px;
   font-size: 45px;
   font-weight: 300;
 }
@@ -169,14 +197,21 @@ export default {
 }
 
 .saveTrip-btn {
-    position: absolute;
-    left: 10px;
-    bottom: 10px;
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  font-size: 20px;
+}
+
+.chooseStatus{
+  position: absolute;
+  right: 10px;
+  bottom: -5px;
+  font-size: 20px;
 }
 
 .placeZone {
   width: 100%;
-  height: calc(100vh + 12px);
 }
 
 .placeCard {
@@ -218,6 +253,10 @@ export default {
 .placeInfoCard {
   width: 470px;
   height: 90%;
+}
+
+.typeText{
+  margin-top: -20px;
 }
 
 .viewInfo-btn {

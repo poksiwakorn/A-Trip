@@ -1,6 +1,5 @@
 <template>
   <div>
-    
     <div v-if="Mark == 0">
       <GmapMap
         :center="coordinates"
@@ -28,7 +27,7 @@
     </div>
     <div v-else>
       <GmapMap
-        :center="centerPosition"
+        :center="centerPosition[Mark - 1]"
         :zoom="16"
         style=" width: 32vw; height:800px;"
         :options="{
@@ -62,7 +61,7 @@ export default {
         getlat: 0,
         getlng: 0,
       },
-      centerPosition: this.loca[0],
+      centerPosition: this.loca,
       userlocation: [
         {
           lat: 0,
@@ -81,7 +80,9 @@ export default {
         this.userlocation[0].lng = coordinates.lng;
       })
       .catch((error) => alert(error));
+
+    
   },
-  props: ["loca", "Mark"],
+  //props: ["loca", "Mark",],
 };
 </script>

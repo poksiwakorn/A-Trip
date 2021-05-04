@@ -59,9 +59,10 @@ const routes = [
     component: Landing
   },
   {
-    path: '/PlaceInfo',
+    path: '/PlaceInfo/:keyID',
     name: 'PlaceInfo',
-    component: PlaceInfo
+    component: PlaceInfo,
+    props: true
   },
   {
     path: '/TripInfo/:keyID',
@@ -85,9 +86,10 @@ const routes = [
     component: ApprovePlace
   },
   {
-    path: '/ApproveInfo',
+    path: '/ApproveInfo/:keyID',
     name: 'ApproveInfo',
-    component: ApproveInfo
+    component: ApproveInfo,
+    props: true
   }
 ]
 
