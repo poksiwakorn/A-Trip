@@ -248,11 +248,18 @@ export default {
       }
       this.placesInTrip = this.placesInTripTemp;
       this.placesInTripTemp = [];
+      this.location = [];
       for(let i=0;i<this.placesInTrip.length;i++){
         this.location.push({ lat: this.placesInTrip[i].latitude, lng: this.placesInTrip[i].longitude });
       }
       this.$refs.Addmap.clearRoute()
-      this.$refs.Addmap.displayRoute(this.location)
+      const directionsService = new google.maps.DirectionsService();
+      const directionsRenderer = new google.maps.DirectionsRenderer({
+          draggable: true,
+        });
+      console.log(this.placesInTrip.length)
+      console.log(this.location)
+      this.$refs.Addmap.displayRoute(this.location,directionsService,directionsRenderer)
     },
     keyNotUsed: function(keyID){
       var i;

@@ -8,7 +8,7 @@
             <v-card-title class="mx-4">แผนที่</v-card-title>
             <v-card class="mx-10 mb-7">
               <div style="mapPic">
-                <Infomap />
+                <Approvemap v-bind:Lat="this.place.latitude" v-bind:Lng="this.place.longitude" />
               </div>
             </v-card>
             <v-divider class="mx-5"></v-divider>
@@ -93,14 +93,14 @@
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
 import axios from "axios";
-import Infomap from "../components/Infomap.vue";
+import Approvemap from "../components/Approvemap.vue";
 
 export default {
   props: ["keyID"],
   name: "PlaceInfo",
   components: {
     TripBar,
-    Infomap,
+    Approvemap,
   },
 
   data: () => ({
