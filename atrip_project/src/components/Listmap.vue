@@ -16,7 +16,6 @@ export default {
       directionsRenderer: new google.maps.DirectionsRenderer({
         draggable: true,
       }),
-      WP: [],
       coordinates: {
         getlat: 0,
         getlng: 0,
@@ -56,19 +55,24 @@ export default {
 
       // Click on the Map To Mark
     },
-    displayRoute(origin) {
+    displayRoute(origin, service, display) {
+      var WPS =[]
+      display.setMap(null);
       for (let i = 0; i < origin.length; i++) {
         this.removeMarker(origin[i]);
       }
       for (let j = 1; j < origin.length - 1; j++) {
-        this.WP.push({ location: { lat: origin[j].lat, lng: origin[j].lng } });
+        WPS.push({ location: { lat: origin[j].lat, lng: origin[j].lng } });
       }
-     console.log(this.directionsRenderer)
+      this.directionsService= new google.maps.DirectionsService();
+      this.directionsRenderer= new google.maps.DirectionsRenderer({
+        draggable: true,
+      });
       this.directionsService.route(
         {
           origin: origin[0],
           destination: origin[origin.length - 1],
-          waypoints: this.WP,
+          waypoints: WPS,
           travelMode: google.maps.TravelMode.DRIVING,
           avoidTolls: true,
         },
@@ -83,16 +87,10 @@ export default {
       this.directionsRenderer.setMap(this.map);
     },
     clearRoute() {
-      // this.directionsService= new google.maps.DirectionsService();
-      // this.directionsRenderer= new google.maps.DirectionsRenderer({
-      //   draggable: true,
-      // });
-      // this.WP=[];
-      // this.directionsRenderer.setMap(null);
-      // if (this.directionsRenderer != null) {
-      //   this.directionsRenderer.setMap(null);
-      //   this.directionsRenderer = null;
-      // }
+      if (this.directionsRenderer != null) {
+        this.directionsRenderer.setMap(null);
+        this.directionsRenderer = null;
+      }
     },
     addMarker: function(getlat, getlng) {
       var markLatLng = new google.maps.LatLng(getlat, getlng);
