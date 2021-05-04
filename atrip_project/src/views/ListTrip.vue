@@ -213,20 +213,24 @@ export default {
     bestPath: [],
     overlayValue: [],
     mode: "สั้นที่สุด",
-    modes: ["สั้นที่สุด", "จุดเริ่มต้นเดิม","ปลายทางเดิม","เริ่มต้น ปลายทางเดิม"]
+    modes: ["สั้นที่สุด", "จุดเริ่มต้นเดิม","ปลายทางเดิม","เริ่มต้น ปลายทางเดิม"],
+    card: 10,
+    select: 0
   }),
   methods: {
     scroll () {
   window.onscroll = () => {
-    if ((Math.ceil(window.pageYOffset/475) + 2)%10 == 0) {
+    if ((Math.ceil(window.pageYOffset/475) + 2 + this.select)%(this.card) == 0) {
         //console.log(((Math.ceil(window.pageYOffset/475) + 2)));
-        this.callPlaces();
-        console.log(((Math.ceil(window.pageYOffset/475) + 2)/10+1)*10)
+        this.card = this.card + 10;
+        this.callPlaces2();
+        console.log(((Math.ceil(window.pageYOffset/475) + 2 + this.select)/10+1)*10)
     }
  }
 },
 
     addPlace: function(item) {
+      this.select =  this.select + 1;
       this.placesInTrip.push(item); 
       // this.coordinates.push({ lat: item.latitude, lng: item.longitude });
       // for(let i =1;i<this.coordinates.length-1;i++){
@@ -234,6 +238,7 @@ export default {
       // }
     },
     canclePlace: function(index) {
+      this.select =  this.select - 1;
       this.placesInTrip.splice(index, 1);
       //this.coordinates.splice(index, 1); 
     },
@@ -312,11 +317,12 @@ export default {
       return true;
     },
     async callPlaces(){
-      await axios.post("location",{query:"","current": ((Math.ceil(window.pageYOffset/475) + 2)/10+1)*10}).then((res)=>this.places = res.data);
+      await axios.post("location",{query:"","current": ((Math.ceil(window.pageYOffset/475) + 2)/10)*10}).then((res)=>this.places = res.data);
       console.log(this.places);
     },
     async callPlaces2(){
-      await axios.post("location",{query:"","current": ((Math.ceil(window.pageYOffset/475) + 2)/10+1)*10}).then((res)=>{console.log(res.data);});
+      await axios.post("location",{query:"","current": ((Math.ceil(window.pageYOffset/475) + 2+this.select)/10)*10}).then((res)=>this.places = this.places.concat(res.data));
+      console.log(this.places);
     },
     async callProvinces(){
       await axios.get("province").then((res)=>this.provinces = res.data);
