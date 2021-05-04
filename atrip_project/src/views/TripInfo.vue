@@ -110,9 +110,9 @@ export default {
       this.$router.push("/PlaceInfo/" + keyID);
     },
     async getInfo(){
-      console.log(this.keyID);
       await axios.get("tripInfo/" + this.keyID).then((res)=>this.trip = res.data[0]);
       await axios.post("getPlace",{place : this.trip.placeList}).then((res) => this.places = res.data);
+      console.log(this.trip)
     }
   },
   created: function(){

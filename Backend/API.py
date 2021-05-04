@@ -33,34 +33,34 @@ def register():
     # Output message if something goes wrong...
     form = {'result' : False,'msg' : ''}
     content = request.get_json()
-    print("get in stage 1")
+    # print("get in stage 1")
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
     if request.method == 'POST' and content['username'] and content['password'] and content['email'] and content['firstname'] and content['lastname']:
         # Create variables for easy access
 
-        print("get in stage 2")
+        # print("get in stage 2")
         username = content['username']
         password = content['password']
         email = content['email']
         firstname = content['firstname']
         lastname = content['lastname']
-        print("username =",username,"password",password,"email",email)
+        # print("username =",username,"password",password,"email",email)
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM Atrip_Users WHERE BINARY Username = %s or email = %s', (username,email))
         account = cursor.fetchone()
         # If account exists show error and validation checks
         if account:
             form['msg'] = 'Account already exists!'
-            print('Account already exists!')
+            # print('Account already exists!')
         elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
             form['msg'] = 'Invalid email address!'
-            print('Invalid email address!')
+            # print('Invalid email address!')
         elif not re.match(r'[A-Za-z0-9]+', username):
             form['msg'] = 'Username must contain only characters and numbers!'
-            print('Username must contain only characters and numbers!')
+            # print('Username must contain only characters and numbers!')
         elif not username or not password or not email:
             form['msg'] = 'Please fill out the form!'
-            print('Please fill out the form!')
+            # print('Please fill out the form!')
         else:
             # Account doesnt exists and the form data is valid, now insert new account into accounts table
             cursor.execute('INSERT INTO Atrip_Users (username,password,email,role,FirstName,LastName,Nickname) VALUES (%s, %s, %s, %s, %s, %s, %s ,%s)', (username, password, email,"user",firstname,lastname,username))
@@ -70,10 +70,10 @@ def register():
             print('You have successfully registered!')
     elif request.method == 'POST':
         # Form is empty... (no POST data)
-        print("get in stage 3")
+        # print("get in stage 3")
         form['msg'] = 'Please fill out the form!'
     # Show registration form with message (if any)
-    print(jsonify(form))
+    # print(jsonify(form))
     return jsonify(form)
 
 @app.route("/login", methods = ['POST'])
@@ -116,7 +116,7 @@ def login():
     # Show the login form with message (if any)
         else:
             form['msg'] = 'Please fill out the form!'
-        print(form)
+        # print(form)
         return jsonify(form)
 
 @app.route("/location", methods = ['GET', 'POST'])
@@ -130,7 +130,7 @@ def location():
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
-            print(account[i])
+            # print(account[i])
     return jsonify(account)
 
 @app.route("/approvelocation", methods = ['GET', 'POST'])
@@ -170,7 +170,7 @@ def trip():
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username FROM Atrip_Trips INNER JOIN Atrip_Users where (Atrip_Trips.ownerID = Atrip_Users.ID) and permission = "public" ORDER BY keyID')
             account = cursor.fetchall()
-            print(account)
+            # print(account)
     return jsonify(account)
 
 @app.route("/province", methods = ['GET'])
@@ -180,7 +180,7 @@ def province():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM Atrip_Provinces ORDER BY keyID')
         account = cursor.fetchall()
-        print(account)
+        # print(account)
     return jsonify(account)
 
 @app.route("/tripInfo/<keyID>", methods = ['GET'])
@@ -188,9 +188,9 @@ def province():
 def tripInfo(keyID):
     if request.method == 'GET':
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM Atrip_Trips WHERE keyID = %s',[keyID])
+        cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username FROM Atrip_Trips INNER JOIN Atrip_Users where (Atrip_Trips.ownerID = Atrip_Users.ID) and keyID = %s',[keyID])
         account = cursor.fetchall()
-        print(account)
+        # print(account)
     return jsonify(account)
 
 @app.route("/placeInfo/<keyID>", methods = ['GET'])
@@ -198,11 +198,11 @@ def tripInfo(keyID):
 def placeInfo(keyID):
     if request.method == 'GET':
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM Atrip_Places WHERE keyID = %s',[keyID])
+        cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where (Atrip_Places.ownerID = Atrip_Users.ID) and (keyID = %s)',[keyID])
         account = cursor.fetchall()
         for i in range(0,len(account),1):
             account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
-        print(account)
+        # print(account)
     return jsonify(account)
 
 
@@ -211,13 +211,13 @@ def placeInfo(keyID):
 def getPlace():
     if request.method == 'POST':
         content = request.get_json()
-        print(content["place"])
-        print(len(content["place"]))
+        # print(content["place"])
+        # print(len(content["place"]))
         if content["place"]:
             contentinput = content["place"].split(",")
-            print(contentinput)
+            # print(contentinput)
             form = "SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID and keyID = " + " or keyID = ".join(contentinput)
-            print(form)
+            # print(form)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(form)
             account = cursor.fetchall()
@@ -232,12 +232,12 @@ def getPlace():
 def getTrip():
     if request.method == 'POST':
         content = request.get_json()
-        print(content["trip"])
-        print(len(content["trip"]))
+        # print(content["trip"])
+        # print(len(content["trip"]))
         if content["trip"]:
             contentinput = content["trip"].split(",")
             form = "SELECT * FROM Atrip_Trips WHERE keyID = " + " or keyID = ".join(contentinput)
-            print(form)
+            # print(form)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(form)
             account = cursor.fetchall()
@@ -251,13 +251,13 @@ def addLocation():
     form = {"isSuccess" : False , "msg" : ""}
     if request.method == 'POST':
         content = request.get_json()
-        print(content)
+        # print(content)
         if content["placeName"]:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('SELECT nameTH FROM Atrip_Places WHERE nameTH = %s',[content["placeName"]])
             account = cursor.fetchone()
             if account:
-                print("enter")
+                # print("enter")
                 form["isSuccess"] = False
                 form["msg"] = "Already have data"
             else:
@@ -276,7 +276,7 @@ def makeTrip():
     form = {"isSuccess" : False , "msg" : ""}
     if request.method == 'POST':
         content = request.get_json()
-        print(content)
+        # print(content)
         if content['userID'] and content["tripName"] and content["placesInTrip"]:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute("SELECT * from Atrip_Trips where nameTH = %s",[content['tripName']])
@@ -292,7 +292,7 @@ def makeTrip():
             sqlform = "SELECT DISTINCT provinceTH FROM Atrip_Places WHERE keyID = " + " or keyID = ".join(qkey)
             cursor.execute(sqlform)
             account = cursor.fetchall()
-            print(account)
+            # print(account)
             sqlprovince = ""
             for i in range(len(account)):
                 sqlprovince = sqlprovince + account[i]["provinceTH"] + ","
@@ -311,7 +311,7 @@ def makeTrip():
 def myTrip():
     if request.method == 'POST':
         content = request.get_json()
-        print(content)
+        # print(content)
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username FROM Atrip_Trips INNER JOIN Atrip_Users where (Atrip_Trips.ownerID = Atrip_Users.ID) and ownerID = %s ORDER BY keyID',[content["id"]])
@@ -326,7 +326,7 @@ def myTrip():
                     placename = placename + j["nameTH"] + ","
                 placename = placename[0:len(placename)-1]
                 data[i]["placeList"] = placename
-            print(data)
+            # print(data)
 
     return jsonify(data)
 
