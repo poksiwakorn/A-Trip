@@ -273,7 +273,7 @@ def trip():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image,Love FROM Atrip_Trips INNER JOIN Atrip_Users on Atrip_Trips.ownerID = Atrip_Users.ID where status = "สาธารณะ" ORDER BY keyID')
+            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image,Atrip_Trips.Love FROM Atrip_Trips INNER JOIN Atrip_Users on Atrip_Trips.ownerID = Atrip_Users.ID where status = "สาธารณะ" ORDER BY keyID')
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["image"] = account[i]["image"].decode("utf-8")
