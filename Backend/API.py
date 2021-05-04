@@ -13,7 +13,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 import googlemaps
-from findRoute import *
+from findRoute import allResults,sortResult
 
 app = Flask(__name__)
 app.secret_key = 'SoftDev'
@@ -120,7 +120,7 @@ def editData():
 def login():
     # Output message if something goes wrong...
     # Check if "username" and "password" POST requests exist (user submitted form)
-    form = {'id' : "",'Username' : "", 'FirstName' : "", 'LastName' : "" , 'Nickname' : "" , "Email" : "" , "Tel" : "" ,"Tag" : "","Rating" : "","Checkin" : "","Favorite" : "","Role" : "","Picture" : "","msg" : ""}
+    form = {'id' : "",'Username' : "", 'FirstName' : "", 'LastName' : "" , 'Nickname' : "" , "Email" : "" , "Tel" : "" ,"Tag" : "","Love" : "","Checkin" : "","Favorite" : "","Role" : "","Picture" : "","msg" : ""}
     if request.method == 'POST':
         content = request.get_json()
         username = content['username']
@@ -144,7 +144,7 @@ def login():
                     form['Email'] = account['Email']
                     form['Tel'] = account['Tel']
                     form['Tag'] = account['Tag']
-                    form['Rating'] = account['Rating']
+                    form['Love'] = account['Love'].split(",")
                     form['Checkin'] = account['Checkin']
                     form['Favorite'] = account['Favorite']
                     form['Role'] = account['Role']
@@ -168,7 +168,11 @@ def location():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID ORDER BY keyID')
+            print(content["current"])
+            if int(content["current"]) < 10:
+                cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID ORDER BY keyID LIMIT 10')
+            else:
+                cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID ORDER BY keyID LIMIT %s',[content["current"]])
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
@@ -211,12 +215,18 @@ def saveTrip():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute("SELECT Favorite from Atrip_Users where ID = %s",[content["id"]])
         account = cursor.fetchone()
-        print(content)
-        print(account)
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT ownerID from Atrip_Trips where keyID = %s",[content["key"]])
+        check = cursor.fetchone()
+        print(check,content["id"])
+        if (str(check["ownerID"]) == str(content["id"])):
+            return jsonify({"msg" : "You can't choose your trip as favorite"})
+        # print(content)
+        # print(account)
         if (account["Favorite"]):
-            print("Enter")
+            # print("Enter")
             favorite = account["Favorite"].split(",")
-            print(favorite)
+            # print(favorite)
             if str(content['key']) in favorite:
                 return jsonify({"msg" : "Already has Data"})
             account["Favorite"] = account["Favorite"] + "," + str(content['key'])
@@ -227,6 +237,39 @@ def saveTrip():
         mysql.connection.commit()
         return jsonify({"msg" : "success"})
 
+@app.route("/likeTrip", methods = ['GET', 'POST'])
+@cross_origin()
+def likeTrip():
+    if request.method == 'POST':
+        content = request.get_json()
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT Love from Atrip_Users where ID = %s",[content["id"]])
+        account = cursor.fetchone()
+        if (account["Love"]):
+            favorite = account["Love"].split(",")
+            if str(content['key']) in favorite:
+                love = account["Love"].split(",")
+                love.remove(str(content["key"]))
+                love = ",".join(love)
+                cursor.execute('Update Atrip_Users set Love = %s where ID = %s',(love,content["id"]))
+                mysql.connection.commit()
+                cursor.execute('Update Atrip_Trips set Love = Love-1 where keyID = %s',[content["key"]])
+                mysql.connection.commit()
+                return jsonify({"msg" : "success","love" : love.split(",")})
+            account["Love"] = account["Love"] + "," + str(content['key'])
+            cursor.execute('Update Atrip_Users set Love = %s where ID = %s',(account["Love"],content["id"]))
+            mysql.connection.commit()
+            cursor.execute('Update Atrip_Trips set Love = Love+1 where keyID = %s',[content["key"]])
+            mysql.connection.commit()
+            return jsonify({"msg" : "success","love" : account["Love"].split(",")})
+        cursor.execute('Update Atrip_Users set Love = %s where ID = %s',(content['key'],content["id"]))
+        mysql.connection.commit()
+        cursor.execute('Update Atrip_Trips set Love = Love+1 where keyID = %s',[content["key"]])
+        mysql.connection.commit()
+        return jsonify({"msg" : "success","love" : [int(content['key'])]})
+
+
+
 @app.route("/trip", methods = ['GET', 'POST'])
 @cross_origin()
 def trip():
@@ -234,7 +277,7 @@ def trip():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image FROM Atrip_Trips INNER JOIN Atrip_Users on Atrip_Trips.ownerID = Atrip_Users.ID where status = "สาธารณะ" ORDER BY keyID')
+            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image,Atrip_Trips.Love FROM Atrip_Trips INNER JOIN Atrip_Users on Atrip_Trips.ownerID = Atrip_Users.ID where status = "สาธารณะ" ORDER BY keyID')
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["image"] = account[i]["image"].decode("utf-8")
@@ -261,8 +304,6 @@ def tripInfo(keyID):
         return jsonify(account)
     elif request.method == 'POST':
         content = request.get_json()
-        print(content["description"])
-        print(content["status"])
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('Update Atrip_Trips set description = %s,status = %s where keyID = %s',(content["description"],content["status"],keyID))
         mysql.connection.commit()
@@ -294,9 +335,8 @@ def getPlace():
             # print(contentinput)
             form = "SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username,CASE keyID "#FROM Atrip_Places INNER JOIN Atrip_Users where (Atrip_Places.ownerID = Atrip_Users.ID) and (keyID = " + " or keyID = ".join(contentinput) + ")" + " order by case keyID"
             for i in range(0,len(contentinput),1):
-                form = form + " WHEN " + contentinput[i] + " THEN " + str(i)
+                form = form + " WHEN " + contentinput[i] + " THEN " + str(i+1)
             form = form + " END AS sortOrder FROM Atrip_Places INNER JOIN Atrip_Users where (Atrip_Places.ownerID = Atrip_Users.ID) and (keyID = " + " or keyID = ".join(contentinput) + ")" + " order by sortOrder"
-            print(form)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(form)
             account = cursor.fetchall()
@@ -423,9 +463,22 @@ def deleteTrip():
     if request.method == 'POST':
         content = request.get_json()
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('Delete from Atrip_Trips where keyID = %s',[content["keyID"]])
-        mysql.connection.commit()
-    return jsonify({"msg" : "success"})
+        cursor.execute("SELECT ownerID from Atrip_Trips where keyID = %s",[content["keyID"]])
+        check = cursor.fetchone()
+        if (str(check["ownerID"]) == str(content["id"])):
+            cursor.execute('Delete from Atrip_Trips where keyID = %s',[content["keyID"]])
+            mysql.connection.commit()
+            return jsonify({"msg" : "Success remove Trip"})
+        else:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("SELECT Favorite from Atrip_Users where ID = %s",[content["id"]])
+            account = cursor.fetchone()
+            favorite = account["Favorite"].split(",")
+            favorite.remove(str(content["keyID"]))
+            favorite = ",".join(favorite)
+            cursor.execute('Update Atrip_Users set Favorite = %s where ID = %s',(favorite,content["id"]))
+            mysql.connection.commit()
+            return jsonify({"msg" : "Success remove from favorite"})
 
 @app.route("/makeRoute", methods = ['GET', 'POST'])
 @cross_origin()
