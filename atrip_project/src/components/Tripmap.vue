@@ -38,11 +38,13 @@ export default {
       })
       .catch((error) => alert(error));
   },
-
+    // mounted() {
+    //     this.initMap();
+    // },
   methods: {
     initMap() {
       this.map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: this.recenter[0].lat, lng: this.recenter[0].lng },
+        center: { lat: 0, lng: 0 },
         zoom: 12,
         mapTypeID: google.maps.MapTypeId.ROADMAP,
         zoomControl: false,
@@ -58,9 +60,6 @@ export default {
     },
     displayRoute(origin) {
       var WPS =[]
-      for (let i = 0; i < origin.length; i++) {
-        this.removeMarker(origin[i]);
-      }
       for (let j = 1; j < origin.length - 1; j++) {
         WPS.push({ location: { lat: origin[j].lat, lng: origin[j].lng } });
       }
@@ -95,6 +94,12 @@ export default {
     moveToLocation(lat, lng) {
       const center = new google.maps.LatLng(lat, lng);
       this.map.panTo(center);
+    },
+    getuserlat() {
+      return this.recenter[0].lat
+    },
+    getuserlng() {
+      return this.recenter[0].lng
     },
   },
 };
