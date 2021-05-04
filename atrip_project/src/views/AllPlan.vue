@@ -164,8 +164,14 @@ export default {
       })
       this.$router.push("/Account");
     },
-    likeTrip(keyID) {
-      
+    async likeTrip(keyID) {
+      await axios.post("/likeTrip",{"key" : keyID,"id" : this.$store.getters.StateID}).then(res => {
+        if (res.data.msg == "success"){
+          this.$store.dispatch("addLove",res.data.love);
+        }
+        console.log(this.$store.getters.StateLove)
+        alert(res.data.msg)
+      })
     },
     async callTrips() {
       await axios
