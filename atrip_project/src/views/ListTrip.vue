@@ -131,7 +131,7 @@
               <v-row>
                 <v-btn text class="makeTripButton" @click="placesInTrip.length >= 2 ? makeTrip() : makeFail()">สร้างทริป</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn text class="updateButton" @click="makeRoute()">สร้างเส้นทาง</v-btn>
+                <v-btn text class="updateButton"  @click="makeRoute() ">สร้างเส้นทาง</v-btn>
               </v-row>
             </v-form>
           </v-card>
@@ -179,14 +179,17 @@ export default {
     TripBar,
     Listmap,
   },
-
   data: () => ({
     overlay: false,
-    types: ["ทั้งหมด","จุดชมวิว","ดอย","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ"],
+    types: ["ทั้งหมด","จุดชมวิว","ดอย","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ", "อื่นๆ"],
     typeValue: "ทั้งหมด",
     provinces: [],
     provinceNames: ["ทั้งหมด"],
     provinceValue: "ทั้งหมด",
+    location: [
+      
+    ],
+    waypoints:[],
     typeGroup: 0,
     tripName: "",
     placesInTrip: [],
@@ -198,9 +201,14 @@ export default {
   methods: {
     addPlace: function(item) {
       this.placesInTrip.push(item); 
+      // this.coordinates.push({ lat: item.latitude, lng: item.longitude });
+      // for(let i =1;i<this.coordinates.length-1;i++){
+      //   this.waypoints.push(this.coordinates[i])
+      // }
     },
     canclePlace: function(index) {
-      this.placesInTrip.splice(index, 1); 
+      this.placesInTrip.splice(index, 1);
+      //this.coordinates.splice(index, 1); 
     },
     getItem: function(items, item) {
       for (var i = 0; i < items.length; i++) {
@@ -217,6 +225,7 @@ export default {
       this.$router.push("/PlaceInfo/" + keyID);
     },
     async makeTrip (){
+      console.log(this.placesInTrip)
       await axios.post("makeTrip",{"userID": this.$store.getters.StateID , "tripName": this.tripName, "placesInTrip": this.placesInTrip})
       .then((res)=>{
         alert(res.data.msg)
@@ -242,6 +251,11 @@ export default {
       this.placesInTrip = this.placesInTripTemp;
       this.placesInTripTemp = [];
       alert("Update Route");
+      for(let i=0;i<this.placesInTrip.length;i++){
+        this.location.push({ lat: this.placesInTrip[i].latitude, lng: this.placesInTrip[i].longitude });
+      }
+      this.$refs.Addmap.clearRoute()
+      this.$refs.Addmap.displayRoute(this.location)
     },
     keyNotUsed: function(keyID){
       var i;

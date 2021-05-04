@@ -39,7 +39,7 @@
                     && (trip.nameTH.includes(tripNameValue) || tripNameValue == 'ทั้งหมด')"
               class="tripCard"
             >
-              <v-img src="../assets/temple1.jpg" height="200px"></v-img>
+              <v-img :src="trip.image" height="200px"></v-img>
               <v-card-title>
                 {{ trip.nameTH }}
                 <v-spacer></v-spacer>
@@ -88,7 +88,7 @@
               >รายละเอียดสถานที่</v-card-text
             >
             <v-card-text>
-              {{ trips[0] }}
+              <!-- {{ trips[0] }} -->
             </v-card-text>
             <v-btn color="#FF9100" text class="viewPlace-btn ma-2"
               >ข้อมูลเพิ่มเติม</v-btn

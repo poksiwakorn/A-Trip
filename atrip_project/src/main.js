@@ -20,7 +20,7 @@ Vue.use(VueGeolocation)
 Vue.config.productionTip = false
 Vue.use(VueGoogleMaps, {
   load: {
-    key: 'AIzaSyCIHRdrSY885ctMMj_cvL-Ga69IktvnLs0',
+    key: 'AIzaSyBh0haGGTrLgx7cGPivED1RaqBLMni9nlo',
     //libraries: 'places', // This is required if you use the Autocomplete plugin
     // OR: libraries: 'places,drawing'
     // OR: libraries: 'places,drawing,visualization'

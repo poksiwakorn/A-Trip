@@ -16,7 +16,7 @@
             <v-btn class="editProfile-btn white--text" 
                     width="40%" height="50px" 
                     style="font-size: 27px;" color="#FF9100"
-                    @click="overlay = !overlay">
+                    @click="profileOverlay = !profileOverlay">
               แก้ไขโปรไฟล์
               <v-icon class="ml-3" size = "30px">mdi-account-edit-outline</v-icon>
             </v-btn>
@@ -36,9 +36,9 @@
                 class="savedTripSlide"
               >
                 <v-card class="oneTripCard mx-3" @click="toggle">
-                  <v-img src = "../assets/temple1.jpg" height="200px">
+                  <v-img :src = "trip.image" height="200px">
                     <v-scale-transition>
-                      <v-btn v-if="active" text fab size="35px" class="deleteTrip-btn ma-2" @click="deleteTrip(i)">
+                      <v-btn v-if="active" text fab size="35px" class="deleteTrip-btn ma-2" @click="selectDelete(i,trip.keyID)">
                         <v-icon color = "error" size="45">mdi-close-circle-outline</v-icon>
                       </v-btn>
                     </v-scale-transition>
@@ -46,7 +46,13 @@
                     <v-card-title>
                       {{trip.nameTH}}
                     </v-card-title>                    
-                    <v-card-subtitle>{{trip.Username}}</v-card-subtitle>
+                    <v-card-title class="subTitle">
+                      {{trip.Username}}
+                      <v-spacer></v-spacer>
+                      <v-chip class="mx-2" color="#FF9100" outlined>
+                        {{trip.status}}
+                      </v-chip>
+                    </v-card-title>
                     <v-divider class="mx-5"></v-divider>
                     <v-card-title class="placeTitle black--text">สถานที่ภายในทริป<v-card-subtitle class="mt-1">{{trip.numPlace}} สถานที่</v-card-subtitle></v-card-title>
                     <v-row
@@ -72,7 +78,7 @@
       </v-row>
       <v-overlay
         :z-index=0
-        :value="overlay"
+        :value="profileOverlay"
       >
         <v-card class="editCard">
           <v-card-title class="white--text" style="font-size: 30px;">
@@ -81,7 +87,7 @@
             <v-btn
               class="white--text"
               color="error"
-              @click="overlay = false"
+              @click="profileOverlay = false"
             >
               X
             </v-btn>
@@ -96,6 +102,33 @@
               style="font-color: black; width: 200px; margin-left: 50px; color: black;"
               width="200px"
             ></v-text-field>
+          </v-row>
+        </v-card>
+      </v-overlay>
+
+      <v-overlay
+        :z-index=0
+        :value="tripOverlay"
+      >
+        <v-card>
+          <v-card-title class="white--text" style="font-size: 30px;">
+            ต้องการลบทริป ใช่หรือไม่
+          </v-card-title>
+          <v-row justify="center" style="margin-top: 10px; margin-bottom: 10px;">
+            <v-btn
+              class="white--text"
+              color="green"
+              @click="deleteTrip()"
+            >
+              ยืนยัน
+            </v-btn>
+            <v-btn
+              class="white--text"
+              color="error"
+              @click="tripOverlay = false"
+            >
+              ยกเลิก
+            </v-btn>
           </v-row>
         </v-card>
       </v-overlay>
@@ -117,20 +150,29 @@ export default {
   data: () => ({
     savedTrips: [],
     tripName: "",
-    overlay: false,
-    nickname: "myNickName"
+    profileOverlay: false,
+    tripOverlay: false,
+    nickname: "myNickName",
+    selectIndex: "",
+    selectID: ""
   }),
 
   methods: {
-    deleteTrip: function(index){
-      this.savedTrips.splice(index,1);
+    selectDelete(index,keyID){
+      this.tripOverlay = !this.tripOverlay;
+      this.selectIndex = index;
+      this.selectID = keyID;
+    },
+    deleteTrip: async function(){
+      this.savedTrips.splice(this.selectIndex,1);
+      await axios.post("/deleteTrip",{"keyID" : this.selectID}).then((res) => alert(res.data.msg))
+      this.tripOverlay = false;
     },
     goTripInfo(keyID){
       this.$router.push("/TripInfo/" + keyID);
     },
     async callTrips(){
       await axios.post("myTrip",{"query":"","id" : this.$store.getters.StateID}).then((res)=>this.savedTrips = res.data);
-      console.log(this.savedTrips)
     },
   },
   created: function(){
@@ -207,6 +249,13 @@ export default {
     width: 370px;
     height: 650px;
     border-radius: 30px;
+  }
+
+  .subTitle{
+    font-size: 17px;
+    font-weight: 400;
+    color: grey;
+    margin-top: -25px;
   }
 
   .deleteTrip-btn{

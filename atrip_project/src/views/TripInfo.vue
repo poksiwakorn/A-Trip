@@ -30,7 +30,7 @@
                 <v-textarea v-if="this.$store.getters.StateUsername == this.trip.Username"
                             v-model = "description" filled label="ข้อมูลทริปเพิ่มเติม" height="250px" class="mr-2"></v-textarea>
                 <v-card-text v-else class="tripText">
-                    {{ describe }}
+                    {{description}}
                 </v-card-text>
                 <v-btn v-if="this.$store.getters.StateUsername == this.trip.Username" 
                     color="#FF9100" outlined class="saveTrip-btn ma-2" @click="saveChangeTrip">
@@ -122,14 +122,18 @@ export default {
     goPlaceInfo(keyID){
       this.$router.push("/PlaceInfo/" + keyID);
     },
-    saveChangeTrip(){
-      alert("Save Change in Trip")
-      this.$router.push("/Account");
+    async saveChangeTrip(){
+      await axios.post("tripInfo/" + this.keyID,{"description" : this.description , "status" : this.status}).then((res) => {
+        alert(res.data.msg)
+        this.$router.push("/Account");
+      })
     },
     async getInfo(){
       await axios.get("tripInfo/" + this.keyID).then((res)=>this.trip = res.data[0]);
       await axios.post("getPlace",{place : this.trip.placeList}).then((res) => this.places = res.data);
       console.log(this.trip)
+      this.status = this.trip.status;
+      this.description = this.trip.description;
     }
   },
   created: function(){
