@@ -144,7 +144,7 @@ def login():
                     form['Email'] = account['Email']
                     form['Tel'] = account['Tel']
                     form['Tag'] = account['Tag']
-                    form['Love'] = account['Love']
+                    form['Love'] = account['Love'].split(",")
                     form['Checkin'] = account['Checkin']
                     form['Favorite'] = account['Favorite']
                     form['Role'] = account['Role']
@@ -241,20 +241,30 @@ def likeTrip():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute("SELECT Love from Atrip_Users where ID = %s",[content["id"]])
         account = cursor.fetchone()
-        # print(account)
         if (account["Love"]):
-            # print("Enter")
             favorite = account["Love"].split(",")
-            # print(favorite)
             if str(content['key']) in favorite:
-                return jsonify({"msg" : "Already like"})
+                love = account["Love"].split(",")
+                love.remove(str(content["key"]))
+                love = ",".join(love)
+                cursor.execute('Update Atrip_Users set Love = %s where ID = %s',(love,content["id"]))
+                mysql.connection.commit()
+                cursor.execute('Update Atrip_Trips set Love = Love-1 where keyID = %s',[content["key"]])
+                mysql.connection.commit()
+                return jsonify({"msg" : "success","love" : account["Love"].split(",")})
             account["Love"] = account["Love"] + "," + str(content['key'])
             cursor.execute('Update Atrip_Users set Love = %s where ID = %s',(account["Love"],content["id"]))
+            mysql.connection.commit()
+            cursor.execute('Update Atrip_Trips set Love = Love+1 where keyID = %s',[content["key"]])
             mysql.connection.commit()
             return jsonify({"msg" : "success","love" : account["Love"].split(",")})
         cursor.execute('Update Atrip_Users set Love = %s where ID = %s',(content['key'],content["id"]))
         mysql.connection.commit()
+        cursor.execute('Update Atrip_Trips set Love = Love+1 where keyID = %s',[content["key"]])
+        mysql.connection.commit()
         return jsonify({"msg" : "success","love" : [int(content['key'])]})
+
+
 
 @app.route("/trip", methods = ['GET', 'POST'])
 @cross_origin()
