@@ -223,19 +223,19 @@ export default {
       this.placesInTrip.splice(index, 1);
       //this.coordinates.splice(index, 1); 
     },
-    notLong: function(tripName) {
+    notLong: function(placeName) {
       var reserve = ['ิ','ี','ึ','ื','ุ','ู','ั','่','้','๊','๋','็','์'];
       var i;
       var count = 0;
-      for(i=0;i<tripName.length;i++){
-        if(!reserve.includes(tripName[i])){
+      for(i=0;i<placeName.length;i++){
+        if(!reserve.includes(placeName[i])){
           count += 1;
         }
       }
       if(count > 25){
-        tripName = tripName.slice(0,22+tripName.length-count) + "...";
+        placeName = placeName.slice(0,22+placeName.length-count) + "...";
       }
-      return tripName;
+      return placeName;
     },
     getItem: function(items, item) {
       for (var i = 0; i < items.length; i++) {
@@ -257,7 +257,9 @@ export default {
       .then((res)=>{
         alert(res.data.msg)
         })
+      this.tripName = "";
       this.placesInTrip = []; 
+      this.$refs.Addmap.clearRoute()
     },
     makeFail: function(){
       alert("Add Fail");
