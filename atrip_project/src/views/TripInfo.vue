@@ -9,8 +9,10 @@
             <v-divider></v-divider>
             <v-card-title class="tripTitle">
               {{ trip.nameTH }}
-              <v-row>
-                <v-spacer></v-spacer>
+            </v-card-title>
+            <v-card-title class="tripSubTitle">
+              {{trip.Username}}
+              <v-spacer></v-spacer>
                 <v-chip-group class="ma-2">
                   <v-chip
                     v-for="province in trip.provinceTH_List.split(',')"
@@ -20,11 +22,7 @@
                     >{{province}}</v-chip
                   >
                 </v-chip-group>
-              </v-row>
             </v-card-title>
-            <v-card-subtitle class="tripSubTitle mt-1 ml-1">
-              {{trip.Username}}
-            </v-card-subtitle>
             <v-divider class="mx-2" style="margin-top: -10px;"></v-divider>
             <v-col class="pb-15">
                 <v-textarea v-if="this.$store.getters.StateUsername == this.trip.Username"
@@ -179,14 +177,17 @@ export default {
 }
 
 .tripTitle {
-  margin-top: 10px;
+  margin-top: 20px;
   font-size: 45px;
   font-weight: 300;
 }
 
 .tripSubTitle {
+  margin-left: 5px;
+  margin-top: -20px;
   font-size: 20px;
   font-weight: 450;
+  color: rgba(255, 153, 0, 0.822);
 }
 
 .tripText {

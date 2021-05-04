@@ -80,7 +80,16 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
-              <v-card-subtitle>เลือกมาอย่างน้อย 2 สถานที่</v-card-subtitle>
+              <v-card-title class="subTitle">
+                เลือกสถานที่ 3 ถึง 7 สถานที่
+                <v-spacer></v-spacer>
+                <v-autocomplete
+                  v-model="mode"
+                  :items="modes"
+                  class="chooseMode"
+                  color="orange"
+                ></v-autocomplete>
+              </v-card-title>
               <v-card class="scrollCard">
                 <v-virtual-scroll
                   page-mode
@@ -196,7 +205,9 @@ export default {
     places: [],
     placesInTripTemp: [],
     bestPath: [],
-    overlayValue: []
+    overlayValue: [],
+    mode: "สั้นที่สุด",
+    modes: ["สั้นที่สุด", "จุดเริ่มต้นเดิม","ปลายทางเดิม","เริ่มต้น ปลายทางเดิม"]
   }),
   methods: {
     addPlace: function(item) {
@@ -236,7 +247,7 @@ export default {
       alert("Add Fail");
     },
     async makeRoute (){
-      await axios.post("makeRoute",{"placesInTrip": this.placesInTrip}).then((res)=>this.bestPath = res.data['results'][0]);
+      await axios.post("makeRoute",{"placesInTrip": this.placesInTrip,"command": ""}).then((res)=>this.bestPath = res.data['results1'][0]);
       // Update Route //
       this.updateRoute();
     },
@@ -331,6 +342,19 @@ export default {
 .yourTripTitle {
   background-color: #faae4b;
   font-size: 35px;
+}
+
+.subTitle{
+  font-size: 17px;
+  font-weight: 400;
+  color: grey;
+  margin-top: -25px;
+}
+
+.chooseMode{
+  margin-left: 50px;
+  margin-right: 35px;
+  margin-top: 0px;
 }
 
 .numberCard {
