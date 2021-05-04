@@ -1,47 +1,69 @@
 <template>
   <v-content>
     <TripBar />
+
     <div class="TripInfo">
       <v-row>
         <v-col cols="5" class="tripZone">
           <v-card class="tripCard">
-            <v-img :src="places[0].pictureURL" class="tripPic"></v-img>
+            <v-img
+              :src="places[0].pictureURL"
+              class="tripPic"
+              v-if="showed"
+            ></v-img>
+            <Tripmap class="hidemap" v-if="showed" ref="Tripmap" />
+            <Tripmap v-if="!showed" ref="Tripmap" />
+
             <v-divider></v-divider>
             <v-card-title class="tripTitle">
               {{ trip.nameTH }}
             </v-card-title>
+
             <v-card-title class="tripSubTitle">
-              {{trip.Username}}
+              {{ trip.Username }}
               <v-spacer></v-spacer>
-                <v-chip-group class="ma-2">
-                  <v-chip
-                    v-for="province in trip.provinceTH_List.split(',')"
-                    :key="province"
-                    color="#FF9100"
-                    outlined
-                    >{{province}}</v-chip
-                  >
-                </v-chip-group>
+              <v-chip-group class="ma-2">
+                <v-chip
+                  v-for="province in trip.provinceTH_List.split(',')"
+                  :key="province"
+                  color="#FF9100"
+                  outlined
+                  >{{ province }}</v-chip
+                >
+                <v-chip color="#67A272" outlined @click="(showed = !showed), Showmap(),updateURL()" >แสดงแผนที่</v-chip>
+                <v-chip color="#67A272" outlined v-if="!showed"><a v-bind:href="mapURL" target="_blank" rel="noopener">เริ่มเดินทาง</a></v-chip>
+              </v-chip-group>
             </v-card-title>
             <v-divider class="mx-2" style="margin-top: -10px;"></v-divider>
             <v-col class="pb-15">
-                <v-textarea v-if="this.$store.getters.StateUsername == this.trip.Username"
-                            v-model = "description" filled label="ข้อมูลทริปเพิ่มเติม" height="250px" class="mr-2"></v-textarea>
-                <v-card-text v-else class="tripText">
-                    {{description}}
-                </v-card-text>
-                <v-btn v-if="this.$store.getters.StateUsername == this.trip.Username" 
-                    color="#FF9100" outlined class="saveTrip-btn ma-2" @click="saveChangeTrip">
-                    บันทึก
-                    <v-icon class="ml-2">mdi-content-save</v-icon>
-                </v-btn>
-                <v-select
-                  v-if="this.$store.getters.StateUsername == this.trip.Username"
-                  v-model="status"
-                  :items="allStatus"
-                  label="สถานะ"
-                  class="chooseStatus ma-2"
-                ></v-select>
+              <v-textarea
+                v-if="this.$store.getters.StateUsername == this.trip.Username"
+                v-model="description"
+                filled
+                label="ข้อมูลทริปเพิ่มเติม"
+                height="250px"
+                class="mr-2"
+              ></v-textarea>
+              <v-card-text v-else class="tripText">
+                {{ description }}
+              </v-card-text>
+              <v-btn
+                v-if="this.$store.getters.StateUsername == this.trip.Username"
+                color="#FF9100"
+                outlined
+                class="saveTrip-btn ma-2"
+                @click="saveChangeTrip"
+              >
+                บันทึก
+                <v-icon class="ml-2">mdi-content-save</v-icon>
+              </v-btn>
+              <v-select
+                v-if="this.$store.getters.StateUsername == this.trip.Username"
+                v-model="status"
+                :items="allStatus"
+                label="สถานะ"
+                class="chooseStatus ma-2"
+              ></v-select>
             </v-col>
           </v-card>
         </v-col>
@@ -66,19 +88,33 @@
                   </v-col>
                   <v-col>
                     <v-card class="placeInfoCard">
-                      <v-card-title class="ml-2" style="font-weight: 400; font-size: 20px;">
+                      <v-card-title
+                        class="ml-2"
+                        style="font-weight: 400; font-size: 20px;"
+                      >
                         {{ place.item.nameTH }}
                       </v-card-title>
-                      <v-card-title class="typeText ml-2 grey--text" style="font-size: 18px;">
-                        {{place.item.typeTH}}
+                      <v-card-title
+                        class="typeText ml-2 grey--text"
+                        style="font-size: 18px;"
+                      >
+                        {{ place.item.typeTH }}
                         <v-spacer></v-spacer>
                         <v-chip class="mx-2" color="#FF9100" outlined>{{
                           place.item.provinceTH
                         }}</v-chip>
                       </v-card-title>
-                      <v-btn color="#FF9100" outlined class="viewInfo-btn ma-2" style="font-size: 18px;" @click="goPlaceInfo(place.item.keyID)">
+                      <v-btn
+                        color="#FF9100"
+                        outlined
+                        class="viewInfo-btn ma-2"
+                        style="font-size: 18px;"
+                        @click="goPlaceInfo(place.item.keyID)"
+                      >
                         ข้อมูลเพิ่มเติม
-                        <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
+                        <v-icon class="ml-2"
+                          >mdi-clipboard-text-search-outline</v-icon
+                        >
                       </v-btn>
                     </v-card>
                   </v-col>
@@ -96,48 +132,82 @@
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
 import axios from "axios";
-
+import Tripmap from "../components/Tripmap";
 export default {
   props: ["keyID"],
   name: "TripInfo",
   components: {
     TripBar,
+    Tripmap,
   },
 
   data: () => ({
     trip: [],
     description: "",
-    describe: "This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.",
+    describe:
+      "This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.",
     places: [],
+    location: [],
     status: "",
-    allStatus: ["ส่วนตัว","สาธารณะ"]
+    allStatus: ["ส่วนตัว", "สาธารณะ"],
+    showed: true,
+    mapURL:"https://www.google.com/maps/dir/",
   }),
 
   methods: {
-    count: function (item) {
+    count: function(item) {
       return item.length;
     },
-    goPlaceInfo(keyID){
+    goPlaceInfo(keyID) {
       this.$router.push("/PlaceInfo/" + keyID);
     },
-    async saveChangeTrip(){
-      await axios.post("tripInfo/" + this.keyID,{"description" : this.description , "status" : this.status}).then((res) => {
-        alert(res.data.msg)
-        this.$router.push("/Account");
-      })
+    updateURL() {
+      this.mapURL= "https://www.google.com/maps/dir/"+this.$refs.Tripmap.getuserlat()+","+this.$refs.Tripmap.getuserlng();
+      for(let i = 0; i < this.places.length; i++){
+        this.mapURL+="/"+this.places[i].latitude+","+this.places[i].longitude
+      }
+      console.log(this.mapURL) 
     },
-    async getInfo(){
-      await axios.get("tripInfo/" + this.keyID).then((res)=>this.trip = res.data[0]);
-      await axios.post("getPlace",{place : this.trip.placeList}).then((res) => this.places = res.data);
-      console.log(this.trip)
-      console.log(this.places)
+    Showmap() {
+      //alert("Show");
+      this.$refs.Tripmap.initMap();
+      this.location = [];
+      for (let i = 0; i < this.places.length; i++) {
+        this.location.push({
+          lat: this.places[i].latitude,
+          lng: this.places[i].longitude,
+        });
+      }
+      //this.$refs.Tripmap.clearRoute()
+      this.$refs.Tripmap.displayRoute(this.location);
+    },
+    async saveChangeTrip() {
+      await axios
+        .post("tripInfo/" + this.keyID, {
+          description: this.description,
+          status: this.status,
+        })
+        .then((res) => {
+          alert(res.data.msg);
+          this.$router.push("/Account");
+        });
+    },
+    async getInfo() {
+      await axios
+        .get("tripInfo/" + this.keyID)
+        .then((res) => (this.trip = res.data[0]));
+      await axios
+        .post("getPlace", { place: this.trip.placeList })
+        .then((res) => (this.places = res.data));
+      console.log(this.trip);
+      console.log(this.places);
       this.status = this.trip.status;
       this.description = this.trip.description;
-    }
+    },
   },
-  created: function(){
+  created: function() {
     this.getInfo();
-  }
+  },
 };
 </script>
 
@@ -205,7 +275,7 @@ export default {
   font-size: 20px;
 }
 
-.chooseStatus{
+.chooseStatus {
   position: absolute;
   right: 10px;
   bottom: -5px;
@@ -257,13 +327,17 @@ export default {
   height: 90%;
 }
 
-.typeText{
+.typeText {
   margin-top: -20px;
+}
+.hidemap {
+  width: 0px;
+  height: 0px;
 }
 
 .viewInfo-btn {
-    position: absolute;
-    left: 10px;
-    bottom: 10px;
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
 }
 </style>
