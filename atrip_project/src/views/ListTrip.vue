@@ -221,6 +221,7 @@ export default {
       .then((res)=>{
         alert(res.data.msg)
         })
+      this.placesInTrip = []; 
     },
     makeFail: function(){
       alert("Add Fail");
