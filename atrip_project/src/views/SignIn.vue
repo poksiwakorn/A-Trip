@@ -84,10 +84,10 @@
             <v-date-picker v-model="birthday"></v-date-picker>
           </v-menu>
           <v-row justify="center" style="margin-top: 10px; margin-bottom: 10px;">
-            <v-btn class="ok-btn white--text" color="green" height="50px" @click="deleteTrip()">
+            <v-btn class="ok-btn white--text" color="green" height="50px" @click="forgetSend">
               ยืนยัน
             </v-btn>
-            <v-btn class="no-btn white--text" color="error" height="50px" @click="tripOverlay = false">
+            <v-btn class="no-btn white--text" color="error" height="50px" @click="forgetOverlay = false">
               ยกเลิก
             </v-btn>
           </v-row>
@@ -128,6 +128,10 @@ export default {
     }
   },
   methods:{
+    forgetSend(){
+      
+      this.forgetOverlay = false;
+    },
     async Login(){
       try {
         await this.$store.dispatch("LogIn",this.form);

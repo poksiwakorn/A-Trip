@@ -366,12 +366,7 @@ def deleteTrip():
 @cross_origin()
 def makeRoute():
     if request.method == 'POST':
-        #print("HelloWorld")
         content = request.get_json()
-        #print(len(content["placesInTrip"]))
-        #print(content["placesInTrip"][0]["keyID"],end = " ")
-        #print(content["placesInTrip"][0]["coordinate"])
-
         numPlace = len(content["placesInTrip"])
         placeIDList = list()
         coordinateList = list()
@@ -381,16 +376,6 @@ def makeRoute():
         results = dict()
         x = gmaps.distance_matrix(coordinateList,coordinateList,mode='driving')
         results["results"] = sortResult(allResults(placeIDList,x))[0]
-        for i in results["results"]:
-            print(i)
-        '''
-        y = makeList_Of_DurationBetweenPointToPoint_From_DictFromGooglemapsAPI(x)
-        print(y)
-        z = makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace(placeIDList)
-        a = makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DurationBetweenPointToPoint(z,y)
-        print(a)
-        '''
-
     return jsonify(results)
 
 if __name__ == '__main__':
