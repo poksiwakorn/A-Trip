@@ -81,7 +81,8 @@ export default {
     }
 
     .typeText{
-      font-size: 20px;
+      font-size: 17px;
       font-weight: 450;
+      color: grey;
     }
 </style>
