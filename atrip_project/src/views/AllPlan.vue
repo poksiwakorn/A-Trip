@@ -138,7 +138,6 @@ export default {
       await axios.post("/saveTrip",{"key" : keyID,"id" : this.$store.getters.StateID}).then(res => {
         alert(res.data.msg)
       })
-      
       this.$router.push("/Account");
     },
     async callTrips() {

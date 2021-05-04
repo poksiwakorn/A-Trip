@@ -222,7 +222,7 @@ export default {
     },
     deleteTrip: async function(){
       this.savedTrips.splice(this.selectIndex,1);
-      await axios.post("/deleteTrip",{"keyID" : this.selectID}).then((res) => alert(res.data.msg))
+      await axios.post("/deleteTrip",{"keyID" : this.selectID , "id" : this.$store.getters.StateID}).then((res) => alert(res.data.msg))
       this.tripOverlay = false;
     },
     goTripInfo(keyID){
