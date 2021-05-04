@@ -368,19 +368,35 @@ def makeRoute():
         numPlace = len(content["placesInTrip"])
         placeIDList = list()
         coordinateList = list()
+        mode = "0"
         for i in range(numPlace):
             placeIDList.append(content["placesInTrip"][i]["keyID"])
             coordinateList.append(content["placesInTrip"][i]["coordinate"])
         results = dict()
         x = gmaps.distance_matrix(coordinateList,coordinateList,mode='driving')
         temp = sortResult(allResults(placeIDList,x))
-        results["results"] = temp[0]
+        
         count = 0
-        for i in temp:
-            if i[0][0] == placeIDList[0]:
-                break
-            count += 1
-        results["results1"] = temp[count]
+        if mode == "0":
+            results["results"] = temp[0]
+        elif mode == "1":
+            for i in temp:
+                if i[0][0] == placeIDList[0]:
+                    break
+                count += 1
+            results["results"] = temp[count]
+        elif mode == "2":
+            for i in temp:
+                if i[0][0] == placeIDList[-1]:
+                    break
+                count += 1
+            results["results"] = temp[count]
+        else:
+            for i in temp:
+                if i[0][0] == placeIDList[0] and i[0][-1] == placeIDList[-1]:
+                    break
+                count += 1
+            results["results"] = temp[count]
         print(results)
 
     return jsonify(results)
