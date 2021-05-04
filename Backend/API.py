@@ -146,7 +146,7 @@ def approvelocation():
         account = cursor.fetchall()
         for i in range(0,len(account),1):
             account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
-        #print(account[i])
+
         return jsonify(account)
     return jsonify({"msg" : "Error"})
 
@@ -364,12 +364,7 @@ def deleteTrip():
 @cross_origin()
 def makeRoute():
     if request.method == 'POST':
-        #print("HelloWorld")
         content = request.get_json()
-        #print(len(content["placesInTrip"]))
-        #print(content["placesInTrip"][0]["keyID"],end = " ")
-        #print(content["placesInTrip"][0]["coordinate"])
-
         numPlace = len(content["placesInTrip"])
         placeIDList = list()
         coordinateList = list()
@@ -378,16 +373,15 @@ def makeRoute():
             coordinateList.append(content["placesInTrip"][i]["coordinate"])
         results = dict()
         x = gmaps.distance_matrix(coordinateList,coordinateList,mode='driving')
-        results["results"] = sortResult(allResults(placeIDList,x))[0]
-        for i in results["results"]:
-            print(i)
-        '''
-        y = makeList_Of_DurationBetweenPointToPoint_From_DictFromGooglemapsAPI(x)
-        print(y)
-        z = makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace(placeIDList)
-        a = makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DurationBetweenPointToPoint(z,y)
-        print(a)
-        '''
+        temp = sortResult(allResults(placeIDList,x))
+        results["results"] = temp[0]
+        count = 0
+        for i in temp:
+            if i[0][0] == placeIDList[0]:
+                break
+            count += 1
+        results["results1"] = temp[count]
+        print(results)
 
     return jsonify(results)
 
