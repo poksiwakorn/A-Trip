@@ -35,15 +35,16 @@ def register():
     content = request.get_json()
     # print("get in stage 1")
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
-    if request.method == 'POST' and content['username'] and content['password'] and content['email'] and content['firstname'] and content['lastname']:
+    if request.method == 'POST' and content['username'] and content['password'] and content['email'] and content['firstname'] and content['lastname'] and content['birthday']:
         # Create variables for easy access
-
         # print("get in stage 2")
+        print(content)
         username = content['username']
         password = content['password']
         email = content['email']
         firstname = content['firstname']
         lastname = content['lastname']
+        birthday = content['birthday']
         # print("username =",username,"password",password,"email",email)
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM Atrip_Users WHERE BINARY Username = %s or email = %s', (username,email))
@@ -51,24 +52,23 @@ def register():
         # If account exists show error and validation checks
         if account:
             form['msg'] = 'Account already exists!'
-            # print('Account already exists!')
         elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
             form['msg'] = 'Invalid email address!'
-            # print('Invalid email address!')
-        elif not re.match(r'[A-Za-z0-9]+', username):
-            form['msg'] = 'Username must contain only characters and numbers!'
-            # print('Username must contain only characters and numbers!')
-        elif not username or not password or not email:
-            form['msg'] = 'Please fill out the form!'
-            # print('Please fill out the form!')
+        elif (not re.match(r'[A-Za-z0-9]+', username)) or (len(username) < 8) or (len(username) > 15):
+            form['msg'] = 'Username must contain only characters and numbers and length between 8 and 15!'
+        elif (not all(x.isalpha or x == "" for x in firstname)) or (len(firstname) > 25):
+            form['msg'] = 'Plese enter valid name'
+        elif (not all(x.isalpha or x == "" for x in lastname)) or (len(lastname) > 25):
+            form['msg'] = 'Please enter valid surname'
+
         else:
             # Account doesnt exists and the form data is valid, now insert new account into accounts table
-            cursor.execute('INSERT INTO Atrip_Users (username,password,email,role,FirstName,LastName,Nickname) VALUES (%s, %s, %s, %s, %s, %s, %s ,%s)', (username, password, email,"user",firstname,lastname,username))
+            cursor.execute('INSERT INTO Atrip_Users (username,password,email,role,FirstName,LastName,Nickname,Date) VALUES (%s, %s, %s, %s, %s, %s, %s ,%s)', (username, password, email,"user",firstname,lastname,username,birthday))
             mysql.connection.commit()
             form['result'] = True
             form['msg'] = 'You have successfully registered!'
             print('You have successfully registered!')
-    elif request.method == 'POST':
+    else:
         # Form is empty... (no POST data)
         # print("get in stage 3")
         form['msg'] = 'Please fill out the form!'
