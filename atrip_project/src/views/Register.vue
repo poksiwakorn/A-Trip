@@ -107,7 +107,8 @@ export default {
     ],
     passwordRule: [
         v => !!v || 'Password is required',
-        v => v.length < 8 || 'Password must be less than 8 characters'
+        v => v.length > 7 || 'Password must be at least 8 characters',
+        v => v.length < 26 || 'Password must be at most 25 characters',
     ],
     firstnameRule: [
         v => !!v || 'Firstname is required',
