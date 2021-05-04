@@ -184,13 +184,17 @@ import TripBar from "../components/TripBar";
 import axios from "axios";
 import Listmap from "../components/Listmap";
 
+
+
 export default {
   name: "ListTrip",
   components: {
     TripBar,
     Listmap,
   },
+
   data: () => ({
+    scrolledToBottom: false,
     overlay: false,
     types: ["ทั้งหมด","จุดชมวิว","ดอย","ตลาด","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ", "อื่นๆ"],
     typeValue: "ทั้งหมด",
@@ -212,6 +216,16 @@ export default {
     modes: ["สั้นที่สุด", "จุดเริ่มต้นเดิม","ปลายทางเดิม","เริ่มต้น ปลายทางเดิม"]
   }),
   methods: {
+    scroll () {
+  window.onscroll = () => {
+    if ((Math.ceil(window.pageYOffset/475) + 2)%10 == 0) {
+        //console.log(((Math.ceil(window.pageYOffset/475) + 2)));
+        this.callPlaces();
+        console.log(((Math.ceil(window.pageYOffset/475) + 2)/10+1)*10)
+    }
+ }
+},
+
     addPlace: function(item) {
       this.placesInTrip.push(item); 
       // this.coordinates.push({ lat: item.latitude, lng: item.longitude });
@@ -298,8 +312,11 @@ export default {
       return true;
     },
     async callPlaces(){
-      await axios.post("location",{query:""}).then((res)=>this.places = res.data);
+      await axios.post("location",{query:"","current": ((Math.ceil(window.pageYOffset/475) + 2)/10+1)*10}).then((res)=>this.places = res.data);
       console.log(this.places);
+    },
+    async callPlaces2(){
+      await axios.post("location",{query:"","current": ((Math.ceil(window.pageYOffset/475) + 2)/10+1)*10}).then((res)=>{console.log(res.data);});
     },
     async callProvinces(){
       await axios.get("province").then((res)=>this.provinces = res.data);
@@ -312,6 +329,7 @@ export default {
   created: function() {
     this.callPlaces();
     this.callProvinces();
+    this.scroll();
   },
 };
 </script>
