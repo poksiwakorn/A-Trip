@@ -71,6 +71,15 @@
                 ข้อมูลเพิ่มเติม
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
               </v-btn>
+              <v-btn
+                color="#FF9100"
+                outlined
+                class="saveTrip-btn ma-2"
+                style="font-size: 18px"
+              >
+                เซฟทริป
+                <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
+              </v-btn>
             </v-card>
           </v-row>
         </v-col>
@@ -222,6 +231,12 @@ export default {
 
 .viewInfo-btn {
   position: absolute;
+  bottom: 0px;
+}
+
+.saveTrip-btn {
+  position: absolute;
+  left: 200px;
   bottom: 0px;
 }
 
