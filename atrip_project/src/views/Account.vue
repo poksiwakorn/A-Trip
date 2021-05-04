@@ -13,7 +13,10 @@
             <v-col class="profileName my-10">
               {{this.$store.getters.StateUsername}}
             </v-col>
-            <v-btn class="editProfile-btn white--text" width="40%" height="50px" style="font-size: 27px;" color="#FF9100">
+            <v-btn class="editProfile-btn white--text" 
+                    width="40%" height="50px" 
+                    style="font-size: 27px;" color="#FF9100"
+                    @click="overlay = !overlay">
               แก้ไขโปรไฟล์
               <v-icon class="ml-3" size = "30px">mdi-account-edit-outline</v-icon>
             </v-btn>
@@ -42,19 +45,16 @@
                   </v-img>
                     <v-card-title>
                       {{trip.nameTH}}
-                      <!-- <v-spacer></v-spacer> -->
-                      <!-- <v-chip class="ma-2" color="#FF9100" outlined>Suratthani</v-chip>
-                      <v-chip class="ma-2" color="#FF9100" outlined>Bankok</v-chip> -->
                     </v-card-title>                    
-                    <v-card-subtitle>{{trip.ownerID}}</v-card-subtitle>
+                    <v-card-subtitle>{{trip.Username}}</v-card-subtitle>
                     <v-divider class="mx-5"></v-divider>
-                    <v-card-title class="black--text">สถานที่ภายในทริป<v-card-subtitle class="mt-1">{{trip.numPlace}} สถานที่</v-card-subtitle></v-card-title>
+                    <v-card-title class="placeTitle black--text">สถานที่ภายในทริป<v-card-subtitle class="mt-1">{{trip.numPlace}} สถานที่</v-card-subtitle></v-card-title>
                     <v-row
                       v-for="(place, j) in trip.placeList.split(',')"
                       :key="j"
                       class="mx-10"
                     >
-                      <h5>{{place}}</h5>
+                      <h5 class="placeSubTitle" style="color: grey;">{{place}}</h5>
                     </v-row>
                     <v-row class="oneTripAction">
                       <v-scale-transition>
@@ -70,6 +70,35 @@
           </v-sheet>
         </v-col>
       </v-row>
+      <v-overlay
+        :z-index=0
+        :value="overlay"
+      >
+        <v-card class="editCard">
+          <v-card-title class="white--text" style="font-size: 30px;">
+            แก้ไขโปรไฟล์
+            <v-spacer></v-spacer>
+            <v-btn
+              class="white--text"
+              color="error"
+              @click="overlay = false"
+            >
+              X
+            </v-btn>
+          </v-card-title>
+          <v-divider></v-divider>
+          <v-row>
+            <v-text-field
+              v-model = "nickname"
+              placeholder="ชื่อเล่น"
+              regular
+              class="mt-7 mb-3"
+              style="font-color: black; width: 200px; margin-left: 50px; color: black;"
+              width="200px"
+            ></v-text-field>
+          </v-row>
+        </v-card>
+      </v-overlay>
     </div>
   </v-content>
 </template>
@@ -87,7 +116,9 @@ export default {
 
   data: () => ({
     savedTrips: [],
-    tripName: ""
+    tripName: "",
+    overlay: false,
+    nickname: "myNickName"
   }),
 
   methods: {
@@ -98,9 +129,8 @@ export default {
       this.$router.push("/TripInfo/" + keyID);
     },
     async callTrips(){
-      await axios.post("myTrip",{"query":"","id" : this.$store.getters.StateID}).then((res)=>
-        console.log(res.data)
-        );
+      await axios.post("myTrip",{"query":"","id" : this.$store.getters.StateID}).then((res)=>this.savedTrips = res.data);
+      console.log(this.savedTrips)
     },
   },
   created: function(){
@@ -184,9 +214,24 @@ export default {
     right: 0px;
   }
 
+  .placeTitle{
+    margin-top: -10px;
+  }
+
+  .placeSubTitle{
+    margin-top: -10px;
+    margin-bottom: 15px;
+  }
+
   .oneTripAction{
     position: absolute;
     right: 30px;
     bottom: 80px;
+  }
+
+  .editCard{
+    width: 55vw;
+    height: 70vh;
+    /* background-color: white; */
   }
 </style>

@@ -7,15 +7,15 @@
           <v-card class="mapCard pb-7">
             <v-card-title class="mx-4">แผนที่</v-card-title>
             <v-card class="mx-10 mb-7">
-              <v-img src = "../assets/map1.png" class="mapPic"></v-img>
+              <Approvemap />
             </v-card>
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เว็บไซต์</v-card-title>
-            <v-card-subtitle class="mx-7 subtitle">www.A-Trip.co.th</v-card-subtitle>
+            <v-card-subtitle class="mx-7 subtitle">{{place.website}}</v-card-subtitle>
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เบอร์โทรศัพท์</v-card-title>
-            <v-card-subtitle class="mx-7 subtitle">0914259634</v-card-subtitle>
-            <v-divider class="mx-5"></v-divider>
+            <v-card-subtitle class="mx-7 subtitle">{{place.phoneNumber}}</v-card-subtitle>
+            <!-- <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เวลาทำการ</v-card-title>
             <v-row>
               <v-card-subtitle class="ml-15 mr-15 subtitle">วันจันทร์</v-card-subtitle>
@@ -42,12 +42,12 @@
             </v-row>
             <v-row>
               <v-chip class="ma-2" style="left: 227px;" color="#FF9100" outlined>10:00 - 20.00</v-chip>
-            </v-row>
+            </v-row> -->
           </v-card>
         </v-col>
         <v-col cols = "4" class="imageZone">
           <v-card class="imageCard">
-            <v-img src = "../assets/passage1.jpg" class="imagePic"></v-img>
+            <v-img :src="place.pictureURL" class="imagePic"></v-img>
             <v-divider></v-divider>
             <v-card-title class="imageTitle">
               {{place.nameTH}}
@@ -59,14 +59,13 @@
             </v-card-title>
             <v-divider class="mx-2"></v-divider>
             <v-card-text class="imageText">
-              This is the text that should describe the hide-detail
-              of this place but I don't know how to do it so I finally text this.
+              {{place.descriptionTH}}
             </v-card-text>
           </v-card>
         </v-col>
         <v-col cols = "4" class="buttonZone">
-            <v-btn color="green" class="approve-btn white--text" height="100px" link to="ApprovePlace" >Approve</v-btn>
-            <v-btn color="error" class="decline-btn" height="100px" link to="ApprovePlace">Decline</v-btn>
+            <v-btn color="green" class="approve-btn white--text" height="100px" @click = "Approve" >Approve</v-btn>
+            <v-btn color="error" class="decline-btn" height="100px" @click = "Decline">Decline</v-btn>
         </v-col>
       </v-row>
     </div>
@@ -77,12 +76,13 @@
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
 import axios from "axios";
-
+import Approvemap from "../components/Approvemap";
 export default {
   props: ["keyID"],
   name: "ApproveInfo",
   components: {
-    TripBar
+    TripBar,
+    Approvemap,
   },
   data: () => ({
     place: []
@@ -94,6 +94,18 @@ export default {
     async getInfo(){
       await axios.get("placeInfo/" + this.keyID).then((res)=>this.place = res.data[0]);
       console.log(this.place)
+    },
+    async Approve(){
+      await axios.post("validate",{"key" : this.keyID,"status" : 1}).then((res)=>{
+        console.log(res.data)
+        this.$router.push("/ApprovePlace")
+        })
+    },
+    async Decline(){
+      await axios.post("validate",{"key" : this.keyID,"status" : 0}).then((res) => {
+        console.log(res.data)
+        this.$router.push("/ApprovePlace")
+        })
     }
   },
   created: function(){
@@ -132,7 +144,7 @@ export default {
   .imageCard{
     margin-left: 20px;
     margin-top: 83px;
-    height: 800px;
+    min-height: 600px;
   }
 
   .imagePic{

@@ -23,22 +23,22 @@
               </v-row>
             </v-card-title>
             <v-card-subtitle class="tripSubTitle mt-1 ml-1">
-              {{ trip.owner }}
+              {{trip}}
             </v-card-subtitle>
-            <v-divider class="mx-2"></v-divider>
+            <v-divider class="mx-2" style="margin-top: -10px;"></v-divider>
             <v-col class="pb-15">
                 <v-card-text class="tripText">
                     {{ describe }}
                 </v-card-text>
                 <v-btn color="#FF9100" outlined class="saveTrip-btn ma-2" link to = "/Account">
-                    save trip
+                    บันทึก
                     <v-icon class="ml-2">mdi-content-save</v-icon>
                 </v-btn>
             </v-col>
           </v-card>
         </v-col>
         <v-col cols="7" class="placeZone">
-          <v-card class="placeCard mr-10">Place List</v-card>
+          <v-card class="placeCard mr-10">รายชื่อสถานที่</v-card>
           <v-card class="scrollCard">
             <v-virtual-scroll :items="places" :item-height="250" height="690">
               <template v-slot="place">
@@ -158,6 +158,7 @@ export default {
 }
 
 .tripTitle {
+  margin-top: 10px;
   font-size: 45px;
   font-weight: 300;
 }
@@ -178,6 +179,7 @@ export default {
   position: absolute;
   left: 10px;
   bottom: 10px;
+  font-size: 20px;
 }
 
 .placeZone {

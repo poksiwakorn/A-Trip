@@ -63,7 +63,7 @@ def register():
             print('Please fill out the form!')
         else:
             # Account doesnt exists and the form data is valid, now insert new account into accounts table
-            cursor.execute('INSERT INTO Atrip_Users (username,password,email,role,FirstName,LastName) VALUES (%s, %s, %s, %s, %s, %s)', (username, password, email,"user",firstname,lastname))
+            cursor.execute('INSERT INTO Atrip_Users (username,password,email,role,FirstName,LastName,Nickname) VALUES (%s, %s, %s, %s, %s, %s, %s ,%s)', (username, password, email,"user",firstname,lastname,username))
             mysql.connection.commit()
             form['result'] = True
             form['msg'] = 'You have successfully registered!'
@@ -126,9 +126,40 @@ def location():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Places ORDER BY keyID')
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID ORDER BY keyID')
             account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+            print(account[i])
     return jsonify(account)
+
+@app.route("/approvelocation", methods = ['GET', 'POST'])
+@cross_origin()
+def approvelocation():
+    if request.method == 'GET':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID and isVerify = 0 ORDER BY keyID')
+        account = cursor.fetchall()
+        for i in range(0,len(account),1):
+            account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+        print(account[i])
+        return jsonify(account)
+    return jsonify({"msg" : "Error"})
+
+@app.route("/validate", methods = ['GET', 'POST'])
+@cross_origin()
+def validate():
+    if request.method == 'POST':
+        content = request.get_json()
+        if (content["status"] == 0):
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('Delete from Atrip_Places where keyID = %s',[content["key"]])
+            mysql.connection.commit()
+        else:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('Update Atrip_Places set isVerify = 1 where keyID = %s',[content["key"]])
+            mysql.connection.commit()
+    return jsonify({"msg" : "success"})
 
 @app.route("/trip", methods = ['GET', 'POST'])
 @cross_origin()
@@ -137,8 +168,9 @@ def trip():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Trips ORDER BY keyID')
+            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username FROM Atrip_Trips INNER JOIN Atrip_Users where (Atrip_Trips.ownerID = Atrip_Users.ID) and permission = "public" ORDER BY keyID')
             account = cursor.fetchall()
+            print(account)
     return jsonify(account)
 
 @app.route("/province", methods = ['GET'])
@@ -168,6 +200,8 @@ def placeInfo(keyID):
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM Atrip_Places WHERE keyID = %s',[keyID])
         account = cursor.fetchall()
+        for i in range(0,len(account),1):
+            account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
         print(account)
     return jsonify(account)
 
@@ -182,11 +216,13 @@ def getPlace():
         if content["place"]:
             contentinput = content["place"].split(",")
             print(contentinput)
-            form = "SELECT * FROM Atrip_Places WHERE keyID = " + " or keyID = ".join(contentinput)
+            form = "SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID and keyID = " + " or keyID = ".join(contentinput)
             print(form)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(form)
             account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
             return jsonify(account)
         else:
             return jsonify(Testform)
@@ -218,21 +254,18 @@ def addLocation():
         print(content)
         if content["placeName"]:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Places WHERE nameTH = %s',[content["placeName"]])
-            account = cursor.fetchall()
+            cursor.execute('SELECT nameTH FROM Atrip_Places WHERE nameTH = %s',[content["placeName"]])
+            account = cursor.fetchone()
             if account:
                 print("enter")
                 form["isSuccess"] = False
                 form["msg"] = "Already have data"
             else:
-                cursor.execute('INSERT INTO Atrip_Places (website,phoneNumber,nameTH,provinceTH,descriptionTH) VALUES (%s, %s, %s, %s, %s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"]))
+                cursor.execute('INSERT INTO Atrip_Places (website,phoneNumber,nameTH,provinceTH,descriptionTH,pictureURL,latitude,longitude,coordinate,ownerID,typeTH) VALUES (%s, %s, %s, %s, %s ,%s,%s,%s,%s ,%s,%s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"],content["image"],content["latitude"],content["longtitude"],str(content["latitude"])+", "+str(content["longtitude"]),content["User"],content["type"]))
                 mysql.connection.commit()
                 form["isSuccess"] = True
                 form["msg"] = "Successfully add to database"
-                cursor.execute('INSERT INTO Atrip_Places (website,phoneNumber,nameTH,provinceTH,descriptionTH) VALUES (%s, %s, %s, %s, %s)', (content["website"], content["phone"], content["placeName"],content["province"],content["description"]))
-                mysql.connection.commit()
             return jsonify(form)
-
         else:
             form["msg"] = "Error no PlaceName :d"
             return jsonify(form)
@@ -243,21 +276,28 @@ def makeTrip():
     form = {"isSuccess" : False , "msg" : ""}
     if request.method == 'POST':
         content = request.get_json()
+        print(content)
         if content['userID'] and content["tripName"] and content["placesInTrip"]:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("SELECT * from Atrip_Trips where nameTH = %s",[content['tripName']])
+            check = cursor.fetchone()
+            if (check):
+                form["msg"] = "This name already exists"
+                return jsonify(form)
             key = ""
             for i in range(0,len(content["placesInTrip"]),1):
                 key = key + str(content["placesInTrip"][i]["keyID"]) + ","
             key = key[0:len(key)-1]
             qkey = key.split(",")
-            sqlform = "SELECT provinceTH FROM Atrip_Places WHERE keyID = " + " or keyID = ".join(qkey)
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            sqlform = "SELECT DISTINCT provinceTH FROM Atrip_Places WHERE keyID = " + " or keyID = ".join(qkey)
             cursor.execute(sqlform)
             account = cursor.fetchall()
+            print(account)
             sqlprovince = ""
             for i in range(len(account)):
                 sqlprovince = sqlprovince + account[i]["provinceTH"] + ","
             sqlprovince = sqlprovince[0:len(sqlprovince)-1]
-            cursor.execute('INSERT INTO Atrip_Trips (nameTH,placeList,owner,provinceTH_List) VALUES (%s, %s, %s, %s)', (content['tripName'],key,content["userID"],sqlprovince))
+            cursor.execute('INSERT INTO Atrip_Trips (nameTH,placeList,provinceTH_List,ownerID,numPlace) VALUES (%s, %s, %s, %s,%s)', (content['tripName'],key,sqlprovince,content["userID"],len(qkey)))
             mysql.connection.commit()
             form["isSuccess"] = True
             form["msg"] = "Successfully add to database"
@@ -274,10 +314,21 @@ def myTrip():
         print(content)
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Trips where owner = %s ORDER BY keyID',[content["id"]])
-            account = cursor.fetchall()
-            print(account)
-    return jsonify(account)
+            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username FROM Atrip_Trips INNER JOIN Atrip_Users where (Atrip_Trips.ownerID = Atrip_Users.ID) and ownerID = %s ORDER BY keyID',[content["id"]])
+            data = list(cursor.fetchall())
+            for i in range(0,len(data),1):
+                placeList = data[i]["placeList"].split(",")
+                form = "SELECT nameTH FROM Atrip_Places WHERE keyID = " + " or keyID = ".join(placeList)
+                cursor.execute(form)
+                placeList = list(cursor.fetchall())
+                placename = ""
+                for j in placeList:
+                    placename = placename + j["nameTH"] + ","
+                placename = placename[0:len(placename)-1]
+                data[i]["placeList"] = placename
+            print(data)
+
+    return jsonify(data)
 
 @app.route("/makeRoute", methods = ['GET', 'POST'])
 @cross_origin()
@@ -297,7 +348,7 @@ def makeRoute():
             coordinateList.append(content["placesInTrip"][i]["coordinate"])
         results = dict()
         x = gmaps.distance_matrix(coordinateList,coordinateList,mode='driving')
-        results["results"] = sortResult(allResults(placeIDList,x))
+        results["results"] = sortResult(allResults(placeIDList,x))[0]
         for i in results["results"]:
             print(i)
         '''
@@ -313,4 +364,3 @@ def makeRoute():
 if __name__ == '__main__':
     gmaps = googlemaps.Client(key='AIzaSyCIHRdrSY885ctMMj_cvL-Ga69IktvnLs0')
     app.run(host="0.0.0.0", port=34673, debug=True)
-
