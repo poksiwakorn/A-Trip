@@ -374,11 +374,11 @@ def makeRoute():
         results = dict()
         if numPlace < 3:
             results["results"] = "เลือกอย่างน้อย 3 สถานที่"
-            print(results)
+            #print(results)
             return jsonify(results)
         if numPlace > 7:
             results["results"] = "เลือกอย่างไม่เกิน 7 สถานที่"
-            print(results)
+            #print(results)
             return jsonify(results)
         placeIDList = list()
         coordinateList = list()
@@ -390,33 +390,34 @@ def makeRoute():
         temp = sortResult(allResults(placeIDList,x))        
         count = 0
         if mode == "สั้นที่สุด":
-            print("สั้นที่สุด")
+            #print("สั้นที่สุด")
             results["results"] = temp[0]
-            print(results)
+            #print(results)
             return jsonify(results)
         if mode == "จุดเริ่มต้นเดิม":
-            print("จุดเริ่มต้นเดิม")
+            #print("จุดเริ่มต้นเดิม")
             for i in temp:
                 if i[0][0] == placeIDList[0]:
                     break
                 count += 1
             results["results"] = temp[count]
-            print(results)
+            #print(results)
             return jsonify(results)
         if mode == "ปลายทางเดิม":
+            #print("ปลายทางเดิม")
             for i in temp:
                 if i[0][-1] == placeIDList[-1]:
                     break
                 count += 1
             results["results"] = temp[count]
-            print(results)
+            #print(results)
             return jsonify(results)
         for i in temp:
             if i[0][0] == placeIDList[0] and i[0][-1] == placeIDList[-1]:
                 break
             count += 1
         results["results"] = temp[count]
-    print(results)
+    #print(results)
     return jsonify(results)
 
 
