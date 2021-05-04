@@ -251,7 +251,7 @@ def likeTrip():
                 mysql.connection.commit()
                 cursor.execute('Update Atrip_Trips set Love = Love-1 where keyID = %s',[content["key"]])
                 mysql.connection.commit()
-                return jsonify({"msg" : "success","love" : account["Love"].split(",")})
+                return jsonify({"msg" : "success","love" : love.split(",")})
             account["Love"] = account["Love"] + "," + str(content['key'])
             cursor.execute('Update Atrip_Users set Love = %s where ID = %s',(account["Love"],content["id"]))
             mysql.connection.commit()
@@ -273,7 +273,7 @@ def trip():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image FROM Atrip_Trips INNER JOIN Atrip_Users on Atrip_Trips.ownerID = Atrip_Users.ID where status = "สาธารณะ" ORDER BY keyID')
+            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image,Love FROM Atrip_Trips INNER JOIN Atrip_Users on Atrip_Trips.ownerID = Atrip_Users.ID where status = "สาธารณะ" ORDER BY keyID')
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["image"] = account[i]["image"].decode("utf-8")
