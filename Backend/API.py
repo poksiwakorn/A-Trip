@@ -120,7 +120,7 @@ def editData():
 def login():
     # Output message if something goes wrong...
     # Check if "username" and "password" POST requests exist (user submitted form)
-    form = {'id' : "",'Username' : "", 'FirstName' : "", 'LastName' : "" , 'Nickname' : "" , "Email" : "" , "Tel" : "" ,"Tag" : "","Like" : "","Checkin" : "","Favorite" : "","Role" : "","Picture" : "","msg" : ""}
+    form = {'id' : "",'Username' : "", 'FirstName' : "", 'LastName' : "" , 'Nickname' : "" , "Email" : "" , "Tel" : "" ,"Tag" : "","Love" : "","Checkin" : "","Favorite" : "","Role" : "","Picture" : "","msg" : ""}
     if request.method == 'POST':
         content = request.get_json()
         username = content['username']
@@ -144,7 +144,7 @@ def login():
                     form['Email'] = account['Email']
                     form['Tel'] = account['Tel']
                     form['Tag'] = account['Tag']
-                    form['Like'] = account['Like']
+                    form['Love'] = account['Love']
                     form['Checkin'] = account['Checkin']
                     form['Favorite'] = account['Favorite']
                     form['Role'] = account['Role']
@@ -232,6 +232,29 @@ def saveTrip():
         cursor.execute('Update Atrip_Users set Favorite = %s where ID = %s',(content['key'],content["id"]))
         mysql.connection.commit()
         return jsonify({"msg" : "success"})
+
+@app.route("/likeTrip", methods = ['GET', 'POST'])
+@cross_origin()
+def likeTrip():
+    if request.method == 'POST':
+        content = request.get_json()
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT Love from Atrip_Users where ID = %s",[content["id"]])
+        account = cursor.fetchone()
+        # print(account)
+        if (account["Love"]):
+            # print("Enter")
+            favorite = account["Love"].split(",")
+            # print(favorite)
+            if str(content['key']) in favorite:
+                return jsonify({"msg" : "Already like"})
+            account["Love"] = account["Love"] + "," + str(content['key'])
+            cursor.execute('Update Atrip_Users set Love = %s where ID = %s',(account["Love"],content["id"]))
+            mysql.connection.commit()
+            return jsonify({"msg" : "success","love" : account["Love"].split(",")})
+        cursor.execute('Update Atrip_Users set Love = %s where ID = %s',(content['key'],content["id"]))
+        mysql.connection.commit()
+        return jsonify({"msg" : "success","love" : [int(content['key'])]})
 
 @app.route("/trip", methods = ['GET', 'POST'])
 @cross_origin()
