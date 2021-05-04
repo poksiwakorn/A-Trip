@@ -7,7 +7,7 @@
           <v-card class="profileCard">
             <div>
               <v-avatar color="primary" width="350" height="350" class="profileAvatar">
-                <v-img src= "../assets/passage1.jpg" fab></v-img>
+                <v-img :src= "this.$store.getters.StatePicture" fab></v-img>
               </v-avatar>
             </div>
             <v-col class="profileName my-10">
