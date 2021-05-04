@@ -66,7 +66,19 @@ const actions = {
       alert(response.data.msg)
     });
   },
-
+  async editData(context,form){
+    await axios.post("editData", JSON.parse(JSON.stringify(form)))
+    .then((response) => {
+      alert(response.data.msg)
+      if (response.data.msg == "success"){
+        context.commit("setFirstName",response.data.FirstName)
+        context.commit("setLastName",response.data.LastName)
+        context.commit("setNickname",response.data.Nickname)
+        context.commit("setPicture",response.data.Picture)
+      }
+    })
+  }
+  ,
   async LogIn(context, form) {
     await axios.post("login", JSON.parse(JSON.stringify(form)))
     .then((response)=>
@@ -132,6 +144,9 @@ const mutations = {
   },
   setMsg(state,msg){
     state.Msg = msg
+  },
+  setPicture(state,picture){
+    state.Picture = picture
   }
 };
 
