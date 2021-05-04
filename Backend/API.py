@@ -5,10 +5,15 @@ from flask_mysqldb import MySQL
 from datetime import timedelta
 import MySQLdb.cursors
 import re
+import bcrypt
+import secrets
+import string
+import smtplib, ssl
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 import googlemaps
-from findRoute import allResults,sortResult,makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace,makeList_Of_DurationBetweenPointToPoint_From_DictFromGooglemapsAPI,makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DurationBetweenPointToPoint
-
+from findRoute import *
 
 app = Flask(__name__)
 app.secret_key = 'SoftDev'
@@ -19,7 +24,6 @@ app.config['MYSQL_DB'] = 'SD'
 app.config['MYSQL_PORT'] = 34674
 mysql = MySQL(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "localhost:8080/*"}})
-
 
 Testform = [
      {'name': 'BURGER', 'ingredients': ['this', 'that', 'blah']},
@@ -35,15 +39,16 @@ def register():
     content = request.get_json()
     # print("get in stage 1")
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
-    if request.method == 'POST' and content['username'] and content['password'] and content['email'] and content['firstname'] and content['lastname']:
+    if request.method == 'POST' and content['username'] and content['password'] and content['email'] and content['firstname'] and content['lastname'] and content['birthday']:
         # Create variables for easy access
-
         # print("get in stage 2")
+        print(content)
         username = content['username']
         password = content['password']
         email = content['email']
         firstname = content['firstname']
         lastname = content['lastname']
+        birthday = content['birthday']
         # print("username =",username,"password",password,"email",email)
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM Atrip_Users WHERE BINARY Username = %s or email = %s', (username,email))
@@ -51,24 +56,24 @@ def register():
         # If account exists show error and validation checks
         if account:
             form['msg'] = 'Account already exists!'
-            # print('Account already exists!')
         elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
             form['msg'] = 'Invalid email address!'
-            # print('Invalid email address!')
-        elif not re.match(r'[A-Za-z0-9]+', username):
-            form['msg'] = 'Username must contain only characters and numbers!'
-            # print('Username must contain only characters and numbers!')
-        elif not username or not password or not email:
-            form['msg'] = 'Please fill out the form!'
-            # print('Please fill out the form!')
+        elif (not re.match(r'[A-Za-z0-9]+', username)) or (len(username) < 8) or (len(username) > 15):
+            form['msg'] = 'Username must contain only characters and numbers and length between 8 and 15!'
+        elif (not all(x.isalpha or x == "" for x in firstname)) or (len(firstname) > 25):
+            form['msg'] = 'Plese enter valid name'
+        elif (not all(x.isalpha or x == "" for x in lastname)) or (len(lastname) > 25):
+            form['msg'] = 'Please enter valid surname'
+
         else:
             # Account doesnt exists and the form data is valid, now insert new account into accounts table
-            cursor.execute('INSERT INTO Atrip_Users (username,password,email,role,FirstName,LastName,Nickname) VALUES (%s, %s, %s, %s, %s, %s, %s ,%s)', (username, password, email,"user",firstname,lastname,username))
+            salt = bcrypt.gensalt()
+            cursor.execute('INSERT INTO Atrip_Users (username,password,email,role,FirstName,LastName,Nickname,Date) VALUES (%s, %s, %s, %s, %s, %s, %s ,%s)', (username, bcrypt.hashpw(password.encode('utf8'), salt), email,"user",firstname,lastname,username,birthday))
             mysql.connection.commit()
             form['result'] = True
             form['msg'] = 'You have successfully registered!'
             print('You have successfully registered!')
-    elif request.method == 'POST':
+    else:
         # Form is empty... (no POST data)
         # print("get in stage 3")
         form['msg'] = 'Please fill out the form!'
@@ -90,29 +95,33 @@ def login():
         # Check if account exists using MySQL
         if username and password:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM Atrip_Users WHERE BINARY username = %s AND  BINARY password = %s', (username, password))
+            cursor.execute('SELECT * FROM Atrip_Users WHERE BINARY username = %s', [username])
             # Fetch one record and return result
             account = cursor.fetchone()
+            print(account)
             # If account exists in accounts table in out database
             if account:
                 # Create session data, we can access this data in other routes
-                form['id'] = account['ID']
-                form['Username'] = account['Username']
-                form['FirstName'] = account['FirstName']
-                form['LastName'] = account['LastName']
-                form['Nickname'] = account['Nickname']
-                form['Email'] = account['Email']
-                form['Tel'] = account['Tel']
-                form['Tag'] = account['Tag']
-                form['Rating'] = account['Rating']
-                form['Checkin'] = account['Checkin']
-                form['Favorite'] = account['Favorite']
-                form['Role'] = account['Role']
-                form['Picture'] = account['Picture']
-                form['msg'] = 'Logged in successfully!'
+                if bcrypt.checkpw(password.encode('utf-8'),account["Password"].encode('utf-8')):
+                    form['id'] = account['ID']
+                    form['Username'] = account['Username']
+                    form['FirstName'] = account['FirstName']
+                    form['LastName'] = account['LastName']
+                    form['Nickname'] = account['Nickname']
+                    form['Email'] = account['Email']
+                    form['Tel'] = account['Tel']
+                    form['Tag'] = account['Tag']
+                    form['Rating'] = account['Rating']
+                    form['Checkin'] = account['Checkin']
+                    form['Favorite'] = account['Favorite']
+                    form['Role'] = account['Role']
+                    form['Picture'] = account['Picture']
+                    form['msg'] = 'Logged in successfully!'
+                else:
+                    form['msg'] = 'Incorrect password!'
             else:
                 # Account doesnt exist or username/password incorrect
-                form['msg'] = 'Incorrect username/password!'
+                form['msg'] = 'Incorrect Username'
     # Show the login form with message (if any)
         else:
             form['msg'] = 'Please fill out the form!'
@@ -142,7 +151,7 @@ def approvelocation():
         account = cursor.fetchall()
         for i in range(0,len(account),1):
             account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
-        print(account[i])
+
         return jsonify(account)
     return jsonify({"msg" : "Error"})
 
@@ -360,12 +369,7 @@ def deleteTrip():
 @cross_origin()
 def makeRoute():
     if request.method == 'POST':
-        #print("HelloWorld")
         content = request.get_json()
-        #print(len(content["placesInTrip"]))
-        #print(content["placesInTrip"][0]["keyID"],end = " ")
-        #print(content["placesInTrip"][0]["coordinate"])
-
         numPlace = len(content["placesInTrip"])
         placeIDList = list()
         coordinateList = list()
@@ -374,18 +378,59 @@ def makeRoute():
             coordinateList.append(content["placesInTrip"][i]["coordinate"])
         results = dict()
         x = gmaps.distance_matrix(coordinateList,coordinateList,mode='driving')
-        results["results"] = sortResult(allResults(placeIDList,x))[0]
-        for i in results["results"]:
-            print(i)
-        '''
-        y = makeList_Of_DurationBetweenPointToPoint_From_DictFromGooglemapsAPI(x)
-        print(y)
-        z = makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace(placeIDList)
-        a = makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DurationBetweenPointToPoint(z,y)
-        print(a)
-        '''
+        temp = sortResult(allResults(placeIDList,x))
+        results["results"] = temp[0]
+        count = 0
+        for i in temp:
+            if i[0][0] == placeIDList[0]:
+                break
+            count += 1
+        results["results1"] = temp[count]
+        print(results)
 
     return jsonify(results)
+
+
+@app.route("/forgotpassword", methods = ['GET', 'POST'])
+@cross_origin()
+def forgotpassword():
+    if request.method == 'POST':
+        content = request.get_json()
+        print(content)
+        if content["email"] and content["birthday"]:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('select Date,Username from Atrip_Users where email = %s',[content["email"]])
+            account = cursor.fetchone()
+            if (account):
+                if (account["Date"] == content["birthday"]):
+                    randompassword = ''.join((secrets.choice(string.ascii_letters + string.digits + string.punctuation) for i in range(8)))
+                    print(randompassword)
+                    salt = bcrypt.gensalt()
+                    cursor.execute('Update Atrip_Users set Password = %s where Username = %s',(bcrypt.hashpw(randompassword.encode('utf8'), salt),account["Username"]))
+                    mysql.connection.commit()
+                    port = 587  # For starttls
+                    msg = MIMEMultipart()
+                    msg['From'] = 'softdevprojectsdp@gmail.com'
+                    msg['To'] = content["email"]
+                    msg['Subject'] = 'ATrip Forgetpassword'
+                    smtp_server = "smtp.gmail.com"
+                    sender_email = "softdevprojectsdp@gmail.com"
+                    receiver_email = content["email"]
+                    password = "SDP12345"
+                    message = "Your Username is " + account["Username"] + """
+Your Password is """ + randompassword
+                    msg.attach(MIMEText(message,"plain"))
+                    context = ssl.create_default_context()
+                    with smtplib.SMTP(smtp_server, port) as server:
+                        server.ehlo()  # Can be omitted
+                        server.starttls(context=context)
+                        server.ehlo()  # Can be omitted
+                        server.login(sender_email, password)
+                        server.sendmail(sender_email, receiver_email, msg.as_string())
+
+
+    return jsonify({"msg" : "สำเร็จ กรุณาตรวจสอบ Email ของท่าน"})
+
 
 if __name__ == '__main__':
     gmaps = googlemaps.Client(key='AIzaSyCIHRdrSY885ctMMj_cvL-Ga69IktvnLs0')
