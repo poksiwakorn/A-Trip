@@ -373,7 +373,16 @@ def makeRoute():
             coordinateList.append(content["placesInTrip"][i]["coordinate"])
         results = dict()
         x = gmaps.distance_matrix(coordinateList,coordinateList,mode='driving')
-        results["results"] = sortResult(allResults(placeIDList,x))[0]
+        temp = sortResult(allResults(placeIDList,x))
+        results["results"] = temp[0]
+        count = 0
+        for i in temp:
+            if i[0][0] == placeIDList[0]:
+                break
+            count += 1
+        results["results1"] = temp[count]
+        print(results)
+
     return jsonify(results)
 
 if __name__ == '__main__':
