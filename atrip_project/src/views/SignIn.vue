@@ -84,10 +84,10 @@
             <v-date-picker v-model="birthday"></v-date-picker>
           </v-menu>
           <v-row justify="center" style="margin-top: 10px; margin-bottom: 10px;">
-            <v-btn class="ok-btn white--text" color="green" height="50px" @click="deleteTrip()">
+            <v-btn class="ok-btn white--text" color="green" height="50px" @click="forgetSend">
               ยืนยัน
             </v-btn>
-            <v-btn class="no-btn white--text" color="error" height="50px" @click="tripOverlay = false">
+            <v-btn class="no-btn white--text" color="error" height="50px" @click="forgetOverlay = false">
               ยกเลิก
             </v-btn>
           </v-row>
@@ -98,6 +98,7 @@
 
 <script>
 // @ is an alias to /src
+import axios from "axios";
 
 export default {
   name: "SignIn",
@@ -109,15 +110,18 @@ export default {
         password : ""
       },
       birthday: "",
+      email: "",
       showPassword: false,
       forgetOverlay: false,
       usernameRule: [
-          v => !!v || 'Username is required',
-          v => v.length <= 10 || 'Username must be less than 10 characters',
+        v => !!v || 'Username is required',
+        v => v.length > 7 || 'Username must be at least 8 characters',
+        v => v.length < 16 || 'Username must be at most 15 characters',
       ],
       passwordRule: [
-          v => !!v || 'Password is required',
-          v => v.length <= 10 || 'Password must be less than 10 characters',
+        v => !!v || 'Password is required',
+        v => v.length > 7 || 'Password must be at least 8 characters',
+        v => v.length < 26 || 'Password must be at most 25 characters',
       ]
     }
   },
@@ -127,6 +131,12 @@ export default {
     }
   },
   methods:{
+    async forgetSend(){
+      await axios.post("forgotpassword",{"email" : this.email , "birthday" : this.birthday}).then((res) => {
+        alert(res.data.msg)
+      })
+      this.forgetOverlay = false;
+    },
     async Login(){
       try {
         await this.$store.dispatch("LogIn",this.form);

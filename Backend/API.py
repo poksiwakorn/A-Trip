@@ -6,9 +6,14 @@ from datetime import timedelta
 import MySQLdb.cursors
 import re
 import bcrypt
+import secrets
+import string
+import smtplib, ssl
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 import googlemaps
-from findRoute import allResults,sortResult,makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace,makeList_Of_DurationBetweenPointToPoint_From_DictFromGooglemapsAPI,makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DurationBetweenPointToPoint
+from findRoute import *
 
 app = Flask(__name__)
 app.secret_key = 'SoftDev'
@@ -146,7 +151,7 @@ def approvelocation():
         account = cursor.fetchall()
         for i in range(0,len(account),1):
             account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
-        print(account[i])
+
         return jsonify(account)
     return jsonify({"msg" : "Error"})
 
@@ -400,6 +405,48 @@ def makeRoute():
         print(results)
 
     return jsonify(results)
+
+
+@app.route("/forgotpassword", methods = ['GET', 'POST'])
+@cross_origin()
+def forgotpassword():
+    if request.method == 'POST':
+        content = request.get_json()
+        print(content)
+        if content["email"] and content["birthday"]:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('select Date,Username from Atrip_Users where email = %s',[content["email"]])
+            account = cursor.fetchone()
+            if (account):
+                if (account["Date"] == content["birthday"]):
+                    randompassword = ''.join((secrets.choice(string.ascii_letters + string.digits + string.punctuation) for i in range(8)))
+                    print(randompassword)
+                    salt = bcrypt.gensalt()
+                    cursor.execute('Update Atrip_Users set Password = %s where Username = %s',(bcrypt.hashpw(randompassword.encode('utf8'), salt),account["Username"]))
+                    mysql.connection.commit()
+                    port = 587  # For starttls
+                    msg = MIMEMultipart()
+                    msg['From'] = 'softdevprojectsdp@gmail.com'
+                    msg['To'] = content["email"]
+                    msg['Subject'] = 'ATrip Forgetpassword'
+                    smtp_server = "smtp.gmail.com"
+                    sender_email = "softdevprojectsdp@gmail.com"
+                    receiver_email = content["email"]
+                    password = "SDP12345"
+                    message = "Your Username is " + account["Username"] + """
+Your Password is """ + randompassword
+                    msg.attach(MIMEText(message,"plain"))
+                    context = ssl.create_default_context()
+                    with smtplib.SMTP(smtp_server, port) as server:
+                        server.ehlo()  # Can be omitted
+                        server.starttls(context=context)
+                        server.ehlo()  # Can be omitted
+                        server.login(sender_email, password)
+                        server.sendmail(sender_email, receiver_email, msg.as_string())
+
+
+    return jsonify({"msg" : "สำเร็จ กรุณาตรวจสอบ Email ของท่าน"})
+
 
 if __name__ == '__main__':
     gmaps = googlemaps.Client(key='AIzaSyCIHRdrSY885ctMMj_cvL-Ga69IktvnLs0')

@@ -80,7 +80,16 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
-              <v-card-subtitle>เลือกมาอย่างน้อย 2 สถานที่</v-card-subtitle>
+              <v-card-title class="subTitle">
+                เลือกสถานที่ 3 ถึง 7 สถานที่
+                <v-spacer></v-spacer>
+                <v-autocomplete
+                  v-model="mode"
+                  :items="modes"
+                  class="chooseMode"
+                  color="orange"
+                ></v-autocomplete>
+              </v-card-title>
               <v-card class="scrollCard">
                 <v-virtual-scroll
                   page-mode
@@ -181,7 +190,7 @@ export default {
   },
   data: () => ({
     overlay: false,
-    types: ["ทั้งหมด","จุดชมวิว","ดอย","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ", "อื่นๆ"],
+    types: ["ทั้งหมด","จุดชมวิว","ดอย","ตลาด","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ", "อื่นๆ"],
     typeValue: "ทั้งหมด",
     provinces: [],
     provinceNames: ["ทั้งหมด"],
@@ -196,7 +205,9 @@ export default {
     places: [],
     placesInTripTemp: [],
     bestPath: [],
-    overlayValue: []
+    overlayValue: [],
+    mode: "สั้นที่สุด",
+    modes: ["สั้นที่สุด", "จุดเริ่มต้นเดิม","ปลายทางเดิม","เริ่มต้น ปลายทางเดิม"]
   }),
   methods: {
     addPlace: function(item) {
@@ -236,7 +247,7 @@ export default {
       alert("Add Fail");
     },
     async makeRoute (){
-      await axios.post("makeRoute",{"placesInTrip": this.placesInTrip}).then((res)=>this.bestPath = res.data['results'][0]);
+      await axios.post("makeRoute",{"placesInTrip": this.placesInTrip,"command": ""}).then((res)=>this.bestPath = res.data['results1'][0]);
       // Update Route //
       this.updateRoute();
     },
@@ -251,11 +262,18 @@ export default {
       this.placesInTrip = this.placesInTripTemp;
       this.placesInTripTemp = [];
       alert("Update Route");
+      this.location = [];
       for(let i=0;i<this.placesInTrip.length;i++){
         this.location.push({ lat: this.placesInTrip[i].latitude, lng: this.placesInTrip[i].longitude });
       }
       this.$refs.Addmap.clearRoute()
-      this.$refs.Addmap.displayRoute(this.location)
+      const directionsService = new google.maps.DirectionsService();
+      const directionsRenderer = new google.maps.DirectionsRenderer({
+          draggable: true,
+        });
+      console.log(this.placesInTrip.length)
+      console.log(this.location)
+      this.$refs.Addmap.displayRoute(this.location,directionsService,directionsRenderer)
     },
     keyNotUsed: function(keyID){
       var i;
@@ -331,6 +349,19 @@ export default {
 .yourTripTitle {
   background-color: #faae4b;
   font-size: 35px;
+}
+
+.subTitle{
+  font-size: 17px;
+  font-weight: 400;
+  color: grey;
+  margin-top: -25px;
+}
+
+.chooseMode{
+  margin-left: 50px;
+  margin-right: 35px;
+  margin-top: 0px;
 }
 
 .numberCard {
