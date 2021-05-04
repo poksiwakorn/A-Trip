@@ -6,9 +6,11 @@ from datetime import timedelta
 import MySQLdb.cursors
 import re
 import bcrypt
+import random
+import string
 
 import googlemaps
-from findRoute import allResults,sortResult,makeList_Of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_From_ListOfKeyOfSelectedPlace,makeList_Of_DurationBetweenPointToPoint_From_DictFromGooglemapsAPI,makeList_of_ListOfAllOutcomeBetweenKeyOfPointToKeyOfPoint_And_DurationBetweenPointToPoint
+from findRoute import *
 
 app = Flask(__name__)
 app.secret_key = 'SoftDev'
@@ -146,7 +148,7 @@ def approvelocation():
         account = cursor.fetchall()
         for i in range(0,len(account),1):
             account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
-        print(account[i])
+        # print(account[i])
         return jsonify(account)
     return jsonify({"msg" : "Error"})
 

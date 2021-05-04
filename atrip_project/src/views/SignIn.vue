@@ -109,6 +109,7 @@ export default {
         password : ""
       },
       birthday: "",
+      email: "",
       showPassword: false,
       forgetOverlay: false,
       usernameRule: [
