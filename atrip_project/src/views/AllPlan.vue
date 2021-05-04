@@ -63,6 +63,9 @@
                   >{{ trip.numPlace }} สถานที่
                   </v-card-subtitle>
                   <v-spacer></v-spacer>
+                  <!-- <v-card-title>
+                    Hello
+                  </v-card-title> -->
                 </v-card-title
               >
               <v-btn
