@@ -38,7 +38,7 @@
                 <v-card class="oneTripCard mx-3" @click="toggle">
                   <v-img :src = "trip.image" height="200px">
                     <v-scale-transition>
-                      <v-btn v-if="active" text fab size="35px" class="deleteTrip-btn ma-2" @click="deleteTrip(i,trip.keyID)">
+                      <v-btn v-if="active" text fab size="35px" class="deleteTrip-btn ma-2" @click="tripOverlay = !tripOverlay">
                         <v-icon color = "error" size="45">mdi-close-circle-outline</v-icon>
                       </v-btn>
                     </v-scale-transition>
@@ -105,6 +105,33 @@
           </v-row>
         </v-card>
       </v-overlay>
+
+      <v-overlay
+        :z-index=0
+        :value="tripOverlay"
+      >
+        <v-card>
+          <v-card-title class="white--text" style="font-size: 30px;">
+            ต้องการลบทริป ใช่หรือไม่
+          </v-card-title>
+          <v-row justify="center" style="margin-top: 10px; margin-bottom: 10px;">
+            <v-btn
+              class="white--text"
+              color="green"
+              @click="tripOverlay = false"
+            >
+              ยืนยัน
+            </v-btn>
+            <v-btn
+              class="white--text"
+              color="error"
+              @click="tripOverlay = false"
+            >
+              ยกเลิก
+            </v-btn>
+          </v-row>
+        </v-card>
+      </v-overlay>
     </div>
   </v-content>
 </template>
@@ -124,20 +151,20 @@ export default {
     savedTrips: [],
     tripName: "",
     profileOverlay: false,
+    tripOverlay: false,
     nickname: "myNickName"
   }),
 
   methods: {
     deleteTrip: function(index,keyID){
       this.savedTrips.splice(index,1);
-      
+
     },
     goTripInfo(keyID){
       this.$router.push("/TripInfo/" + keyID);
     },
     async callTrips(){
       await axios.post("myTrip",{"query":"","id" : this.$store.getters.StateID}).then((res)=>this.savedTrips = res.data);
-      console.log(this.savedTrips)
     },
   },
   created: function(){
