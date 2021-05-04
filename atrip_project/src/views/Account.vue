@@ -156,9 +156,9 @@ export default {
   }),
 
   methods: {
-    deleteTrip: function(index,keyID){
+    deleteTrip: async function(index,keyID){
+      await axios.post("/deleteTrip",{"keyID" : keyID}).then((res) => alert(res.data.msg))
       this.savedTrips.splice(index,1);
-
     },
     goTripInfo(keyID){
       this.$router.push("/TripInfo/" + keyID);

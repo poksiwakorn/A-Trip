@@ -346,6 +346,16 @@ def myTrip():
 
     return jsonify(data)
 
+@app.route("/deleteTrip", methods = ['GET', 'POST'])
+@cross_origin()
+def deleteTrip():
+    if request.method == 'POST':
+        content = request.get_json()
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('Delete from Atrip_Trips where keyID = %s',[content["keyID"]])
+        mysql.connection.commit()
+    return jsonify({"msg" : "success"})
+
 @app.route("/makeRoute", methods = ['GET', 'POST'])
 @cross_origin()
 def makeRoute():
