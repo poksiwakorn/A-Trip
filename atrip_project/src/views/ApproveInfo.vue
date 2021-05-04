@@ -14,7 +14,7 @@
             <v-card-subtitle class="mx-7 subtitle">{{place.website}}</v-card-subtitle>
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เบอร์โทรศัพท์</v-card-title>
-            <v-card-subtitle class="mx-7 subtitle">{{place.phoneNumber}}</v-card-subtitle>
+            <v-card-subtitle class="mx-7 subtitle">{{place}}</v-card-subtitle>
             <!-- <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เวลาทำการ</v-card-title>
             <v-row>
