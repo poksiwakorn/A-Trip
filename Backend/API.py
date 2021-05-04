@@ -546,6 +546,21 @@ Your Password is """ + randompassword
 
     return jsonify({"msg" : "สำเร็จ กรุณาตรวจสอบ Email ของท่าน"})
 
+@app.route("/changepassword", methods = ['GET', 'POST'])
+@cross_origin()
+def changepassword():
+    if request.method == 'POST':
+        content = request.get_json()
+        print(content)
+        if content["email"]:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('select Date,Username from Atrip_Users where email = %s',[content["email"]])
+            salt = bcrypt.gensalt()
+            cursor.execute('Update Atrip_Users set Password = %s where Username = %s',(bcrypt.hashpw(content["password"].encode('utf8'), salt),account["Username"]))
+            mysql.connection.commit()
+
+
+    return jsonify({"msg" : "สำเร็จ กรุณาตรวจสอบ Email ของท่าน"})
 
 if __name__ == '__main__':
     gmaps = googlemaps.Client(key='AIzaSyCIHRdrSY885ctMMj_cvL-Ga69IktvnLs0')
