@@ -60,8 +60,13 @@
               <v-card-title class="black--text"
                 >สถานที่ภายในทริป
                 <v-card-subtitle class="mt-1"
-                  >{{ trip.numPlace }} สถานที่</v-card-subtitle
-                ></v-card-title
+                  >{{ trip.numPlace }} สถานที่
+                  </v-card-subtitle>
+                  <v-spacer></v-spacer>
+                  <!-- <v-card-title>
+                    Hello
+                  </v-card-title> -->
+                </v-card-title
               >
               <v-btn
                 color="#FF9100"
@@ -83,8 +88,19 @@
                 เซฟทริป
                 <v-icon class="ml-2">mdi-book-plus</v-icon>
               </v-btn>
+
               <v-btn
-                v-if="!liked"
+                v-if="haveLiked(trip.keyID)"
+                color="#FF9100"
+                class="like-btn ma-2 white--text"
+                style="font-size: 18px"
+                @click="likeTrip(trip.keyID)"
+              >
+                ถูกใจ
+                <v-icon class="ml-2">mdi-thumb-up-outline</v-icon>
+              </v-btn>
+              <v-btn
+                v-else
                 color="#FF9100"
                 outlined
                 class="like-btn ma-2"
@@ -93,16 +109,6 @@
               >
                 ถูกใจ
                 <v-icon class="ml-2">mdi-thumb-up</v-icon>
-              </v-btn>
-              <v-btn
-                v-else
-                color="#FF9100"
-                class="like-btn ma-2 white--text"
-                style="font-size: 18px"
-                @click="likeTrip(trip.keyID)"
-              >
-                ถูกใจ
-                <v-icon class="ml-2">mdi-thumb-up-outline</v-icon>
               </v-btn>
             </v-card>
           </v-row>
@@ -158,6 +164,15 @@ export default {
     goTripInfo(keyID) {
       this.$router.push("/TripInfo/" + keyID);
     },
+    haveLiked(keyID) {
+      var i;
+      for(i=0;i<this.$store.getters.StateLove.length;i++){
+        if(this.$store.getters.StateLove[i] == keyID){
+          return true;
+        }
+      }
+      return false;
+    },
     async saveTrip(keyID) {
       await axios.post("/saveTrip",{"key" : keyID,"id" : this.$store.getters.StateID}).then(res => {
         alert(res.data.msg)
@@ -169,8 +184,6 @@ export default {
         if (res.data.msg == "success"){
           this.$store.dispatch("addLove",res.data.love);
         }
-        console.log(this.$store.getters.StateLove)
-        alert(res.data.msg)
       })
     },
     async callTrips() {

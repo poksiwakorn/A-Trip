@@ -13,7 +13,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 import googlemaps
-from findRoute import *
+from findRoute import allResults,sortResult
 
 app = Flask(__name__)
 app.secret_key = 'SoftDev'
@@ -144,7 +144,7 @@ def login():
                     form['Email'] = account['Email']
                     form['Tel'] = account['Tel']
                     form['Tag'] = account['Tag']
-                    form['Love'] = account['Love']
+                    form['Love'] = account['Love'].split(",")
                     form['Checkin'] = account['Checkin']
                     form['Favorite'] = account['Favorite']
                     form['Role'] = account['Role']
@@ -168,7 +168,11 @@ def location():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID ORDER BY keyID')
+            print(content["current"])
+            if int(content["current"]) < 10:
+                cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID ORDER BY keyID LIMIT 10')
+            else:
+                cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID ORDER BY keyID LIMIT %s',[content["current"]])
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
@@ -241,20 +245,30 @@ def likeTrip():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute("SELECT Love from Atrip_Users where ID = %s",[content["id"]])
         account = cursor.fetchone()
-        # print(account)
         if (account["Love"]):
-            # print("Enter")
             favorite = account["Love"].split(",")
-            # print(favorite)
             if str(content['key']) in favorite:
-                return jsonify({"msg" : "Already like"})
+                love = account["Love"].split(",")
+                love.remove(str(content["key"]))
+                love = ",".join(love)
+                cursor.execute('Update Atrip_Users set Love = %s where ID = %s',(love,content["id"]))
+                mysql.connection.commit()
+                cursor.execute('Update Atrip_Trips set Love = Love-1 where keyID = %s',[content["key"]])
+                mysql.connection.commit()
+                return jsonify({"msg" : "success","love" : love.split(",")})
             account["Love"] = account["Love"] + "," + str(content['key'])
             cursor.execute('Update Atrip_Users set Love = %s where ID = %s',(account["Love"],content["id"]))
+            mysql.connection.commit()
+            cursor.execute('Update Atrip_Trips set Love = Love+1 where keyID = %s',[content["key"]])
             mysql.connection.commit()
             return jsonify({"msg" : "success","love" : account["Love"].split(",")})
         cursor.execute('Update Atrip_Users set Love = %s where ID = %s',(content['key'],content["id"]))
         mysql.connection.commit()
+        cursor.execute('Update Atrip_Trips set Love = Love+1 where keyID = %s',[content["key"]])
+        mysql.connection.commit()
         return jsonify({"msg" : "success","love" : [int(content['key'])]})
+
+
 
 @app.route("/trip", methods = ['GET', 'POST'])
 @cross_origin()
@@ -263,7 +277,7 @@ def trip():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image FROM Atrip_Trips INNER JOIN Atrip_Users on Atrip_Trips.ownerID = Atrip_Users.ID where status = "สาธารณะ" ORDER BY keyID')
+            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image,Atrip_Trips.Love FROM Atrip_Trips INNER JOIN Atrip_Users on Atrip_Trips.ownerID = Atrip_Users.ID where status = "สาธารณะ" ORDER BY keyID')
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["image"] = account[i]["image"].decode("utf-8")
