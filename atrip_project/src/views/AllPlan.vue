@@ -181,8 +181,6 @@ export default {
         if (res.data.msg == "success"){
           this.$store.dispatch("addLove",res.data.love);
         }
-        console.log(this.$store.getters.StateLove)
-        alert(res.data.msg)
       })
     },
     async callTrips() {

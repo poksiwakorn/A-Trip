@@ -251,7 +251,7 @@ def likeTrip():
                 mysql.connection.commit()
                 cursor.execute('Update Atrip_Trips set Love = Love-1 where keyID = %s',[content["key"]])
                 mysql.connection.commit()
-                return jsonify({"msg" : "success","love" : account["Love"].split(",")})
+                return jsonify({"msg" : "success","love" : love.split(",")})
             account["Love"] = account["Love"] + "," + str(content['key'])
             cursor.execute('Update Atrip_Users set Love = %s where ID = %s',(account["Love"],content["id"]))
             mysql.connection.commit()
