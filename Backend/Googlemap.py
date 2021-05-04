@@ -35,4 +35,4 @@ place.append("E")
 print(test(place))
 
 
-#print(my_dist)
+print(my_dist)

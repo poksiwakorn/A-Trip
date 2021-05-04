@@ -9,8 +9,9 @@
             <v-card class="mx-10 mb-7">
               <Addmap @changeLat="placeLat = $event" @changeLng="placeLng = $event"/>
             </v-card>
-            {{placeLat}}
-            {{placeLng}}
+            <v-text-field v-model = "placeLat" class="mx-9" placeholder="Latitude"></v-text-field>
+            <v-spacer></v-spacer>
+            <v-text-field v-model = "placeLng" class="mx-9" placeholder="Longitude"></v-text-field>
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เว็บไซต์</v-card-title>
             <v-text-field v-model = "form.website" class="mx-9" placeholder="www.example.com" ></v-text-field>
@@ -94,7 +95,7 @@ export default {
   data: () => ({
     image: require("../assets/passage1.jpg"),
     imageExample: "",
-    types: ["จุดชมวิว","ดอย","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ"],
+    types: ["จุดชมวิว","ดอย","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ", "อื่นๆ"],
     provinces: [],
     placeLat: "",
     placeLng: "",
@@ -147,6 +148,7 @@ export default {
       reader.readAsDataURL(fileObject);
       reader.onload = async function(){
         var result = reader.result;
+        // console.log(result);
         // this.imageExample = result;
         // console.log(this.imageExample);
         document.getElementById('showImage').src = result;

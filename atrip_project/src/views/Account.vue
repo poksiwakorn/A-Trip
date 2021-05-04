@@ -36,7 +36,7 @@
                 class="savedTripSlide"
               >
                 <v-card class="oneTripCard mx-3" @click="toggle">
-                  <v-img src = "../assets/temple1.jpg" height="200px">
+                  <v-img :src = "trip.image" height="200px">
                     <v-scale-transition>
                       <v-btn v-if="active" text fab size="35px" class="deleteTrip-btn ma-2" @click="deleteTrip(i)">
                         <v-icon color = "error" size="45">mdi-close-circle-outline</v-icon>
@@ -46,7 +46,13 @@
                     <v-card-title>
                       {{trip.nameTH}}
                     </v-card-title>                    
-                    <v-card-subtitle>{{trip.Username}}</v-card-subtitle>
+                    <v-card-title>
+                      {{trip.Username}}
+                      <v-spacer></v-spacer>
+                      <v-chip class="ma-2" color="#FF9100" outlined>
+                        {{trip.status}}
+                      </v-chip>
+                    </v-card-title>
                     <v-divider class="mx-5"></v-divider>
                     <v-card-title class="placeTitle black--text">สถานที่ภายในทริป<v-card-subtitle class="mt-1">{{trip.numPlace}} สถานที่</v-card-subtitle></v-card-title>
                     <v-row

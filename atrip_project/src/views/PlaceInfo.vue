@@ -8,15 +8,15 @@
             <v-card-title class="mx-4">แผนที่</v-card-title>
             <v-card class="mx-10 mb-7">
               <div style="mapPic">
-                <Infomap />
+                <Approvemap v-bind:Lat="this.place.latitude" v-bind:Lng="this.place.longitude" />
               </div>
             </v-card>
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เว็บไซต์</v-card-title>
-            <v-card-subtitle class="mx-7 subtitle">www.A-Trip.co.th</v-card-subtitle>
+            <v-card-subtitle class="mx-7 subtitle">{{place.website}}</v-card-subtitle>
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เบอร์โทรศัพท์</v-card-title>
-            <v-card-subtitle class="mx-7 subtitle">0914259634</v-card-subtitle>
+            <v-card-subtitle class="mx-7 subtitle">{{place.phoneNumber}}</v-card-subtitle>
             <!-- <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เวลาทำการ</v-card-title>
             <v-row>
@@ -49,7 +49,7 @@
         </v-col>
         <v-col cols = "4" class="imageZone">
           <v-card class="imageCard">
-            <v-img src = "../assets/passage1.jpg" class="imagePic"></v-img>
+            <v-img :src = "place.pictureURL" class="imagePic"></v-img>
             <v-divider></v-divider>
             <v-card-title class="imageTitle mt-3">
               {{this.place.nameTH}}
@@ -93,14 +93,14 @@
 // @ is an alias to /src
 import TripBar from "../components/TripBar";
 import axios from "axios";
-import Infomap from "../components/Infomap.vue";
+import Approvemap from "../components/Approvemap.vue";
 
 export default {
   props: ["keyID"],
   name: "PlaceInfo",
   components: {
     TripBar,
-    Infomap,
+    Approvemap,
   },
 
   data: () => ({
