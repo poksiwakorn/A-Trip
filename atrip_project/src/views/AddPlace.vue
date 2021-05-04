@@ -15,10 +15,16 @@
             <v-card-title class="mx-4">เว็บไซต์</v-card-title>
             <v-text-field v-model = "form.website" class="mx-9" placeholder="www.example.com" ></v-text-field>
             <v-divider class="mx-5"></v-divider>
-            <v-card-title v-model = "form.phone" class="mx-4">เบอร์โทรศัพท์</v-card-title>
-            <v-text-field class="mx-9" placeholder="xxxxxxxxxx"></v-text-field>
-            <!-- <v-divider class="mx-5"></v-divider>
-            <v-card-title class="mx-4">เวลาทำการ</v-card-title>
+            <v-card-title class="mx-4">เบอร์โทรศัพท์</v-card-title>
+            <v-text-field v-model = "form.phone" class="mx-9" placeholder="xxxxxxxxxx"></v-text-field>
+            <v-divider class="mx-5"></v-divider>
+            <v-card-title class="mx-4">ประเภท</v-card-title>
+            <v-autocomplete
+              v-model="form.type"
+              :items="types"
+              class="chooseType"
+            ></v-autocomplete>
+            <!-- <v-card-title class="mx-4">เวลาทำการ</v-card-title>
             <v-row>
               <v-card-subtitle class="ml-15 mr-15 subtitle">วันจันทร์</v-card-subtitle>
               <v-card-subtitle class="ml-8 mr-15 subtitle">วันอังคาร</v-card-subtitle>
@@ -88,8 +94,9 @@ export default {
   data: () => ({
     image: require("../assets/passage1.jpg"),
     imageExample: "",
+    types: ["จุดชมวิว","ดอย","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ", "อื่นๆ"],
     provinces: [],
-    placeLat: "asdad",
+    placeLat: "",
     placeLng: "",
     provinceNames: [],
     placeNameRule: [
@@ -101,22 +108,25 @@ export default {
       placeName : "",
       province : "",
       description : "",
+      type : "",
     },
   }),
 
   methods : {
     async sendData(){
-      // console.log(this.marker.getPosition().lat())
-      await axios.post("addLocation",{"website" : this.form.website , "phone" : this.form.phone , "placeName" : this.form.placeName , "province" : this.form.province , "description" : this.form.description , "image" : document.getElementById('showImage').src, "lat" : this.marker.getPosition().lat()})
+      console.log(this.form.phone)
+      await axios.post("addLocation",{"website" : this.form.website , "phone" : this.form.phone , "placeName" : this.form.placeName , "province" : this.form.province , "description" : this.form.description , "image" : document.getElementById('showImage').src, "latitude" : this.placeLat, "longtitude" : this.placeLng , "User" : this.$store.getters.StateID , "type" : this.form.type})
       .then((res) => 
       {
         alert(res.data.msg)
+        console.log(res.data)
         if (res.data.isSuccess){
           this.form.website = ""
           this.form.phone = ""
           this.form.placeName = ""
           this.form.province = ""
           this.form.description = ""
+          this.form.type = ""
           document.getElementById('showImage').src = "";
         }
       })
@@ -137,8 +147,9 @@ export default {
       reader.readAsDataURL(fileObject);
       reader.onload = async function(){
         var result = reader.result;
-        this.imageExample = result;
-        console.log(this.imageExample);
+        // console.log(result);
+        // this.imageExample = result;
+        // console.log(this.imageExample);
         document.getElementById('showImage').src = result;
       };
       
@@ -171,6 +182,12 @@ export default {
   .mapPic{
     width: 100%;
     height: 300px;
+  }
+
+  .chooseType{
+    margin-left: 35px;
+    margin-right: 35px;
+    margin-top: 0px;
   }
 
   .imageZone{

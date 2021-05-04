@@ -7,16 +7,16 @@
 <script>
 export default {
   name: "Listmap",
+  props: ["loca"],
   data() {
     return {
       map: null,
       markers: [],
-      WP: [
-        { location: "KMITL" },
-        { location: "กรุงเทพ" },
-        { location: "อ่างทอง" },
-        { location: { lat: 13.784158268087618, lng: 100.69431020698494 } },
-      ],
+      directionsService: new google.maps.DirectionsService(),
+      directionsRenderer: new google.maps.DirectionsRenderer({
+        draggable: true,
+      }),
+      WP: [],
       coordinates: {
         getlat: 0,
         getlng: 0,
@@ -56,14 +56,50 @@ export default {
 
       // Click on the Map To Mark
     },
+    displayRoute(origin) {
+      for (let i = 0; i < origin.length; i++) {
+        this.removeMarker(origin[i]);
+      }
+      for (let j = 1; j < origin.length - 1; j++) {
+        this.WP.push({ location: { lat: origin[j].lat, lng: origin[j].lng } });
+      }
+     console.log(this.directionsRenderer)
+      this.directionsService.route(
+        {
+          origin: origin[0],
+          destination: origin[origin.length - 1],
+          waypoints: this.WP,
+          travelMode: google.maps.TravelMode.DRIVING,
+          avoidTolls: true,
+        },
+        (result, status) => {
+          if (status === "OK" && result) {
+            this.directionsRenderer.setDirections(result);
+          } else {
+            alert("Could not display directions due to: " + status);
+          }
+        }
+      );
+      this.directionsRenderer.setMap(this.map);
+    },
+    clearRoute() {
+      // this.directionsService= new google.maps.DirectionsService();
+      // this.directionsRenderer= new google.maps.DirectionsRenderer({
+      //   draggable: true,
+      // });
+      // this.WP=[];
+      // this.directionsRenderer.setMap(null);
+      // if (this.directionsRenderer != null) {
+      //   this.directionsRenderer.setMap(null);
+      //   this.directionsRenderer = null;
+      // }
+    },
     addMarker: function(getlat, getlng) {
-      // Add the marker at the clicked location, and add the next-available label
-      // from the array of alphabetical characters.
       var markLatLng = new google.maps.LatLng(getlat, getlng);
       this.markers[markLatLng] = new google.maps.Marker({
         position: markLatLng,
         map: this.map,
-        draggable: true,
+        draggable: false,
         animation: google.maps.Animation.DROP,
       });
     },

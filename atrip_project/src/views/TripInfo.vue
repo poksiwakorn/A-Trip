@@ -5,7 +5,7 @@
       <v-row>
         <v-col cols="5" class="tripZone">
           <v-card class="tripCard">
-            <v-img src="../assets/passage1.jpg" class="tripPic"></v-img>
+            <v-img :src="places[0].pictureURL" class="tripPic"></v-img>
             <v-divider></v-divider>
             <v-card-title class="tripTitle">
               {{ trip.nameTH }}
@@ -23,17 +23,27 @@
               </v-row>
             </v-card-title>
             <v-card-subtitle class="tripSubTitle mt-1 ml-1">
-              {{ trip.owner }}
+              {{trip.Username}}
             </v-card-subtitle>
             <v-divider class="mx-2" style="margin-top: -10px;"></v-divider>
             <v-col class="pb-15">
-                <v-card-text class="tripText">
+                <v-textarea v-if="this.$store.getters.StateUsername == this.trip.Username"
+                            v-model = "description" filled label="ข้อมูลทริปเพิ่มเติม" height="250px" class="mr-2"></v-textarea>
+                <v-card-text v-else class="tripText">
                     {{ describe }}
                 </v-card-text>
-                <v-btn color="#FF9100" outlined class="saveTrip-btn ma-2" link to = "/Account">
+                <v-btn v-if="this.$store.getters.StateUsername == this.trip.Username" 
+                    color="#FF9100" outlined class="saveTrip-btn ma-2" @click="saveChangeTrip">
                     บันทึก
                     <v-icon class="ml-2">mdi-content-save</v-icon>
                 </v-btn>
+                <v-select
+                  v-if="this.$store.getters.StateUsername == this.trip.Username"
+                  v-model="status"
+                  :items="allStatus"
+                  label="สถานะ"
+                  class="chooseStatus ma-2"
+                ></v-select>
             </v-col>
           </v-card>
         </v-col>
@@ -51,7 +61,7 @@
                   <v-col cols="4">
                     <v-card class="mb-5">
                       <v-img
-                        src="../assets/temple1.jpg"
+                        :src="place.item.pictureURL"
                         class="placeImage"
                       ></v-img>
                     </v-card>
@@ -98,8 +108,11 @@ export default {
 
   data: () => ({
     trip: [],
+    description: "",
     describe: "This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.This is the text that should describe the hide-detail of this place but I don't know how to do it so I finally text this.",
     places: [],
+    status: "",
+    allStatus: ["ส่วนตัว","สาธารณะ"]
   }),
 
   methods: {
@@ -109,10 +122,14 @@ export default {
     goPlaceInfo(keyID){
       this.$router.push("/PlaceInfo/" + keyID);
     },
+    saveChangeTrip(){
+      alert("Save Change in Trip")
+      this.$router.push("/Account");
+    },
     async getInfo(){
-      console.log(this.keyID);
       await axios.get("tripInfo/" + this.keyID).then((res)=>this.trip = res.data[0]);
       await axios.post("getPlace",{place : this.trip.placeList}).then((res) => this.places = res.data);
+      console.log(this.trip)
     }
   },
   created: function(){
@@ -123,7 +140,8 @@ export default {
 
 <style scoped>
 .TripInfo {
-    position: relative;
+  position: relative;
+  min-height: 105vh;
   background-image: linear-gradient(
     to top,
     #77cee3,
@@ -143,7 +161,6 @@ export default {
 
 .tripZone {
   width: 100%;
-  height: calc(100vh + 12px);
 }
 
 .tripCard {
@@ -182,9 +199,15 @@ export default {
   font-size: 20px;
 }
 
+.chooseStatus{
+  position: absolute;
+  right: 10px;
+  bottom: -5px;
+  font-size: 20px;
+}
+
 .placeZone {
   width: 100%;
-  height: calc(100vh + 12px);
 }
 
 .placeCard {

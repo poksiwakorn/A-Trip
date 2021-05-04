@@ -1,27 +1,10 @@
 <template>
   <div>
-    <div id="map"></div>
-  </div>
-</template>
-
-<script>
-export default {
-  name: "Approvemap",
-  data() {
-    return {
-      map: null,
-      marker: new google.maps.Marker(),
-      markerlocation: null,
-    
-    };
-  },
-  
-  methods: {
-    initMap() {
-      this.map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: 13.405053591362147, lng: 101.00503381648156 },
-        zoom: 14,
-        mapTypeID: google.maps.MapTypeId.ROADMAP,
+    <GmapMap
+      :center="{ lat: this.Lat, lng: this.Lng }"
+      :zoom="16"
+      style=" width: 27vw; height:300px;"
+      :options="{
         zoomControl: false,
         mapTypeControl: false,
         scaleControl: false,
@@ -29,28 +12,23 @@ export default {
         rotateControl: false,
         fullscreenControl: false,
         disableDefaultUi: false,
-      });
-      this.marker = new google.maps.Marker({
-        position: { lat: 13.405053591362147, lng: 101.00503381648156 },
-        map: this.map,
-        animation: google.maps.Animation.DROP,
-      });
-      
-      // Click on the Map To Mark
-     
-    },
-    
-  },
-  mounted() {
-    this.initMap();
+      }"
+    >
+      <GmapMarker
+        :position="{ lat: this.Lat, lng: this.Lng }"
+      />
+    </GmapMap>
+  </div>
+</template>
+
+<script>
+export default {
+  props: ["Lat", "Lng"],
+  data() {
+    return {  
+    };
   },
 
-  // " Get Location User "
+
 };
 </script>
-<style scoped>
-#map {
-  width: 27vw;
-  height: 220px;
-}
-</style>
