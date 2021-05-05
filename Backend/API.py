@@ -175,13 +175,47 @@ def location():
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             if int(content["current"]) < 10:
-                cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID ORDER BY keyID LIMIT 10')
+                cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where isVerify = 1 ORDER BY keyID LIMIT 10')
             else:
-                cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID ORDER BY keyID LIMIT 10 OFFSET %s',[content["current"]])
+                cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where isVerify = 1 ORDER BY keyID LIMIT 10 OFFSET %s',[content["current"]])
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
             # print(account[i])
+    return jsonify(account)
+
+@app.route("/querylocation", methods = ['GET', 'POST'])
+@cross_origin()
+def querylocation():
+    if request.method == 'POST':
+        content = request.get_json()
+        print(content)
+        if content["type"] == "ทั้งหมด" and content["province"] == "ทั้งหมด":
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where isVerify = 1 ORDER BY keyID LIMIT 10')
+            account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+            # print(account[i])
+        elif content["type"] == "ทั้งหมด" and content["province"] != "ทั้งหมด":
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where provinceTH = %s and isVerify = 1 ORDER BY keyID',[content["province"]])
+            account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+        elif content["type"] != "ทั้งหมด" and content["province"] == "ทั้งหมด":
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where typeTH = %s and isVerify = 1  ORDER BY keyID',[content["type"]])
+            account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+        else:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where typeTH = %s and provinceTH = %s and isVerify = 1 ORDER BY keyID',(content["type"],content["province"]))
+            account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+
     return jsonify(account)
 
 @app.route("/approvelocation", methods = ['GET', 'POST'])
@@ -592,13 +626,21 @@ Your Password is """ + randompassword
 def nearby():
     if request.method == 'POST':
         content = request.get_json()
-        print("enter")
-        print(content)
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,pictureURL,longitude,typeTH,descriptionTH,phoneNumber,website,ownerID,isVerify FROM Atrip_Places WHERE provinceTH = %s and not keyID = %s ORDER BY RAND() LIMIT 2',(content["provinceTH"],content["keyid"]))
+        cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,pictureURL,longitude,typeTH,descriptionTH,phoneNumber,website,ownerID,isVerify FROM Atrip_Places WHERE provinceTH = %s and not keyID = %s and isVerify = 1 ORDER BY RAND() LIMIT 2',(content["provinceTH"],content["keyid"]))
         account = cursor.fetchall()
         for i in range(0,len(account),1):
             account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+    return jsonify(account)
+
+@app.route("/randomTrip", methods = ['GET', 'POST'])
+@cross_origin()
+def randomTrip():
+    if request.method == 'GET':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,pictureURL,longitude,typeTH,descriptionTH,phoneNumber,website,ownerID,isVerify FROM Atrip_Places WHERE isVerify = 1 ORDER BY RAND() LIMIT 1')
+        account = cursor.fetchone()
+        account["pictureURL"] = account["pictureURL"].decode("utf-8")
     return jsonify(account)
 
 @app.route("/changepassword", methods = ['GET', 'POST'])
