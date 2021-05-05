@@ -66,7 +66,7 @@
                   <v-chip
                     color="#FF9100"
                     outlined
-                    style="font-size: 20px;"
+                    style="font-size: 17px;"
                     >{{trip.Love}} Like
                   </v-chip>
                   <!-- <v-card-title class="orange darken-3--text">
@@ -314,8 +314,8 @@ export default {
 
 .adsCard {
   position: fixed;
-  margin-top: 80px;
-  margin-left: 90px;
+  margin-top: 100px;
+  margin-left: 50px;
   width: 650px;
   height: 500px;
 }
