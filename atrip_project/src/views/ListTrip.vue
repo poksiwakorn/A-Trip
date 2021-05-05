@@ -265,7 +265,7 @@ export default {
       console.log(type)
       await axios.post("querylocation",{"type" : type , "province" : province}).then((res) =>
       {
-        console.log(res.data)
+        this.places = res.data
       })
     },
     notLong: function(placeName) {
