@@ -47,7 +47,7 @@
                 >ดูข้อมูล
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
               </v-btn>
-              <v-btn v-if="placesInTrip.length <7" color="#FF9100" outlinedclass="ma-2" style="font-size: 20px;" @click="addPlace(place),$refs.Addmap. moveToLocation(place.latitude,place.longitude),$refs.Addmap.addMarker(place.latitude,place.longitude)" 
+              <v-btn v-if="placesInTrip.length <7" color="#FF9100" outlined class="ma-2" style="font-size: 20px;" @click="addPlace(place),$refs.Addmap. moveToLocation(place.latitude,place.longitude),$refs.Addmap.addMarker(place.latitude,place.longitude)" 
                 >เพิ่มเข้าทริป
                 <v-icon class="ml-2">mdi-plus-outline</v-icon>
               </v-btn>
