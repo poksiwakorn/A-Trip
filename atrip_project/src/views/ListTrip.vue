@@ -261,9 +261,12 @@ export default {
       this.placesInTrip.splice(index, 1);
       //this.coordinates.splice(index, 1); 
     },
-    callSort: function(type,province){
-      console.log(type);
-      console.log(province);
+    callSort: async function(type,province){
+      console.log(type)
+      await axios.post("querylocation",{"type" : type , "province" : province}).then((res) =>
+      {
+        console.log(res.data)
+      })
     },
     notLong: function(placeName) {
       var reserve = ['ิ','ี','ึ','ื','ุ','ู','ั','่','้','๊','๋','็','์'];
