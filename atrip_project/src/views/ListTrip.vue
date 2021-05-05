@@ -164,6 +164,8 @@
             >
               X
             </v-btn>
+            {{overlayValue.pictureURL}}
+            <v-img src="overlayValue.pictureURL"></v-img>
             <v-btn
               class="white--text"
               color="error"
@@ -224,7 +226,7 @@ export default {
         //console.log(((Math.ceil(window.pageYOffset/475) + 2)));
         this.card = this.card + 10;
         this.callPlaces2();
-        console.log(((Math.ceil(window.pageYOffset/475) + 2 + this.select)/10+1)*10)
+        // console.log(((Math.ceil(window.pageYOffset/475) + 2 + this.select)/10+1)*10)
     }
  }
 },
@@ -271,7 +273,7 @@ export default {
       this.$router.push("/PlaceInfo/" + keyID);
     },
     async makeTrip (){
-      console.log(this.placesInTrip)
+      // console.log(this.placesInTrip)
       await axios.post("makeTrip",{"userID": this.$store.getters.StateID , "tripName": this.tripName, "placesInTrip": this.placesInTrip})
       .then((res)=>{
         alert(res.data.msg)
@@ -318,11 +320,11 @@ export default {
     },
     async callPlaces(){
       await axios.post("location",{query:"","current": ((Math.ceil(window.pageYOffset/475) + 2)/10)*10}).then((res)=>this.places = res.data);
-      console.log(this.places);
+      // console.log(this.places);
     },
     async callPlaces2(){
       await axios.post("location",{query:"","current": ((Math.ceil(window.pageYOffset/475) + 2+this.select)/10)*10}).then((res)=>this.places = this.places.concat(res.data));
-      console.log(this.places);
+      // console.log(this.places);
     },
     async callProvinces(){
       await axios.get("province").then((res)=>this.provinces = res.data);
