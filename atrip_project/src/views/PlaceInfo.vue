@@ -124,8 +124,13 @@ export default {
       this.$router.push("/PlaceInfo/"+title)
     },
     async getInfo(){
-      await axios.get("placeInfo/" + this.keyID).then((res)=>this.place = res.data[0]);
-      console.log(this.place)
+      await axios.get("placeInfo/" + this.keyID).then((res)=>{
+        this.place = res.data[0]
+        console.log(this.place)
+        axios.post("nearby",{"provinceTH" : this.place.provinceTH,"keyid" : this.place.keyID}).then((res)=>{
+        console.log(res.data)
+      });
+        })
     }
   },
   created: function(){
