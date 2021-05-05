@@ -51,6 +51,7 @@ export default {
         rotateControl: false,
         fullscreenControl: false,
         disableDefaultUi: false,
+        
       });
      
       // Click on the Map To Mark
@@ -58,7 +59,8 @@ export default {
         this.addMarker(event.latLng, this.map);
       });
     },
-    addMarker: function(location, map) {
+    addMarker: function(location) {
+      console.log(location)
       // Add the marker at the clicked location, and add the next-available label
       // from the array of alphabetical characters.
       this.marker.setMap(null);
@@ -68,6 +70,8 @@ export default {
         draggable: true,
         animation: google.maps.Animation.DROP,
       });
+      this.map.panTo(location);
+      this.map.setZoom(16);
       this.$emit('changeLat',this.marker.getPosition().lat());
       this.$emit('changeLng',this.marker.getPosition().lng());
     },
