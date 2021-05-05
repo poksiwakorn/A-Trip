@@ -109,6 +109,7 @@ export default {
   methods:{
     goPlaceInfo(keyID){
       this.$router.push("/PlaceInfo/" + keyID);
+      this.$router.go()
     },
     async getInfo(){
       await axios.get("placeInfo/" + this.keyID).then((res)=>{
