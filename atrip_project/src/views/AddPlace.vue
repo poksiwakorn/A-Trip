@@ -7,11 +7,13 @@
           <v-card class="mapCard pb-7">
             <v-card-title class="mx-4">แผนที่</v-card-title>
             <v-card class="mx-10 mb-7">
-              <Addmap @changeLat="placeLat = $event" @changeLng="placeLng = $event"/>
+
+              <Addmap ref="Addmap" @changeLat="placeLat = $event" @changeLng="placeLng = $event"/>
             </v-card>
             <v-text-field v-model = "placeLat" class="mx-9" placeholder="Latitude"></v-text-field>
             <v-spacer></v-spacer>
             <v-text-field v-model = "placeLng" class="mx-9" placeholder="Longitude"></v-text-field>
+            <v-btn color="primary" class="uploadButton" @click="updateMarker">ไปที่หมุด</v-btn>
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เว็บไซต์</v-card-title>
             <v-text-field v-model = "form.website" class="mx-9" placeholder="www.example.com" ></v-text-field>
@@ -99,6 +101,7 @@ export default {
     provinces: [],
     placeLat: "",
     placeLng: "",
+    placelocation:[{lat:0,lng:0}],
     provinceNames: [],
     placeNameRule: [
         v => !!v || 'จำเป็น',
@@ -114,6 +117,10 @@ export default {
   }),
 
   methods : {
+    updateMarker(){
+     this.placelocation = {lat:parseFloat(this.placeLat),lng:parseFloat(this.placeLng)};
+     this.$refs.Addmap.addMarker(this.placelocation)
+    },
     async sendData(){
       console.log(this.form.phone)
       await axios.post("addLocation",{"website" : this.form.website , "phone" : this.form.phone , "placeName" : this.form.placeName , "province" : this.form.province , "description" : this.form.description , "image" : document.getElementById('showImage').src, "latitude" : this.placeLat, "longtitude" : this.placeLng , "User" : this.$store.getters.StateID , "type" : this.form.type})

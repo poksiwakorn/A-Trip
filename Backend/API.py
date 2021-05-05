@@ -587,6 +587,21 @@ Your Password is """ + randompassword
 
     return jsonify({"msg" : "สำเร็จ กรุณาตรวจสอบ Email ของท่าน"})
 
+@app.route("/nearby", methods = ['GET', 'POST'])
+@cross_origin()
+def nearby():
+    if request.method == 'POST':
+        content = request.get_json()
+        if content["query"] == "":
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            #print(content["provinceTH"])
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,pictureURL,longitude,typeTH,descriptionTH,phoneNumber,website,ownerID,isVerify FROM Atrip_Places WHERE provinceTH = %s ORDER BY RAND() LIMIT 2',[content["provinceTH"]])
+            account = cursor.fetchall()            
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+            #print(account)
+    return jsonify(account)
+    
 @app.route("/changepassword", methods = ['GET', 'POST'])
 @cross_origin()
 def changepassword():

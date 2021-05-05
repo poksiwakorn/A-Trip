@@ -228,7 +228,7 @@
                 class="no-btn white--text"
                 color="error"
                 height="50px"
-                @click="passwordOverlay = false"
+                @click="clearPassword()"
               >
                 ยกเลิก
               </v-btn>
@@ -293,11 +293,16 @@ export default {
     goTripInfo(keyID){
       this.$router.push("/TripInfo/" + keyID);
     },
+    clearPassword(){
+      this.oldPassword = "";
+      this.newPassword = "";
+      this.passwordOverlay = false;
+    },
     async changePassword(){
       await axios.post("/changepassword",{"id" : this.$store.getters.StateID , "oldPassword" : this.oldPassword,"newPassword" : this.newPassword}).then((res) => {
         alert(res.data.msg)
       })
-      this.passwordOverlay = false;
+      this.clearPassword();
     },
     async callTrips(){
       await axios.post("myTrip",{"query":"","id" : this.$store.getters.StateID}).then((res)=>this.savedTrips = res.data);
