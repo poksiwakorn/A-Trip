@@ -49,9 +49,11 @@ def register():
         lastname = content['lastname']
         birthday = content['birthday']
         # print("username =",username,"password",password,"email",email)
+        checkbirth = content['birthday'].split("-")
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM Atrip_Users WHERE BINARY Username = %s or email = %s', (username,email))
         account = cursor.fetchone()
+        print(checkbirth)
         # If account exists show error and validation checks
         if account:
             form['msg'] = 'Account already exists!'
@@ -59,18 +61,20 @@ def register():
             form['msg'] = 'Invalid email address!'
         elif (not re.match(r'[A-Za-z0-9]+', username)) or (len(username) < 8) or (len(username) > 15):
             form['msg'] = 'Username must contain only characters and numbers and length between 8 and 15!'
-        elif (not all(x.isalpha or x == "" for x in firstname)) or (len(firstname) > 25):
+        elif ((len(firstname) > 25) or not firstname.encode().isalpha()):
             form['msg'] = 'Plese enter valid name'
-        elif (not all(x.isalpha or x == "" for x in lastname)) or (len(lastname) > 25):
+        elif ((len(lastname) > 25) or not lastname.encode().isalpha()):
             form['msg'] = 'Please enter valid surname'
         elif (len(password) < 8 or len(password) > 25):
-            form['msg'] = """Password's length must between 8 and 15!"""
-
-
+            form['msg'] = """Password's length must between 8 and 25!"""
+        elif not checkbirth[0].isnumeric():
+            form['msg'] = 'Please enter valid birthday'
+        elif int(checkbirth[0])>2015 or int(checkbirth[0]) < 1920 or len(checkbirth) != 3:
+            form['msg'] = 'Please enter valid birthday'
         else:
             # Account doesnt exists and the form data is valid, now insert new account into accounts table
             salt = bcrypt.gensalt()
-            cursor.execute('INSERT INTO Atrip_Users (username,password,email,role,FirstName,LastName,Nickname,Date) VALUES (%s, %s, %s, %s, %s, %s, %s ,%s)', (username, bcrypt.hashpw(password.encode('utf8'), salt), email,"user",firstname,lastname,username,birthday))
+            cursor.execute('INSERT INTO Atrip_Users (username,password,email,role,FirstName,LastName,Nickname,Date,Love,Picture) VALUES (%s, %s, %s, %s, %s, %s, %s ,%s,%s,%s)', (username, bcrypt.hashpw(password.encode('utf8'), salt), email,"user",firstname,lastname,username,birthday,"",""))
             mysql.connection.commit()
             form['result'] = True
             form['msg'] = 'You have successfully registered!'
@@ -476,7 +480,11 @@ def myTrip():
             cursor.execute("SELECT Favorite From Atrip_Users where id = %s",[content["id"]])
             account = cursor.fetchone()
             favorite = account["Favorite"].split(",")
-            form = "SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image,status FROM Atrip_Trips INNER JOIN Atrip_Users On (Atrip_Trips.ownerID = Atrip_Users.ID) where (ownerID = " + str(content["id"]) + " or keyID = " + " or keyID = ".join(favorite) + ") ORDER BY keyID"
+            print(favorite)
+            if (favorite[0] != ""):
+                form = "SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image,status FROM Atrip_Trips INNER JOIN Atrip_Users On (Atrip_Trips.ownerID = Atrip_Users.ID) where (ownerID = " + str(content["id"]) + " or keyID = " + " or keyID = ".join(favorite) + ") ORDER BY keyID"
+            else:
+                form = "SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image,status FROM Atrip_Trips INNER JOIN Atrip_Users On (Atrip_Trips.ownerID = Atrip_Users.ID) where (ownerID = " + str(content["id"]) + ") ORDER BY keyID"
             print(form)
             cursor.execute(form)
             data = list(cursor.fetchall())
@@ -619,7 +627,7 @@ Your Password is """ + randompassword
                         server.sendmail(sender_email, receiver_email, msg.as_string())
 
 
-    return jsonify({"msg" : "สำเร็จ กรุณาตรวจสอบ Email ของท่าน"})
+    return jsonify({"msg" : "สำเร็จเมื่อข้อมูลของท่านถูกต้อง กรุณาตรวจสอบ Email ของท่าน"})
 
 @app.route("/nearby", methods = ['GET', 'POST'])
 @cross_origin()

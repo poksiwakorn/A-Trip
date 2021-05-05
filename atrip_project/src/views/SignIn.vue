@@ -133,11 +133,10 @@ export default {
   methods:{
     async forgetSend(){
       await axios.post("forgotpassword",{"email" : this.email , "birthday" : this.birthday}).then((res) => {
-        if (res.data.msg){
+          alert(res.data.msg)
           this.email = ""
           this.birthday = ""
           this.forgetOverlay = false;
-        }
       })
     },
     async Login(){
