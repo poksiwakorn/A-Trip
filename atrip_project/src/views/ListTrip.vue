@@ -47,12 +47,7 @@
                 >ดูข้อมูล
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
               </v-btn>
-              <v-btn
-                color="#FF9100"
-                outlined
-                class="ma-2"
-                style="font-size: 20px;"
-                @click="addPlace(place),$refs.Addmap. moveToLocation(place.latitude,place.longitude),$refs.Addmap.addMarker(place.latitude,place.longitude)" 
+              <v-btn v-if="placesInTrip.length <7" color="#FF9100" outlinedclass="ma-2" style="font-size: 20px;" @click="addPlace(place),$refs.Addmap. moveToLocation(place.latitude,place.longitude),$refs.Addmap.addMarker(place.latitude,place.longitude)" 
                 >เพิ่มเข้าทริป
                 <v-icon class="ml-2">mdi-plus-outline</v-icon>
               </v-btn>
@@ -142,7 +137,7 @@
               <v-row>
                 <v-btn text class="makeTripButton" @click="placesInTrip.length >= 2 ? makeTrip() : makeFail()">สร้างทริป</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn text class="updateButton"  @click="makeRoute() ">สร้างเส้นทาง</v-btn>
+                <v-btn v-if="placesInTrip.length >2" text class="updateButton"  @click="makeRoute() ">สร้างเส้นทาง</v-btn>
               </v-row>
             </v-form>
           </v-card>
