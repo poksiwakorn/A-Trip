@@ -281,7 +281,7 @@ def trip():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image,Atrip_Trips.Love FROM Atrip_Trips INNER JOIN Atrip_Users on Atrip_Trips.ownerID = Atrip_Users.ID where status = "สาธารณะ" ORDER BY keyID')
+            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image,Atrip_Trips.Love FROM Atrip_Trips INNER JOIN Atrip_Users on Atrip_Trips.ownerID = Atrip_Users.ID where status = "สาธารณะ" ORDER BY Love desc')
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["image"] = account[i]["image"].decode("utf-8")
@@ -592,16 +592,15 @@ Your Password is """ + randompassword
 def nearby():
     if request.method == 'POST':
         content = request.get_json()
-        if content["query"] == "":
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            #print(content["provinceTH"])
-            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,pictureURL,longitude,typeTH,descriptionTH,phoneNumber,website,ownerID,isVerify FROM Atrip_Places WHERE provinceTH = %s ORDER BY RAND() LIMIT 2',[content["provinceTH"]])
-            account = cursor.fetchall()            
-            for i in range(0,len(account),1):
-                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
-            #print(account)
+        print("enter")
+        print(content)
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,pictureURL,longitude,typeTH,descriptionTH,phoneNumber,website,ownerID,isVerify FROM Atrip_Places WHERE provinceTH = %s and not keyID = %s ORDER BY RAND() LIMIT 2',(content["provinceTH"],content["keyid"]))
+        account = cursor.fetchall()
+        for i in range(0,len(account),1):
+            account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
     return jsonify(account)
-    
+
 @app.route("/changepassword", methods = ['GET', 'POST'])
 @cross_origin()
 def changepassword():
