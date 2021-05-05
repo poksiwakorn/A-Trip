@@ -480,7 +480,11 @@ def myTrip():
             cursor.execute("SELECT Favorite From Atrip_Users where id = %s",[content["id"]])
             account = cursor.fetchone()
             favorite = account["Favorite"].split(",")
-            form = "SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image,status FROM Atrip_Trips INNER JOIN Atrip_Users On (Atrip_Trips.ownerID = Atrip_Users.ID) where (ownerID = " + str(content["id"]) + " or keyID = " + " or keyID = ".join(favorite) + ") ORDER BY keyID"
+            print(favorite)
+            if (favorite[0] != ""):
+                form = "SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image,status FROM Atrip_Trips INNER JOIN Atrip_Users On (Atrip_Trips.ownerID = Atrip_Users.ID) where (ownerID = " + str(content["id"]) + " or keyID = " + " or keyID = ".join(favorite) + ") ORDER BY keyID"
+            else:
+                form = "SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image,status FROM Atrip_Trips INNER JOIN Atrip_Users On (Atrip_Trips.ownerID = Atrip_Users.ID) where (ownerID = " + str(content["id"]) + ") ORDER BY keyID"
             print(form)
             cursor.execute(form)
             data = list(cursor.fetchall())
