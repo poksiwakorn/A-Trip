@@ -184,6 +184,40 @@ def location():
             # print(account[i])
     return jsonify(account)
 
+@app.route("/querylocation", methods = ['GET', 'POST'])
+@cross_origin()
+def querylocation():
+    if request.method == 'POST':
+        content = request.get_json()
+        print(content)
+        if content["type"] == "ทั้งหมด" and content["province"] == "ทั้งหมด":
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID ORDER BY keyID LIMIT 10')
+            account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+            # print(account[i])
+        elif content["type"] == "ทั้งหมด" and content["province"] != "ทั้งหมด":
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where provinceTH = %s ORDER BY keyID',[content["province"]])
+            account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+        elif content["type"] != "ทั้งหมด" and content["province"] == "ทั้งหมด":
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where typeTH = %s  ORDER BY keyID',[content["type"]])
+            account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+        else:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where typeTH = %s and provinceTH = %s ORDER BY keyID',(content["type"],content["province"]))
+            account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+
+    return jsonify(account)
+
 @app.route("/approvelocation", methods = ['GET', 'POST'])
 @cross_origin()
 def approvelocation():
