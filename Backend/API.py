@@ -592,10 +592,8 @@ Your Password is """ + randompassword
 def nearby():
     if request.method == 'POST':
         content = request.get_json()
-        print("enter")
-        print(content)
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,pictureURL,longitude,typeTH,descriptionTH,phoneNumber,website,ownerID,isVerify FROM Atrip_Places WHERE provinceTH = %s and not keyID = %s ORDER BY RAND() LIMIT 2',(content["provinceTH"],content["keyid"]))
+        cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,pictureURL,longitude,typeTH,descriptionTH,phoneNumber,website,ownerID,isVerify FROM Atrip_Places WHERE provinceTH = %s and not keyID = %s and isVerify = 1 ORDER BY RAND() LIMIT 2',(content["provinceTH"],content["keyid"]))
         account = cursor.fetchall()
         for i in range(0,len(account),1):
             account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
