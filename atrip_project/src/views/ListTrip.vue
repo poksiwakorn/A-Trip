@@ -11,6 +11,7 @@
             label="ประเภท"
             color="#FF9100"
             class="mx-6"
+            @change="callSort(typeValue,provinceValue)"
           ></v-autocomplete>
           <v-autocomplete
             v-model="provinceValue"
@@ -19,6 +20,7 @@
             rounded
             label="จังหวัด"
             color="#FF9100"
+            @change="callSort(typeValue,provinceValue)"
           ></v-autocomplete>
         </v-row>   
       <v-row>
@@ -47,12 +49,7 @@
                 >ดูข้อมูล
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
               </v-btn>
-              <v-btn
-                color="#FF9100"
-                outlined
-                class="ma-2"
-                style="font-size: 20px;"
-                @click="addPlace(place),$refs.Addmap. moveToLocation(place.latitude,place.longitude),$refs.Addmap.addMarker(place.latitude,place.longitude)" 
+              <v-btn v-if="placesInTrip.length <7" color="#FF9100" outlined class="ma-2" style="font-size: 20px;" @click="addPlace(place),$refs.Addmap. moveToLocation(place.latitude,place.longitude),$refs.Addmap.addMarker(place.latitude,place.longitude)" 
                 >เพิ่มเข้าทริป
                 <v-icon class="ml-2">mdi-plus-outline</v-icon>
               </v-btn>
@@ -142,7 +139,7 @@
               <v-row>
                 <v-btn text class="makeTripButton" @click="placesInTrip.length >= 2 ? makeTrip() : makeFail()">สร้างทริป</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn text class="updateButton"  @click="makeRoute() ">สร้างเส้นทาง</v-btn>
+                <v-btn v-if="placesInTrip.length >2" text class="updateButton"  @click="makeRoute() ">สร้างเส้นทาง</v-btn>
               </v-row>
             </v-form>
           </v-card>
@@ -153,8 +150,8 @@
         :z-index=0
         :value="overlay"
       >
-        <v-card class="editCard">
-          <v-card-title class="black--text" style="font-size: 30px;">
+        <v-card class="exampleCard">
+          <v-card-title class="exampleTitle black--text">
             {{overlayValue.nameTH}}
             <v-spacer></v-spacer>
             <v-btn
@@ -164,16 +161,36 @@
             >
               X
             </v-btn>
-            {{overlayValue.pictureURL}}
-            <v-img src="overlayValue.pictureURL"></v-img>
-            <v-btn
-              class="white--text"
-              color="error"
-              @click="goPlaceInfo(overlayValue.keyID)"
-            >
-              Go
-            </v-btn>
           </v-card-title>
+          <v-row>
+            <v-card class = "exampleImageCard">
+              <v-img :src="overlayValue.pictureURL" class = "exampleImage"></v-img>
+              <v-divider></v-divider>
+              <v-card-title class="subTitle" style="margin-top: 15px;">
+                {{overlayValue.typeTH}}
+                <v-spacer></v-spacer>
+                <v-chip class="ma-2" color="#FF9100" outlined>{{
+                  overlayValue.provinceTH
+                }}</v-chip>
+              </v-card-title>
+            </v-card>
+            <v-card class="exampleDescription">
+              <v-card-title class="black--text" >รายละเอียดสถานที่</v-card-title>
+              <v-divider></v-divider>
+              <v-card-text class="subText black--text">
+                {{overlayValue.descriptionTH}}
+              </v-card-text>
+            </v-card>
+          </v-row>
+          <v-btn 
+            class="goPlaceInfo-btn white--text"
+            color="green"
+            height="100px"
+            @click="goPlaceInfo(overlayValue.keyID)"
+          >
+            ไปยังหน้าสถานที่
+            <v-icon class="mx-5" size="40px" >mdi-page-next</v-icon>
+          </v-btn>
         </v-card>
       </v-overlay>
     </div>
@@ -243,6 +260,13 @@ export default {
       this.select =  this.select - 1;
       this.placesInTrip.splice(index, 1);
       //this.coordinates.splice(index, 1); 
+    },
+    callSort: async function(type,province){
+      console.log(type)
+      await axios.post("querylocation",{"type" : type , "province" : province}).then((res) =>
+      {
+        this.places = res.data
+      })
     },
     notLong: function(placeName) {
       var reserve = ['ิ','ี','ึ','ื','ุ','ู','ั','่','้','๊','๋','็','์'];
@@ -448,9 +472,52 @@ export default {
   height: 100px;
 }
 
-.editCard{
+.exampleImageCard {
+  margin-left: 30px;
+  margin-top: 20px;
+  width: 500px;
+  min-height: 350px;
+  background-color: white;
+}
+
+.exampleTitle {
+  position: relative;
+  font-size: 30px; 
+  margin-left: 5px; 
+  top:10px;
+}
+
+.exampleImage {
+  width: 500px;
+  height: 350px;
+}
+
+.exampleCard{
   width: 55vw;
   height: 70vh;
+  background-color: rgb(226, 222, 222);
+}
+
+.exampleDescription{
+  position: relative;
+  margin-top: 20px;
+  margin-left: 20px;
+  width: 500px;
+  min-height: 350px;
   background-color: white;
+}
+
+.subText{
+  color: #ff9100;
+  font-size: 16px;
+  line-height: 30px;
+}
+
+.goPlaceInfo-btn{
+  position: absolute;
+  bottom: 20px; 
+  left: 2%; 
+  width: 96%;
+  font-size: 35px;
 }
 </style>

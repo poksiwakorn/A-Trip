@@ -69,14 +69,14 @@
             <v-card class="nearbyCard mr-10">Nearby Place</v-card>
             <v-row v-for="(nearby, i) in nearbys" :key="i">
               <v-card class="placeCard ma-3">
-                <v-img :src = "nearby.src[0]" class="placePic"></v-img>
+                <v-img :src = "nearby.pictureURL" class="placePic"></v-img>
                 <v-card-title>
-                  {{ nearby.title }}
+                  {{ nearby.nameTH }}
                   <v-spacer></v-spacer>
-                  <v-chip class="ma-2" color="#FF9100" outlined>{{nearby.province}}</v-chip>
+                  <v-chip class="ma-2" color="#FF9100" outlined>{{nearby.provinceTH}}</v-chip>
                 </v-card-title>
-                <v-card-subtitle>{{nearby.info}}</v-card-subtitle>
-                <v-btn color="#FF9100" outlined class="ma-2" @click = "goNext(nearby.title)"
+                <v-card-subtitle>{{nearby.typeTH}}</v-card-subtitle>
+                <v-btn color="#FF9100" outlined class="ma-2" @click = "goPlaceInfo(nearby.keyID)"
                   >view info
                   <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
                 </v-btn>
@@ -104,28 +104,22 @@ export default {
 
   data: () => ({
     place: [],
-    nearbys: [
-      {
-        src: [require("../assets/island1.jpg")],
-        title: "ISLAND",
-        info: "Photograph,Residence,Restaurant",
-        province: "Phuket"
-      },
-      {
-        src: [require("../assets/market1.jpg")],
-        title: "MARKET",
-        info: "Photograph,Restaurant",
-        province: "China"
-      }
-    ]
+    nearbys: []
   }),
   methods:{
-    goNext(title){
-      this.$router.push("/PlaceInfo/"+title)
+    goPlaceInfo(keyID){
+      this.$router.push("/PlaceInfo/" + keyID);
+      this.$router.go()
     },
     async getInfo(){
-      await axios.get("placeInfo/" + this.keyID).then((res)=>this.place = res.data[0]);
-      console.log(this.place)
+      await axios.get("placeInfo/" + this.keyID).then((res)=>{
+        this.place = res.data[0]
+        console.log(this.place)
+        axios.post("nearby",{"provinceTH" : this.place.provinceTH,"keyid" : this.place.keyID}).then((res)=>{
+        this.nearbys = res.data;
+        console.log(this.nearbys)
+        });
+      })
     }
   },
   created: function(){
@@ -174,7 +168,7 @@ export default {
   }
 
   .imageTitle{
-    font-size: 45px;
+    font-size: 35px;
     font-weight: 300;
   }
 
@@ -188,7 +182,7 @@ export default {
     margin-left: 5px;
     font-size: 20px;
     font-weight: 400;
-    line-height: 30px;
+    line-height: 37px;
   }
 
   .nearbyZone{

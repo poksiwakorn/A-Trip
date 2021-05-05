@@ -42,7 +42,6 @@ def register():
     if request.method == 'POST' and content['username'] and content['password'] and content['email'] and content['firstname'] and content['lastname'] and content['birthday']:
         # Create variables for easy access
         # print("get in stage 2")
-        print(content)
         username = content['username']
         password = content['password']
         email = content['email']
@@ -75,7 +74,6 @@ def register():
             mysql.connection.commit()
             form['result'] = True
             form['msg'] = 'You have successfully registered!'
-            print('You have successfully registered!')
     else:
         # Form is empty... (no POST data)
         # print("get in stage 3")
@@ -91,15 +89,14 @@ def editData():
     # Output message if something goes wrong...
     form = {'FirstName' : '','LastName' : '' ,'Nickname' : '' , 'Picture' : '','msg' : ''}
     content = request.get_json()
-    print(content)
-    if request.method == 'POST' and content['nickName'] and content['firstName'] and content['lastName'] and content['image'] and content['id']:
+    if request.method == 'POST' and content['nickName'] and content['firstName'] and content['lastName'] and content['id']:
         if (not all(x.isalpha or x == "" for x in content['firstName'])) or (len(content['firstName']) > 25):
             form['msg'] = 'Plese enter valid name'
         elif (not all(x.isalpha or x == "" for x in content['lastName'])) or (len(content['lastName']) > 25):
             form['msg'] = 'Please enter valid surname'
         elif (not all(x.isalpha or x == "" for x in content['nickName']) or (len(content['nickName']) > 15)):
             form['msg'] = 'Please enter valid nickname'
-        else:
+        elif content['image']:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('Update Atrip_Users set FirstName = %s,LastName = %s,Nickname = %s,Picture = %s where ID = %s',(content['firstName'],content['lastName'],content['nickName'],content['image'],content["id"]))
             mysql.connection.commit()
@@ -108,8 +105,17 @@ def editData():
             form ["Nickname"] = content['nickName']
             form ["Picture"] = content['image']
             form['result'] = True
-            form['msg'] = 'success'
-            print('success')
+            form['msg'] = 'success with image'
+        else:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('Update Atrip_Users set FirstName = %s,LastName = %s,Nickname = %s where ID = %s',(content['firstName'],content['lastName'],content['nickName'],content["id"]))
+            mysql.connection.commit()
+            form ["FirstName"] = content['firstName']
+            form ["LastName"] = content['lastName']
+            form ["Nickname"] = content['nickName']
+            form ["Picture"] = ""
+            form['result'] = True
+            form['msg'] = 'success without image'
     else:
         form['msg'] = 'Please enter the form!'
     return jsonify(form)
@@ -168,15 +174,48 @@ def location():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            print(content["current"])
             if int(content["current"]) < 10:
-                cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID ORDER BY keyID LIMIT 10')
+                cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where isVerify = 1 ORDER BY keyID LIMIT 10')
             else:
-                cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID ORDER BY keyID LIMIT 10 OFFSET %s',[content["current"]])
+                cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where isVerify = 1 ORDER BY keyID LIMIT 10 OFFSET %s',[content["current"]])
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
             # print(account[i])
+    return jsonify(account)
+
+@app.route("/querylocation", methods = ['GET', 'POST'])
+@cross_origin()
+def querylocation():
+    if request.method == 'POST':
+        content = request.get_json()
+        print(content)
+        if content["type"] == "ทั้งหมด" and content["province"] == "ทั้งหมด":
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where isVerify = 1 ORDER BY keyID LIMIT 10')
+            account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+            # print(account[i])
+        elif content["type"] == "ทั้งหมด" and content["province"] != "ทั้งหมด":
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where provinceTH = %s and isVerify = 1 ORDER BY keyID',[content["province"]])
+            account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+        elif content["type"] != "ทั้งหมด" and content["province"] == "ทั้งหมด":
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where typeTH = %s and isVerify = 1  ORDER BY keyID',[content["type"]])
+            account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+        else:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where typeTH = %s and provinceTH = %s and isVerify = 1 ORDER BY keyID',(content["type"],content["province"]))
+            account = cursor.fetchall()
+            for i in range(0,len(account),1):
+                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
+
     return jsonify(account)
 
 @app.route("/approvelocation", methods = ['GET', 'POST'])
@@ -218,7 +257,6 @@ def saveTrip():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute("SELECT ownerID from Atrip_Trips where keyID = %s",[content["key"]])
         check = cursor.fetchone()
-        print(check,content["id"])
         if (str(check["ownerID"]) == str(content["id"])):
             return jsonify({"msg" : "You can't choose your trip as favorite"})
         # print(content)
@@ -277,7 +315,7 @@ def trip():
         content = request.get_json()
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image,Atrip_Trips.Love FROM Atrip_Trips INNER JOIN Atrip_Users on Atrip_Trips.ownerID = Atrip_Users.ID where status = "สาธารณะ" ORDER BY keyID')
+            cursor.execute('SELECT keyID,nameTH,numPlace,placeList,ownerID,provinceTH_List,Username,image,Atrip_Trips.Love FROM Atrip_Trips INNER JOIN Atrip_Users on Atrip_Trips.ownerID = Atrip_Users.ID where status = "สาธารณะ" ORDER BY Love desc')
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["image"] = account[i]["image"].decode("utf-8")
@@ -504,7 +542,7 @@ def makeRoute():
             placeIDList.append(content["placesInTrip"][i]["keyID"])
             coordinateList.append(content["placesInTrip"][i]["coordinate"])
         x = gmaps.distance_matrix(coordinateList,coordinateList,mode='driving')
-        temp = sortResult(allResults(placeIDList,x))        
+        temp = sortResult(allResults(placeIDList,x))
         count = 0
         if mode == "สั้นที่สุด":
             print("สั้นที่สุด")
@@ -550,7 +588,6 @@ def makeRoute():
 def forgotpassword():
     if request.method == 'POST':
         content = request.get_json()
-        print(content)
         if content["email"] and content["birthday"]:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('select Date,Username from Atrip_Users where email = %s',[content["email"]])
@@ -558,7 +595,6 @@ def forgotpassword():
             if (account):
                 if (account["Date"] == content["birthday"]):
                     randompassword = ''.join((secrets.choice(string.ascii_letters + string.digits + string.punctuation) for i in range(8)))
-                    print(randompassword)
                     salt = bcrypt.gensalt()
                     cursor.execute('Update Atrip_Users set Password = %s where Username = %s',(bcrypt.hashpw(randompassword.encode('utf8'), salt),account["Username"]))
                     mysql.connection.commit()
@@ -590,15 +626,43 @@ Your Password is """ + randompassword
 def nearby():
     if request.method == 'POST':
         content = request.get_json()
-        if content["query"] == "":
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            #print(content["provinceTH"])
-            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,pictureURL,longitude,typeTH,descriptionTH,phoneNumber,website,ownerID,isVerify FROM Atrip_Places WHERE provinceTH = %s ORDER BY RAND() LIMIT 2',[content["provinceTH"]])
-            account = cursor.fetchall()            
-            for i in range(0,len(account),1):
-                account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
-            #print(account)
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,pictureURL,longitude,typeTH,descriptionTH,phoneNumber,website,ownerID,isVerify FROM Atrip_Places WHERE provinceTH = %s and not keyID = %s and isVerify = 1 ORDER BY RAND() LIMIT 2',(content["provinceTH"],content["keyid"]))
+        account = cursor.fetchall()
+        for i in range(0,len(account),1):
+            account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
     return jsonify(account)
+
+@app.route("/randomTrip", methods = ['GET', 'POST'])
+@cross_origin()
+def randomTrip():
+    if request.method == 'GET':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,pictureURL,longitude,typeTH,descriptionTH,phoneNumber,website,ownerID,isVerify FROM Atrip_Places WHERE isVerify = 1 ORDER BY RAND() LIMIT 1')
+        account = cursor.fetchone()
+        account["pictureURL"] = account["pictureURL"].decode("utf-8")
+    return jsonify(account)
+
+@app.route("/changepassword", methods = ['GET', 'POST'])
+@cross_origin()
+def changepassword():
+    if request.method == 'POST':
+        content = request.get_json()
+        if content["id"] and content["oldPassword"] and content["newPassword"]:
+            if (len(content["newPassword"]) < 8 or len(content["newPassword"]) > 25):
+                return jsonify({"msg" : "รหัสผ่านใหม่ไม่ตรงตามข้อกำหนด"})
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT Password FROM Atrip_Users WHERE ID = %s', [content["id"]])
+            account = cursor.fetchone()
+            if bcrypt.checkpw(content["oldPassword"].encode('utf-8'),account["Password"].encode('utf-8')):
+                salt = bcrypt.gensalt()
+                cursor.execute('Update Atrip_Users set Password = %s where ID = %s',(bcrypt.hashpw(content["newPassword"].encode('utf8'), salt),content["id"]))
+                mysql.connection.commit()
+                return jsonify({"msg" : "เปลี่ยนรหัสผ่านสำเร็จ"})
+            else:
+                return jsonify({"msg" : "รหัสผ่านผิด"})
+        return jsonify({"msg" : "กรุณากรอกฟอร์มให้ครบ"})
+
 
 if __name__ == '__main__':
     gmaps = googlemaps.Client(key='AIzaSyCIHRdrSY885ctMMj_cvL-Ga69IktvnLs0')

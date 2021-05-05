@@ -5,8 +5,11 @@
       <div class="Home">
         <img class="img1">
         <div class="rec1"></div>
+        
         <img class="img2">
-        <v-card flat tile class="tripCard">
+        <span class="text1" >Life is a journey .</span>
+        <span class="text2" >" Every journey has beginning and the end "</span>
+        <!-- <v-card flat tile class="tripCard">
           <v-window
             v-model="tripIndex"
           >
@@ -88,7 +91,7 @@
               </v-card>
             </v-window-item>
           </v-window>
-        </v-card>
+        </v-card> -->
       </div>
     </v-content>
   </v-content>
@@ -122,7 +125,32 @@ export default {
     position: relative;
     top: 63px;
   }
-
+  .text1 {
+    position: fixed;
+    left: 100px;
+    top: 77vh;
+    font-weight: bold;
+    font-size: 75px;
+    line-height: 129px;
+    text-align: center;
+    color: #ffffff;
+    text-shadow: 0px 6px 4px rgba(230, 230, 230, 0.25);
+    -webkit-text-stroke: 2px #9e6a6a;
+    -webkit-text-fill-color: white;
+  }
+  .text2 {
+    position: fixed;
+    left: 300px;
+    top: 88vh;
+    font-weight: bold;
+    font-size: 60px;
+    line-height: 129px;
+    text-align: center;
+    color: #ffffff;
+    text-shadow: 0px 6px 4px rgba(230, 230, 230, 0.25);
+    -webkit-text-stroke: 2px #9e6a6a;
+    -webkit-text-fill-color: white;
+  }
   .rec1{
     position: absolute;
     width: 50vw;
@@ -156,6 +184,19 @@ export default {
     top: 10vh;
     
     background: url(../assets/road1.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
+  .img3 {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    left: 20px;
+    top: 8vh;
+    border-width: 100px;
+    border-color: white;
+    background: url(../assets/atrip.png);
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
