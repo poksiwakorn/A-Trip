@@ -159,13 +159,6 @@
             >
               X
             </v-btn>
-            <v-btn
-              class="white--text"
-              color="error"
-              @click="goPlaceInfo(overlayValue.keyID)"
-            >
-              Go
-            </v-btn>
           </v-card-title>
           <v-row>
             <v-card class = "exampleImageCard">
@@ -190,7 +183,9 @@
           <v-btn 
             class="goPlaceInfo-btn white--text"
             color="green"
-            height="100px">
+            height="100px"
+            @click="goPlaceInfo(overlayValue.keyID)"
+          >
             ไปยังหน้าสถานที่
             <v-icon class="mx-5" size="40px" >mdi-page-next</v-icon>
           </v-btn>
