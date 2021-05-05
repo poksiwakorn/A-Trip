@@ -599,6 +599,16 @@ def nearby():
             account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
     return jsonify(account)
 
+@app.route("/randomTrip", methods = ['GET', 'POST'])
+@cross_origin()
+def randomTrip():
+    if request.method == 'GET':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,pictureURL,longitude,typeTH,descriptionTH,phoneNumber,website,ownerID,isVerify FROM Atrip_Places WHERE isVerify = 1 ORDER BY RAND() LIMIT 1')
+        account = cursor.fetchone()
+        account["pictureURL"] = account["pictureURL"].decode("utf-8")
+    return jsonify(account)
+
 @app.route("/changepassword", methods = ['GET', 'POST'])
 @cross_origin()
 def changepassword():
