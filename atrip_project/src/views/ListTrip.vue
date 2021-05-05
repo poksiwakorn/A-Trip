@@ -153,8 +153,8 @@
         :z-index=0
         :value="overlay"
       >
-        <v-card class="editCard">
-          <v-card-title class="black--text" style="font-size: 30px;">
+        <v-card class="exampleCard">
+          <v-card-title class="exampleTitle black--text">
             {{overlayValue.nameTH}}
             <v-spacer></v-spacer>
             <v-btn
@@ -164,8 +164,6 @@
             >
               X
             </v-btn>
-            {{overlayValue.pictureURL}}
-            <v-img src="overlayValue.pictureURL"></v-img>
             <v-btn
               class="white--text"
               color="error"
@@ -174,6 +172,17 @@
               Go
             </v-btn>
           </v-card-title>
+          <v-card class = "exampleImageCard">
+            <v-img :src="overlayValue.pictureURL" class = "exampleImage"></v-img>
+            <v-divider></v-divider>
+            <v-card-title class="subTitle" style="margin-top: 15px;">
+              {{overlayValue.typeTH}}
+              <v-spacer></v-spacer>
+              <v-chip class="ma-2" color="#FF9100" outlined>{{
+                overlayValue.provinceTH
+              }}</v-chip>
+            </v-card-title>
+          </v-card>
         </v-card>
       </v-overlay>
     </div>
@@ -448,9 +457,29 @@ export default {
   height: 100px;
 }
 
-.editCard{
+.exampleImageCard {
+  margin-left: 20px;
+  margin-top: 20px;
+  width: 500px;
+  min-height: 350px;
+  background-color: white;
+}
+
+.exampleTitle {
+  position: relative;
+  font-size: 30px; 
+  margin-left: 5px; 
+  top:10px;
+}
+
+.exampleImage {
+  width: 500px;
+  height: 350px;
+}
+
+.exampleCard{
   width: 55vw;
   height: 70vh;
-  background-color: white;
+  background-color: rgb(226, 222, 222);
 }
 </style>
