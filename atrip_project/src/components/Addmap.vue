@@ -67,11 +67,11 @@ export default {
       this.marker = new google.maps.Marker({
         position: location,
         map: this.map,
-        draggable: true,
+        draggable: false,
         animation: google.maps.Animation.DROP,
       });
       this.map.panTo(location);
-      this.map.setZoom(16);
+      this.map.setZoom(15);
       this.$emit('changeLat',this.marker.getPosition().lat());
       this.$emit('changeLng',this.marker.getPosition().lng());
     },

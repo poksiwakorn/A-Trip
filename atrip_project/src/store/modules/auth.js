@@ -74,7 +74,12 @@ const actions = {
     await axios.post("editData", JSON.parse(JSON.stringify(form)))
     .then((response) => {
       alert(response.data.msg)
-      if (response.data.msg == "success"){
+      if (response.data.msg == "success without image"){
+        context.commit("setFirstName",response.data.FirstName)
+        context.commit("setLastName",response.data.LastName)
+        context.commit("setNickname",response.data.Nickname)
+      }
+      else if(response.data.msg == "success with image"){
         context.commit("setFirstName",response.data.FirstName)
         context.commit("setLastName",response.data.LastName)
         context.commit("setNickname",response.data.Nickname)

@@ -99,8 +99,8 @@ export default {
     imageExample: "",
     types: ["จุดชมวิว","ดอย","ตลาด","น้ำตก","ร้านอาหาร","วัด","ศาลเจ้า","สวนสาธารณะ", "สวนสัตว์","อุทยานแห่งชาติ", "อื่นๆ"],
     provinces: [],
-    placeLat: 0,
-    placeLng: 0,
+    placeLat: "",
+    placeLng: "",
     placelocation:[{lat:0,lng:0}],
     provinceNames: [],
     placeNameRule: [
