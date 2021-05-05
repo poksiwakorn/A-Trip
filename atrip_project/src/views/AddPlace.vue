@@ -13,7 +13,7 @@
             <v-text-field v-model = "placeLat" class="mx-9" placeholder="Latitude"></v-text-field>
             <v-spacer></v-spacer>
             <v-text-field v-model = "placeLng" class="mx-9" placeholder="Longitude"></v-text-field>
-            <v-btn color="primary" class="uploadButton" @click="updateMarker">ไปที่หมุด</v-btn>
+            <v-btn color="primary" class="markButton" @click="updateMarker">ไปที่หมุด</v-btn>
             <v-divider class="mx-5"></v-divider>
             <v-card-title class="mx-4">เว็บไซต์</v-card-title>
             <v-text-field v-model = "form.website" class="mx-9" placeholder="www.example.com" ></v-text-field>
@@ -215,6 +215,14 @@ export default {
 
   .uploadButton {
     margin-left: 295px;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    /* color: #ff9100; */
+    font-size: 20px;
+  }
+
+  .markButton{
+    margin-left: 315px;
     margin-top: 0px;
     margin-bottom: 10px;
     /* color: #ff9100; */

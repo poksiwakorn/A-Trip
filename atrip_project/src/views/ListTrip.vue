@@ -11,6 +11,7 @@
             label="ประเภท"
             color="#FF9100"
             class="mx-6"
+            @change="callSort(typeValue,provinceValue)"
           ></v-autocomplete>
           <v-autocomplete
             v-model="provinceValue"
@@ -19,6 +20,7 @@
             rounded
             label="จังหวัด"
             color="#FF9100"
+            @change="callSort(typeValue,provinceValue)"
           ></v-autocomplete>
         </v-row>   
       <v-row>
@@ -47,7 +49,7 @@
                 >ดูข้อมูล
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
               </v-btn>
-              <v-btn v-if="placesInTrip.length <7" color="#FF9100" outlinedclass="ma-2" style="font-size: 20px;" @click="addPlace(place),$refs.Addmap. moveToLocation(place.latitude,place.longitude),$refs.Addmap.addMarker(place.latitude,place.longitude)" 
+              <v-btn v-if="placesInTrip.length <7" color="#FF9100" outlined class="ma-2" style="font-size: 20px;" @click="addPlace(place),$refs.Addmap. moveToLocation(place.latitude,place.longitude),$refs.Addmap.addMarker(place.latitude,place.longitude)" 
                 >เพิ่มเข้าทริป
                 <v-icon class="ml-2">mdi-plus-outline</v-icon>
               </v-btn>
@@ -159,13 +161,6 @@
             >
               X
             </v-btn>
-            <v-btn
-              class="white--text"
-              color="error"
-              @click="goPlaceInfo(overlayValue.keyID)"
-            >
-              Go
-            </v-btn>
           </v-card-title>
           <v-row>
             <v-card class = "exampleImageCard">
@@ -190,7 +185,9 @@
           <v-btn 
             class="goPlaceInfo-btn white--text"
             color="green"
-            height="100px">
+            height="100px"
+            @click="goPlaceInfo(overlayValue.keyID)"
+          >
             ไปยังหน้าสถานที่
             <v-icon class="mx-5" size="40px" >mdi-page-next</v-icon>
           </v-btn>
@@ -263,6 +260,13 @@ export default {
       this.select =  this.select - 1;
       this.placesInTrip.splice(index, 1);
       //this.coordinates.splice(index, 1); 
+    },
+    callSort: async function(type,province){
+      console.log(type)
+      await axios.post("querylocation",{"type" : type , "province" : province}).then((res) =>
+      {
+        this.places = res.data
+      })
     },
     notLong: function(placeName) {
       var reserve = ['ิ','ี','ึ','ื','ุ','ู','ั','่','้','๊','๋','็','์'];
