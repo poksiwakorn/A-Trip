@@ -293,7 +293,10 @@ export default {
     goTripInfo(keyID){
       this.$router.push("/TripInfo/" + keyID);
     },
-    changePassword(){
+    async changePassword(){
+      await axios.post("/changepassword",{"id" : this.$store.getters.StateID , "oldPassword" : this.oldPassword,"newPassword" : this.newPassword}).then((res) => {
+        alert(res.data.msg)
+      })
       this.passwordOverlay = false;
     },
     async callTrips(){
