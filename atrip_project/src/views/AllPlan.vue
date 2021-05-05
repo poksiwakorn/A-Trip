@@ -66,7 +66,7 @@
                   <v-chip
                     color="#FF9100"
                     outlined
-                    style="font-size: 20px;"
+                    style="font-size: 17px;"
                     >{{trip.Love}} Like
                   </v-chip>
                   <!-- <v-card-title class="orange darken-3--text">
@@ -122,20 +122,17 @@
         <!-- RIGHT -->
         <v-col cols="4">
           <v-card class="adsCard">
-            <v-img src="../assets/gallery1.jpg" height="200px"></v-img>
-            <v-card-title>
-              Musuem Of Contemporary Art (MOCA)
+            <v-img :src="randomPlace.pictureURL" height="200px"></v-img>
+            <v-card-title class="titleText">
+              {{randomPlace.nameTH}}
               <v-spacer></v-spacer>
-              <v-chip color="#FF9100" outlined>กรุงเทพมหานคร</v-chip>
+              <v-chip color="#FF9100" outlined>{{randomPlace.provinceTH}}</v-chip>
             </v-card-title>
             <v-divider class="mx-4"></v-divider>
-            <v-card-text class="text--primary ma-2"
-              >รายละเอียดสถานที่</v-card-text
+            <v-card-text class="subText text--primary ma-2"
+              >{{randomPlace.descriptionTH}}</v-card-text
             >
-            <v-card-text>
-              <!-- {{ trips[0] }} -->
-            </v-card-text>
-            <v-btn color="#FF9100" text class="viewPlace-btn ma-2"
+            <v-btn color="#FF9100" text class="viewPlace-btn ma-2" @click = "goPlaceInfo(randomPlace.keyID)"
               >ข้อมูลเพิ่มเติม</v-btn
             >
           </v-card>
@@ -161,11 +158,16 @@ export default {
     provinceValue: "ทั้งหมด",
     tripNames: ["ทั้งหมด"],
     tripNameValue: "ทั้งหมด",
-    liked: false
+    liked: false,
+    randomPlace: []
   }),
   methods: {
     count: function (item) {
       return item.length;
+    },
+    goPlaceInfo(keyID){
+      this.$router.push("/PlaceInfo/" + keyID);
+      this.$router.go()
     },
     goTripInfo(keyID) {
       this.$router.push("/TripInfo/" + keyID);
@@ -209,10 +211,17 @@ export default {
         this.provinceNames.push(this.provinces[i].provinceTH);
       }
     },
+    async randomTrip() {
+      await axios.get("randomTrip").then((res) => {
+        this.randomPlace = res.data
+        });
+        console.log(this.randomPlace);
+    }
   },
   created: function () {
     this.callTrips();
     this.callProvinces();
+    this.randomTrip();
   },
 };
 </script>
@@ -308,15 +317,25 @@ export default {
 
 .adsCard {
   position: fixed;
-  margin-top: 80px;
-  margin-left: 90px;
+  margin-top: 100px;
+  margin-left: 50px;
   width: 650px;
-  height: 500px;
+  min-height: 300px;
 }
 
 .viewPlace-btn {
-  position: absolute;
+  position: relative;
   bottom: 5px;
+}
+
+.titleText{
+  font-size: 30px;
+  font-weight: 450px;
+}
+
+.subText{
+  font-size: 17px;
+  line-height: 30px;
 }
 
 </style>
