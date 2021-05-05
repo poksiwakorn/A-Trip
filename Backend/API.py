@@ -504,7 +504,7 @@ def makeRoute():
             placeIDList.append(content["placesInTrip"][i]["keyID"])
             coordinateList.append(content["placesInTrip"][i]["coordinate"])
         x = gmaps.distance_matrix(coordinateList,coordinateList,mode='driving')
-        temp = sortResult(allResults(placeIDList,x))        
+        temp = sortResult(allResults(placeIDList,x))
         count = 0
         if mode == "สั้นที่สุด":
             print("สั้นที่สุด")
@@ -591,15 +591,21 @@ def changepassword():
     if request.method == 'POST':
         content = request.get_json()
         print(content)
-        if content["email"]:
+        if content["id"] and content["oldPassword"] and content["newPassword"]:
+            if (len(content["newPassword"]) < 8 or len(content["newPassword"]) > 25):
+                return jsonify({"msg" : "รหัสผ่านใหม่ไม่ตรงตามข้อกำหนด"})
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('select Date,Username from Atrip_Users where email = %s',[content["email"]])
-            salt = bcrypt.gensalt()
-            cursor.execute('Update Atrip_Users set Password = %s where Username = %s',(bcrypt.hashpw(content["password"].encode('utf8'), salt),account["Username"]))
-            mysql.connection.commit()
+            cursor.execute('SELECT Password FROM Atrip_Users WHERE ID = %s', [content["id"]])
+            account = cursor.fetchone()
+            if bcrypt.checkpw(content["oldPassword"].encode('utf-8'),account["Password"].encode('utf-8')):
+                salt = bcrypt.gensalt()
+                cursor.execute('Update Atrip_Users set Password = %s where ID = %s',(bcrypt.hashpw(content["newPassword"].encode('utf8'), salt),content["id"]))
+                mysql.connection.commit()
+                return jsonify({"msg" : "เปลี่ยนรหัสผ่านสำเร็จ"})
+            else:
+                return jsonify({"msg" : "รหัสผ่านผิด"})
+        return jsonify({"msg" : "กรุณากรอกฟอร์มให้ครบ"})
 
-
-    return jsonify({"msg" : "สำเร็จ กรุณาตรวจสอบ Email ของท่าน"})
 
 if __name__ == '__main__':
     gmaps = googlemaps.Client(key='AIzaSyCIHRdrSY885ctMMj_cvL-Ga69IktvnLs0')
