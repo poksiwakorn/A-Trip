@@ -11,6 +11,7 @@
             label="ประเภท"
             color="#FF9100"
             class="mx-6"
+            @change="callType(typeValue)"
           ></v-autocomplete>
           <v-autocomplete
             v-model="provinceValue"
@@ -19,6 +20,7 @@
             rounded
             label="จังหวัด"
             color="#FF9100"
+            @change="callProvince(provinceValue)"
           ></v-autocomplete>
         </v-row>   
       <v-row>
@@ -258,6 +260,12 @@ export default {
       this.select =  this.select - 1;
       this.placesInTrip.splice(index, 1);
       //this.coordinates.splice(index, 1); 
+    },
+    callType: function(type){
+      console.log(type);
+    },
+    callProvince: function(province){
+      console.log(province);
     },
     notLong: function(placeName) {
       var reserve = ['ิ','ี','ึ','ื','ุ','ู','ั','่','้','๊','๋','็','์'];
