@@ -188,7 +188,7 @@ export default {
     margin-left: 5px;
     font-size: 20px;
     font-weight: 400;
-    line-height: 30px;
+    line-height: 37px;
   }
 
   .nearbyZone{
