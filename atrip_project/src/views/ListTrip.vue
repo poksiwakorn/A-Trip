@@ -11,7 +11,7 @@
             label="ประเภท"
             color="#FF9100"
             class="mx-6"
-            @change="callType(typeValue)"
+            @change="callSort(typeValue,provinceValue)"
           ></v-autocomplete>
           <v-autocomplete
             v-model="provinceValue"
@@ -20,7 +20,7 @@
             rounded
             label="จังหวัด"
             color="#FF9100"
-            @change="callProvince(provinceValue)"
+            @change="callSort(typeValue,provinceValue)"
           ></v-autocomplete>
         </v-row>   
       <v-row>
@@ -261,10 +261,8 @@ export default {
       this.placesInTrip.splice(index, 1);
       //this.coordinates.splice(index, 1); 
     },
-    callType: function(type){
+    callSort: function(type,province){
       console.log(type);
-    },
-    callProvince: function(province){
       console.log(province);
     },
     notLong: function(placeName) {
