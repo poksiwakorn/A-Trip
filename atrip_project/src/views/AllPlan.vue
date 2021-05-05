@@ -63,8 +63,14 @@
                   >{{ trip.numPlace }} สถานที่
                   </v-card-subtitle>
                   <v-spacer></v-spacer>
-                  <!-- <v-card-title>
-                    Hello
+                  <v-chip
+                    color="#FF9100"
+                    outlined
+                    style="font-size: 20px;"
+                    >{{trip.Love}} Like
+                  </v-chip>
+                  <!-- <v-card-title class="orange darken-3--text">
+                    {{trip.Love}} Like
                   </v-card-title> -->
                 </v-card-title
               >
@@ -94,7 +100,7 @@
                 color="#FF9100"
                 class="like-btn ma-2 white--text"
                 style="font-size: 18px"
-                @click="likeTrip(trip.keyID)"
+                @click="likeTrip(i,trip.keyID,-1)"
               >
                 ถูกใจ
                 <v-icon class="ml-2">mdi-thumb-up-outline</v-icon>
@@ -105,7 +111,7 @@
                 outlined
                 class="like-btn ma-2"
                 style="font-size: 18px"
-                @click="likeTrip(trip.keyID)"
+                @click="likeTrip(i,trip.keyID,1)"
               >
                 ถูกใจ
                 <v-icon class="ml-2">mdi-thumb-up</v-icon>
@@ -179,10 +185,11 @@ export default {
       })
       this.$router.push("/Account");
     },
-    async likeTrip(keyID) {
+    async likeTrip(index,keyID,value) {
       await axios.post("/likeTrip",{"key" : keyID,"id" : this.$store.getters.StateID}).then(res => {
         if (res.data.msg == "success"){
           this.$store.dispatch("addLove",res.data.love);
+          this.trips[index].Love += value;
         }
       })
     },
