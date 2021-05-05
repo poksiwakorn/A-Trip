@@ -47,12 +47,7 @@
                 >ดูข้อมูล
                 <v-icon class="ml-2">mdi-clipboard-text-search-outline</v-icon>
               </v-btn>
-              <v-btn
-                color="#FF9100"
-                outlined
-                class="ma-2"
-                style="font-size: 20px;"
-                @click="addPlace(place),$refs.Addmap. moveToLocation(place.latitude,place.longitude),$refs.Addmap.addMarker(place.latitude,place.longitude)" 
+              <v-btn v-if="placesInTrip.length <7" color="#FF9100" outlinedclass="ma-2" style="font-size: 20px;" @click="addPlace(place),$refs.Addmap. moveToLocation(place.latitude,place.longitude),$refs.Addmap.addMarker(place.latitude,place.longitude)" 
                 >เพิ่มเข้าทริป
                 <v-icon class="ml-2">mdi-plus-outline</v-icon>
               </v-btn>
@@ -142,7 +137,7 @@
               <v-row>
                 <v-btn text class="makeTripButton" @click="placesInTrip.length >= 2 ? makeTrip() : makeFail()">สร้างทริป</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn text class="updateButton"  @click="makeRoute() ">สร้างเส้นทาง</v-btn>
+                <v-btn v-if="placesInTrip.length >2" text class="updateButton"  @click="makeRoute() ">สร้างเส้นทาง</v-btn>
               </v-row>
             </v-form>
           </v-card>
@@ -153,8 +148,8 @@
         :z-index=0
         :value="overlay"
       >
-        <v-card class="editCard">
-          <v-card-title class="black--text" style="font-size: 30px;">
+        <v-card class="exampleCard">
+          <v-card-title class="exampleTitle black--text">
             {{overlayValue.nameTH}}
             <v-spacer></v-spacer>
             <v-btn
@@ -172,6 +167,33 @@
               Go
             </v-btn>
           </v-card-title>
+          <v-row>
+            <v-card class = "exampleImageCard">
+              <v-img :src="overlayValue.pictureURL" class = "exampleImage"></v-img>
+              <v-divider></v-divider>
+              <v-card-title class="subTitle" style="margin-top: 15px;">
+                {{overlayValue.typeTH}}
+                <v-spacer></v-spacer>
+                <v-chip class="ma-2" color="#FF9100" outlined>{{
+                  overlayValue.provinceTH
+                }}</v-chip>
+              </v-card-title>
+            </v-card>
+            <v-card class="exampleDescription">
+              <v-card-title class="black--text" >รายละเอียดสถานที่</v-card-title>
+              <v-divider></v-divider>
+              <v-card-text class="subText black--text">
+                {{overlayValue.descriptionTH}}
+              </v-card-text>
+            </v-card>
+          </v-row>
+          <v-btn 
+            class="goPlaceInfo-btn white--text"
+            color="green"
+            height="100px">
+            ไปยังหน้าสถานที่
+            <v-icon class="mx-5" size="40px" >mdi-page-next</v-icon>
+          </v-btn>
         </v-card>
       </v-overlay>
     </div>
@@ -213,20 +235,24 @@ export default {
     bestPath: [],
     overlayValue: [],
     mode: "สั้นที่สุด",
-    modes: ["สั้นที่สุด", "จุดเริ่มต้นเดิม","ปลายทางเดิม","เริ่มต้น ปลายทางเดิม"]
+    modes: ["สั้นที่สุด", "จุดเริ่มต้นเดิม","ปลายทางเดิม","เริ่มต้น ปลายทางเดิม"],
+    card: 10,
+    select: 0
   }),
   methods: {
     scroll () {
   window.onscroll = () => {
-    if ((Math.ceil(window.pageYOffset/475) + 2)%10 == 0) {
+    if ((Math.ceil(window.pageYOffset/475) + 2 + this.select)%(this.card) == 0) {
         //console.log(((Math.ceil(window.pageYOffset/475) + 2)));
-        this.callPlaces();
-        console.log(((Math.ceil(window.pageYOffset/475) + 2)/10+1)*10)
+        this.card = this.card + 10;
+        this.callPlaces2();
+        // console.log(((Math.ceil(window.pageYOffset/475) + 2 + this.select)/10+1)*10)
     }
  }
 },
 
     addPlace: function(item) {
+      this.select =  this.select + 1;
       this.placesInTrip.push(item); 
       // this.coordinates.push({ lat: item.latitude, lng: item.longitude });
       // for(let i =1;i<this.coordinates.length-1;i++){
@@ -234,6 +260,7 @@ export default {
       // }
     },
     canclePlace: function(index) {
+      this.select =  this.select - 1;
       this.placesInTrip.splice(index, 1);
       //this.coordinates.splice(index, 1); 
     },
@@ -266,7 +293,7 @@ export default {
       this.$router.push("/PlaceInfo/" + keyID);
     },
     async makeTrip (){
-      console.log(this.placesInTrip)
+      // console.log(this.placesInTrip)
       await axios.post("makeTrip",{"userID": this.$store.getters.StateID , "tripName": this.tripName, "placesInTrip": this.placesInTrip})
       .then((res)=>{
         alert(res.data.msg)
@@ -312,11 +339,12 @@ export default {
       return true;
     },
     async callPlaces(){
-      await axios.post("location",{query:"","current": ((Math.ceil(window.pageYOffset/475) + 2)/10+1)*10}).then((res)=>this.places = res.data);
-      console.log(this.places);
+      await axios.post("location",{query:"","current": ((Math.ceil(window.pageYOffset/475) + 2)/10)*10}).then((res)=>this.places = res.data);
+      // console.log(this.places);
     },
     async callPlaces2(){
-      await axios.post("location",{query:"","current": ((Math.ceil(window.pageYOffset/475) + 2)/10+1)*10}).then((res)=>{console.log(res.data);});
+      await axios.post("location",{query:"","current": ((Math.ceil(window.pageYOffset/475) + 2+this.select)/10)*10}).then((res)=>this.places = this.places.concat(res.data));
+      // console.log(this.places);
     },
     async callProvinces(){
       await axios.get("province").then((res)=>this.provinces = res.data);
@@ -440,9 +468,52 @@ export default {
   height: 100px;
 }
 
-.editCard{
+.exampleImageCard {
+  margin-left: 30px;
+  margin-top: 20px;
+  width: 500px;
+  min-height: 350px;
+  background-color: white;
+}
+
+.exampleTitle {
+  position: relative;
+  font-size: 30px; 
+  margin-left: 5px; 
+  top:10px;
+}
+
+.exampleImage {
+  width: 500px;
+  height: 350px;
+}
+
+.exampleCard{
   width: 55vw;
   height: 70vh;
+  background-color: rgb(226, 222, 222);
+}
+
+.exampleDescription{
+  position: relative;
+  margin-top: 20px;
+  margin-left: 20px;
+  width: 500px;
+  min-height: 350px;
   background-color: white;
+}
+
+.subText{
+  color: #ff9100;
+  font-size: 16px;
+  line-height: 30px;
+}
+
+.goPlaceInfo-btn{
+  position: absolute;
+  bottom: 20px; 
+  left: 2%; 
+  width: 96%;
+  font-size: 35px;
 }
 </style>
