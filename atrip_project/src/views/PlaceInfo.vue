@@ -168,7 +168,7 @@ export default {
   }
 
   .imageTitle{
-    font-size: 40px;
+    font-size: 35px;
     font-weight: 300;
   }
 
