@@ -209,10 +209,16 @@ export default {
         this.provinceNames.push(this.provinces[i].provinceTH);
       }
     },
+    async randomTrip() {
+      await axios.get("randomTrip").then((res) => {
+        console.log(res.data)
+        });
+    }
   },
   created: function () {
     this.callTrips();
     this.callProvinces();
+    this.randomTrip();
   },
 };
 </script>
