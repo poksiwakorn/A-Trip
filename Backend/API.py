@@ -175,9 +175,9 @@ def location():
         if content["query"] == "":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             if int(content["current"]) < 10:
-                cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID ORDER BY keyID LIMIT 10')
+                cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where isVerify = 1 ORDER BY keyID LIMIT 10')
             else:
-                cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID ORDER BY keyID LIMIT 10 OFFSET %s',[content["current"]])
+                cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where isVerify = 1 ORDER BY keyID LIMIT 10 OFFSET %s',[content["current"]])
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
@@ -192,26 +192,26 @@ def querylocation():
         print(content)
         if content["type"] == "ทั้งหมด" and content["province"] == "ทั้งหมด":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users where Atrip_Places.ownerID = Atrip_Users.ID ORDER BY keyID LIMIT 10')
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where isVerify = 1 ORDER BY keyID LIMIT 10')
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
             # print(account[i])
         elif content["type"] == "ทั้งหมด" and content["province"] != "ทั้งหมด":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where provinceTH = %s ORDER BY keyID',[content["province"]])
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where provinceTH = %s and isVerify = 1 ORDER BY keyID',[content["province"]])
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
         elif content["type"] != "ทั้งหมด" and content["province"] == "ทั้งหมด":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where typeTH = %s  ORDER BY keyID',[content["type"]])
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where typeTH = %s and isVerify = 1  ORDER BY keyID',[content["type"]])
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
         else:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where typeTH = %s and provinceTH = %s ORDER BY keyID',(content["type"],content["province"]))
+            cursor.execute('SELECT keyID,nameTH,provinceTH,coordinate,latitude,longitude,typeTH,descriptionTH,pictureURL,phoneNumber,website,ownerID,isVerify,Username FROM Atrip_Places INNER JOIN Atrip_Users on Atrip_Places.ownerID = Atrip_Users.ID where typeTH = %s and provinceTH = %s and isVerify = 1 ORDER BY keyID',(content["type"],content["province"]))
             account = cursor.fetchall()
             for i in range(0,len(account),1):
                 account[i]["pictureURL"] = account[i]["pictureURL"].decode("utf-8")
